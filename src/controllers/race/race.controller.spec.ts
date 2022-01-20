@@ -4,7 +4,7 @@ import {
   UpdateRaceDto
 } from '../../dtos/race.dtos'
 import Race from '../../entities/race.entity'
-import { MissingParamError } from '../../errors/controllers.errors'
+import { MissingParamError, ServerError } from '../../errors/controllers.errors'
 import { RaceServiceAbstract } from '../../services/race/race.service'
 import RaceController, { RaceControllerAbstract } from './race.controller'
 
@@ -188,22 +188,12 @@ describe('Race Controller', () => {
     expect(result.body).toStrictEqual([validRace])
   })
 
-  it('should call RaceService getOne method with correct values', async () => {
-    const { sut, raceServiceStub } = makeSut()
-
-    const getOneRaceSpy = jest.spyOn(raceServiceStub, 'getOne')
-
-    await sut.getOne({ params: { id: 'valid_id' } })
-
-    expect(getOneRaceSpy).toHaveBeenCalledWith('valid_id')
-  })
-
-  it('should return 400 when getting a race by id and not providing an id', async () => {
+  it('should return 400 when getting all races without providing a query', async () => {
     const { sut } = makeSut()
 
-    const result = await sut.getOne({ params: { id: null as any } })
+    const result = await sut.getAll({ query: null as any })
 
     expect(result.statusCode).toBe(400)
-    expect(result.body).toStrictEqual(new MissingParamError('id'))
+    expect(result.body).toStrictEqual(new ServerError())
   })
 })
