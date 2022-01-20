@@ -11,5 +11,7 @@
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint", "jest"],
-  "rules": {}
+  "rules": {
+    "space-before-function-paren": "off"
+  }
 }
