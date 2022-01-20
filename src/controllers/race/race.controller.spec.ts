@@ -41,7 +41,7 @@ describe('Race Controller', () => {
         return [validRace]
       }
 
-      async update(updateRaceDto: UpdateRaceDto): Promise<Race> {
+      async update(id: string, updateRaceDto: UpdateRaceDto): Promise<Race> {
         return validRace
       }
     }
@@ -223,6 +223,15 @@ describe('Race Controller', () => {
 
     expect(result.statusCode).toBe(200)
     expect(result.body).toStrictEqual(validRace)
+  })
+
+  it('should return 400 when not providing an id on update', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({ body: {}, params: { id: null as any } })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('id'))
   })
 
   it('should return 400 when providing an unallowed update', async () => {
