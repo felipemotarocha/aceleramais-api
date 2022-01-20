@@ -23,7 +23,12 @@ class RaceController implements RaceControllerAbstract {
   async create(httpRequest: HttpRequest): Promise<HttpResponse> {
     const race = await this.raceService.create(httpRequest.body)
 
-    const requiredFields = ['trackId', 'championshipId']
+    const requiredFields = [
+      'trackId',
+      'championshipId',
+      'classificationId',
+      'startDate'
+    ]
 
     for (const field of requiredFields) {
       if (!httpRequest.body[field]) {
