@@ -98,4 +98,36 @@ describe('Race Controller', () => {
     expect(result.status).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('championshipId'))
   })
+
+  it('should return 400 if no classification id is provided', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      trackId: 'valid_track_id',
+      championshipId: 'valid_championship_id',
+      startDate: 'valid_start_date',
+      isCompleted: true
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.status).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('classificationId'))
+  })
+
+  it('should return 400 if no start date is provided', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      trackId: 'valid_track_id',
+      championshipId: 'valid_championship_id',
+      classificationId: 'valid_classification_id',
+      isCompleted: true
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.status).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('startDate'))
+  })
 })
