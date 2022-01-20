@@ -1,4 +1,8 @@
-import { MissingParamError, ServerError } from '../../errors/controllers.errors'
+import {
+  MissingParamError,
+  NotAllowedFieldsError,
+  ServerError
+} from '../../errors/controllers.errors'
 import { badRequest, created, ok } from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
@@ -60,6 +64,16 @@ class RaceController implements RaceControllerAbstract {
   }
 
   async update(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const allowedUpdates = ['trackId', 'startDate']
+
+    const someReceivedUpdateIsNotAllowed = Object.keys(httpRequest.body).some(
+      (update) => !allowedUpdates.includes(update)
+    )
+
+    if (someReceivedUpdateIsNotAllowed) {
+      return badRequest(new NotAllowedFieldsError())
+    }
+
     const race = await this.raceService.update(httpRequest.body)
 
     return ok(race)
