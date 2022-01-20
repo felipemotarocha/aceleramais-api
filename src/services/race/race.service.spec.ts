@@ -137,4 +137,68 @@ describe('Race Service', () => {
       startDate: 'valid_start_date'
     })
   })
+
+  it('should throws if RaceRepository create method throws', async () => {
+    const { sut, raceRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(raceRepositoryStub, 'create')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const dto = {
+      trackId: 'invalid_track_id',
+      championshipId: 'invalid_championship_id',
+      startDate: 'invalid_start_date',
+      isCompleted: true,
+      classificationId: 'invalid_classification_id'
+    }
+
+    const promise = sut.create(dto)
+
+    expect(promise).rejects.toThrow()
+  })
+
+  it('should throws if RaceRepository getOne method throws', async () => {
+    const { sut, raceRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(raceRepositoryStub, 'getOne')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.getOne('invalid_id')
+
+    expect(promise).rejects.toThrow()
+  })
+
+  it('should throws if RaceRepository getAll method throws', async () => {
+    const { sut, raceRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(raceRepositoryStub, 'getAll')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.getAll({ championshipId: 'invalid_championship_id' })
+
+    expect(promise).rejects.toThrow()
+  })
+
+  it('should throws if RaceRepository update method throws', async () => {
+    const { sut, raceRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(raceRepositoryStub, 'update')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.update('invalid_id', { startDate: 'valid_start_date' })
+
+    expect(promise).rejects.toThrow()
+  })
 })
