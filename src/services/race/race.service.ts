@@ -25,7 +25,7 @@ class RaceService implements RaceServiceAbstract {
   }
 
   async getOne(id: string): Promise<Race> {
-    throw new Error('Method not implemented.')
+    return await this.raceRepository.getOne(id)
   }
 
   async getAll(getAllRacesDto: GetAllRacesDto): Promise<Race[]> {
