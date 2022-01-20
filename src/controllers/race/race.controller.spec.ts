@@ -50,17 +50,34 @@ describe('Race Controller', () => {
   it('should return 201 on creation success', async () => {
     const { sut } = makeSut()
 
+    const dto = {
+      trackId: 'valid_track_id',
+      championshipId: 'valid_championship_id',
+      startDate: 'valid_start_date',
+      isCompleted: true,
+      classificationId: 'valid_classification_id'
+    }
+
     const result = await sut.create({
-      body: {
-        trackId: 'valid_track_id',
-        championshipId: 'valid_championship_id',
-        startDate: 'valid_start_date',
-        isCompleted: true,
-        classificationId: 'valid_classification_id'
-      }
+      body: dto
     })
 
     expect(result.status).toBe(201)
     expect(result.body).toStrictEqual(validRace)
+  })
+
+  it('should return 400 if no track id is provided', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      championshipId: 'valid_championship_id',
+      startDate: 'valid_start_date',
+      isCompleted: true,
+      classificationId: 'valid_classification_id'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.status).toBe(400)
   })
 })
