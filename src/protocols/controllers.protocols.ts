@@ -5,6 +5,6 @@ export interface HttpRequest {
 }
 
 export interface HttpResponse {
-  status: number
+  statusCode: number
   body: any
 }

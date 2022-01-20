@@ -1,15 +1,22 @@
 import { HttpResponse } from '../protocols/controllers.protocols'
 
+export const ok = (data: any): HttpResponse => {
+  return {
+    statusCode: 200,
+    body: data
+  }
+}
+
 export const created = (data: any): HttpResponse => {
   return {
-    status: 201,
+    statusCode: 201,
     body: data
   }
 }
 
 export const badRequest = (error: Error): HttpResponse => {
   return {
-    status: 400,
+    statusCode: 400,
     body: error
   }
 }
