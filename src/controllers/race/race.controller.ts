@@ -59,8 +59,10 @@ class RaceController implements RaceControllerAbstract {
     return ok(race)
   }
 
-  update(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async update(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const race = await this.raceService.update(httpRequest.body)
+
+    return ok(race)
   }
 }
 
