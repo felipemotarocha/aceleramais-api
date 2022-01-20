@@ -1,3 +1,4 @@
+import { MissingParamError } from '../../errors/controllers.errors'
 import { badRequest, created } from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
@@ -26,7 +27,7 @@ class RaceController implements RaceControllerAbstract {
 
     for (const field of requiredFields) {
       if (!httpRequest.body[field]) {
-        return badRequest(new Error('Missing param.'))
+        return badRequest(new MissingParamError(field))
       }
     }
 
