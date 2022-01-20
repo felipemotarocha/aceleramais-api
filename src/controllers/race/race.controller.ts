@@ -40,7 +40,11 @@ class RaceController implements RaceControllerAbstract {
   }
 
   async getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const race = await this.raceService.getOne(httpRequest!.params!.id)
+    if (!httpRequest?.params?.id) {
+      return badRequest(new MissingParamError('id'))
+    }
+
+    const race = await this.raceService.getOne(httpRequest.params.id)
 
     return ok(race)
   }
