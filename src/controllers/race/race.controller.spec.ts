@@ -188,6 +188,18 @@ describe('Race Controller', () => {
     expect(result.body).toStrictEqual([validRace])
   })
 
+  it('should call RaceService getAll method with correct values', async () => {
+    const { sut, raceServiceStub } = makeSut()
+
+    const getAllRacesSpy = jest.spyOn(raceServiceStub, 'getAll')
+
+    await sut.getAll({ query: { championshipId: 'valid_championship_id' } })
+
+    expect(getAllRacesSpy).toHaveBeenCalledWith({
+      championshipId: 'valid_championship_id'
+    })
+  })
+
   it('should return 400 when getting all races without providing a query', async () => {
     const { sut } = makeSut()
 
