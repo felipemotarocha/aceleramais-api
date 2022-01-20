@@ -4,6 +4,7 @@ import {
   UpdateRaceDto
 } from '../../dtos/race.dtos'
 import Race from '../../entities/race.entity'
+import { MissingParamError } from '../../errors/controllers.errors'
 import { RaceServiceAbstract } from '../../services/race/race.service'
 import RaceController, { RaceControllerAbstract } from './race.controller'
 
@@ -79,5 +80,6 @@ describe('Race Controller', () => {
     const result = await sut.create({ body: dto })
 
     expect(result.status).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('trackId'))
   })
 })
