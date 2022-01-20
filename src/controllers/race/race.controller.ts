@@ -1,4 +1,4 @@
-import { MissingParamError } from '../../errors/controllers.errors'
+import { MissingParamError, ServerError } from '../../errors/controllers.errors'
 import { badRequest, created, ok } from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
@@ -50,7 +50,11 @@ class RaceController implements RaceControllerAbstract {
   }
 
   async getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const race = await this.raceService.getAll(httpRequest.params!)
+    if (!httpRequest?.query) {
+      return badRequest(new ServerError())
+    }
+
+    const race = await this.raceService.getAll(httpRequest.query!)
 
     return ok(race)
   }
