@@ -102,14 +102,16 @@ describe('Race Service', () => {
     expect(result).toStrictEqual([validRace])
   })
 
-  it('should call RaceRepository getOne method with correct values', async () => {
+  it('should call RaceRepository getAll method with correct values', async () => {
     const { sut, raceRepositoryStub } = makeSut()
 
-    const getOneRaceSpy = jest.spyOn(raceRepositoryStub, 'getOne')
+    const getAllRacesSpy = jest.spyOn(raceRepositoryStub, 'getAll')
 
-    await sut.getOne('valid_id')
+    await sut.getAll({ championshipId: 'valid_championship_id' })
 
-    expect(getOneRaceSpy).toHaveBeenCalledWith('valid_id')
+    expect(getAllRacesSpy).toHaveBeenCalledWith({
+      championshipId: 'valid_championship_id'
+    })
   })
 
   it('should update a race', async () => {
