@@ -75,4 +75,12 @@ describe('Race Service', () => {
 
     expect(createRaceSpy).toHaveBeenCalledWith(dto)
   })
+
+  it('should get a race by id', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne('valid_id')
+
+    expect(result).toStrictEqual(validRace)
+  })
 })
