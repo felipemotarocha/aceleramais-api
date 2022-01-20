@@ -33,7 +33,7 @@ class RaceService implements RaceServiceAbstract {
   }
 
   async update(id: string, updateRaceDto: UpdateRaceDto): Promise<Race> {
-    throw new Error('Method not implemented.')
+    return await this.raceRepository.update(id, updateRaceDto)
   }
 }
 
