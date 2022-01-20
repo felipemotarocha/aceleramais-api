@@ -49,8 +49,10 @@ class RaceController implements RaceControllerAbstract {
     return ok(race)
   }
 
-  getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const race = await this.raceService.getAll(httpRequest.params!)
+
+    return ok(race)
   }
 
   update(httpRequest: HttpRequest): Promise<HttpResponse> {
