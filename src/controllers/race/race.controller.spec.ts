@@ -48,6 +48,25 @@ describe('Race Controller', () => {
     return { raceServiceStub, sut }
   }
 
+  it('should return 201 on creation success', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      trackId: 'valid_track_id',
+      championshipId: 'valid_championship_id',
+      startDate: 'valid_start_date',
+      isCompleted: true,
+      classificationId: 'valid_classification_id'
+    }
+
+    const result = await sut.create({
+      body: dto
+    })
+
+    expect(result.statusCode).toBe(201)
+    expect(result.body).toStrictEqual(validRace)
+  })
+
   it('should call RaceService create method with correct values', async () => {
     const { sut, raceServiceStub } = makeSut()
 
@@ -66,25 +85,6 @@ describe('Race Controller', () => {
     expect(createRaceSpy).toHaveBeenCalledWith(dto)
   })
 
-  it('should return 201 on creation success', async () => {
-    const { sut } = makeSut()
-
-    const dto = {
-      trackId: 'valid_track_id',
-      championshipId: 'valid_championship_id',
-      startDate: 'valid_start_date',
-      isCompleted: true,
-      classificationId: 'valid_classification_id'
-    }
-
-    const result = await sut.create({
-      body: dto
-    })
-
-    expect(result.status).toBe(201)
-    expect(result.body).toStrictEqual(validRace)
-  })
-
   it('should return 400 if no track id is provided', async () => {
     const { sut } = makeSut()
 
@@ -97,7 +97,7 @@ describe('Race Controller', () => {
 
     const result = await sut.create({ body: dto })
 
-    expect(result.status).toBe(400)
+    expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('trackId'))
   })
 
@@ -113,7 +113,7 @@ describe('Race Controller', () => {
 
     const result = await sut.create({ body: dto })
 
-    expect(result.status).toBe(400)
+    expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('championshipId'))
   })
 
@@ -129,7 +129,7 @@ describe('Race Controller', () => {
 
     const result = await sut.create({ body: dto })
 
-    expect(result.status).toBe(400)
+    expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('classificationId'))
   })
 
@@ -145,7 +145,16 @@ describe('Race Controller', () => {
 
     const result = await sut.create({ body: dto })
 
-    expect(result.status).toBe(400)
+    expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('startDate'))
+  })
+
+  it('should return 200 when getting a race by id', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({ params: { id: 'valid_id' } })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validRace)
   })
 })
