@@ -9,5 +9,5 @@ export interface RaceServiceAbstract {
   create(createRaceDto: CreateRaceDto): Promise<Race>
   getOne(id: string): Promise<Race>
   getAll(getAllRacesDto: GetAllRacesDto): Promise<Race[]>
-  update(updateRaceDto: UpdateRaceDto): Promise<Race>
+  update(id: string, updateRaceDto: UpdateRaceDto): Promise<Race>
 }

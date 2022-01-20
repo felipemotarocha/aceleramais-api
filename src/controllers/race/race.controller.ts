@@ -64,6 +64,10 @@ class RaceController implements RaceControllerAbstract {
   }
 
   async update(httpRequest: HttpRequest): Promise<HttpResponse> {
+    if (!httpRequest?.params?.id) {
+      return badRequest(new MissingParamError('id'))
+    }
+
     const allowedUpdates = ['trackId', 'startDate']
 
     const someReceivedUpdateIsNotAllowed = Object.keys(httpRequest.body).some(
@@ -74,7 +78,10 @@ class RaceController implements RaceControllerAbstract {
       return badRequest(new NotAllowedFieldsError())
     }
 
-    const race = await this.raceService.update(httpRequest.body)
+    const race = await this.raceService.update(
+      httpRequest.params.id,
+      httpRequest.body
+    )
 
     return ok(race)
   }
