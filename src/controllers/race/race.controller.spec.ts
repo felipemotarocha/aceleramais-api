@@ -208,4 +208,16 @@ describe('Race Controller', () => {
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new ServerError())
   })
+
+  it('should return 200 on update success', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({
+      body: { startDate: 'valid_start_date' },
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validRace)
+  })
 })
