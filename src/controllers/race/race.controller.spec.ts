@@ -4,7 +4,11 @@ import {
   UpdateRaceDto
 } from '../../dtos/race.dtos'
 import Race from '../../entities/race.entity'
-import { MissingParamError, ServerError } from '../../errors/controllers.errors'
+import {
+  MissingParamError,
+  NotAllowedFieldsError,
+  ServerError
+} from '../../errors/controllers.errors'
 import { RaceServiceAbstract } from '../../services/race/race.service'
 import RaceController, { RaceControllerAbstract } from './race.controller'
 
@@ -219,5 +223,17 @@ describe('Race Controller', () => {
 
     expect(result.statusCode).toBe(200)
     expect(result.body).toStrictEqual(validRace)
+  })
+
+  it('should return 400 when providing an unallowed update', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({
+      body: { id: 'valid_id' },
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new NotAllowedFieldsError())
   })
 })
