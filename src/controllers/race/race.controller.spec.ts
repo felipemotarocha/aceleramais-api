@@ -48,6 +48,24 @@ describe('Race Controller', () => {
     return { raceServiceStub, sut }
   }
 
+  it('should call RaceService create method with correct values', async () => {
+    const { sut, raceServiceStub } = makeSut()
+
+    const createRaceSpy = jest.spyOn(raceServiceStub, 'create')
+
+    const dto = {
+      trackId: 'valid_track_id',
+      championshipId: 'valid_championship_id',
+      startDate: 'valid_start_date',
+      isCompleted: true,
+      classificationId: 'valid_classification_id'
+    }
+
+    await sut.create({ body: dto })
+
+    expect(createRaceSpy).toHaveBeenCalledWith(dto)
+  })
+
   it('should return 201 on creation success', async () => {
     const { sut } = makeSut()
 
