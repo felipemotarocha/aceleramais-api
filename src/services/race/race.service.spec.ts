@@ -93,4 +93,28 @@ describe('Race Service', () => {
 
     expect(getOneRaceSpy).toHaveBeenCalledWith('valid_id')
   })
+
+  it('should update a race', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update('valid_id', {
+      startDate: 'valid_start_date'
+    })
+
+    expect(result).toStrictEqual(validRace)
+  })
+
+  it('should call RaceRepository update method with correct values', async () => {
+    const { sut, raceRepositoryStub } = makeSut()
+
+    const updateRaceSpy = jest.spyOn(raceRepositoryStub, 'update')
+
+    await sut.update('valid_id', {
+      startDate: 'valid_start_date'
+    })
+
+    expect(updateRaceSpy).toHaveBeenCalledWith('valid_id', {
+      startDate: 'valid_start_date'
+    })
+  })
 })
