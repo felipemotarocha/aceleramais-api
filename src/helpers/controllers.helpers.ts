@@ -6,3 +6,10 @@ export const created = (data: any): HttpResponse => {
     body: data
   }
 }
+
+export const badRequest = (error: Error): HttpResponse => {
+  return {
+    status: 400,
+    body: error
+  }
+}
