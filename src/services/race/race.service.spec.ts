@@ -57,4 +57,22 @@ describe('Race Service', () => {
 
     expect(result).toStrictEqual(validRace)
   })
+
+  it('should call RaceRepository create method with correct values', async () => {
+    const { sut, raceRepositoryStub } = makeSut()
+
+    const createRaceSpy = jest.spyOn(raceRepositoryStub, 'create')
+
+    const dto = {
+      trackId: 'valid_track_id',
+      championshipId: 'valid_championship_id',
+      startDate: 'valid_start_date',
+      isCompleted: true,
+      classificationId: 'valid_classification_id'
+    }
+
+    await sut.create(dto)
+
+    expect(createRaceSpy).toHaveBeenCalledWith(dto)
+  })
 })
