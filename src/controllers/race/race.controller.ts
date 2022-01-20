@@ -1,4 +1,4 @@
-import { created } from '../../helpers/controllers.helpers'
+import { badRequest, created } from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
   HttpResponse
@@ -21,6 +21,14 @@ class RaceController implements RaceControllerAbstract {
 
   async create(httpRequest: HttpRequest): Promise<HttpResponse> {
     const race = await this.raceService.create(httpRequest.body)
+
+    const requiredFields = ['trackId']
+
+    for (const field of requiredFields) {
+      if (!httpRequest.body[field]) {
+        return badRequest(new Error('Missing param.'))
+      }
+    }
 
     return created(race)
   }
