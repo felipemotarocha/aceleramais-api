@@ -225,6 +225,21 @@ describe('Race Controller', () => {
     expect(result.body).toStrictEqual(validRace)
   })
 
+  it('should call RaceService update method with correct values', async () => {
+    const { sut, raceServiceStub } = makeSut()
+
+    const updateRaceSpy = jest.spyOn(raceServiceStub, 'update')
+
+    await sut.update({
+      body: { startDate: 'valid_start_date' },
+      params: { id: 'valid_id' }
+    })
+
+    expect(updateRaceSpy).toHaveBeenCalledWith('valid_id', {
+      startDate: 'valid_start_date'
+    })
+  })
+
   it('should return 400 when not providing an id on update', async () => {
     const { sut } = makeSut()
 
