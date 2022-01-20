@@ -1,5 +1,5 @@
 import { MissingParamError } from '../../errors/controllers.errors'
-import { badRequest, created } from '../../helpers/controllers.helpers'
+import { badRequest, created, ok } from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
   HttpResponse
@@ -39,8 +39,10 @@ class RaceController implements RaceControllerAbstract {
     return created(race)
   }
 
-  getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const race = await this.raceService.getOne(httpRequest!.params!.id)
+
+    return ok(race)
   }
 
   getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
