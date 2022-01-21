@@ -132,4 +132,42 @@ describe('Mongo Race Repository', () => {
       championship: dto.championship
     })
   })
+
+  it('should update a Race', async () => {
+    const sut = makeSut()
+
+    const dto = {
+      id: new Types.ObjectId(),
+      startDate: 'new_start_date',
+      championship: new Types.ObjectId()
+    }
+
+    await RaceModel.create([{ _id: dto.id, ...dto }])
+
+    const result = await sut.update(dto.id.toHexString(), {
+      startDate: dto.startDate
+    })
+
+    expect(result.id).toBeTruthy()
+    expect(result.startDate).toBe(dto.startDate)
+  })
+
+  it('should call RaceModel findByIdAndUpdate method with correct values', async () => {
+    const sut = makeSut()
+
+    const updateCollectionSpy = jest.spyOn(RaceModel, 'findByIdAndUpdate')
+    const dto = {
+      id: new Types.ObjectId(),
+      startDate: 'new_start_date',
+      championship: new Types.ObjectId()
+    }
+
+    await RaceModel.create([{ _id: dto.id, ...dto }])
+
+    await sut.update(dto.id.toHexString(), { startDate: dto.startDate })
+
+    expect(updateCollectionSpy).toHaveBeenCalledWith(dto.id.toHexString(), {
+      startDate: dto.startDate
+    })
+  })
 })
