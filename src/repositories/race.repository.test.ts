@@ -91,4 +91,45 @@ describe('Mongo Race Repository', () => {
 
     expect(createCollectionSpy).toHaveBeenCalledWith(dto.id)
   })
+
+  it('should get all races', async () => {
+    const sut = makeSut()
+
+    const dto = {
+      id: new Types.ObjectId() as any,
+      championship: new Types.ObjectId() as any,
+      classification: new Types.ObjectId() as any,
+      startDate: 'valid_start_date'
+    }
+
+    await RaceModel.create([{ _id: dto.id, ...dto }])
+
+    const result = await sut.getAll({ championship: dto.championship })
+
+    expect(result[0].id).toBeTruthy()
+    expect(result[0].championship).toStrictEqual(dto.championship)
+    expect(result[0].classification).toStrictEqual(dto.classification)
+    expect(result[0].startDate).toBe(dto.startDate)
+  })
+
+  it('should call RaceModel find method with correct values', async () => {
+    const sut = makeSut()
+
+    const createCollectionSpy = jest.spyOn(RaceModel, 'find')
+
+    const dto = {
+      id: new Types.ObjectId() as any,
+      championship: new Types.ObjectId() as any,
+      classification: new Types.ObjectId() as any,
+      startDate: 'valid_start_date'
+    }
+
+    await RaceModel.create([{ _id: dto.id, ...dto }])
+
+    await sut.getAll({ championship: dto.championship })
+
+    expect(createCollectionSpy).toHaveBeenCalledWith({
+      championship: dto.championship
+    })
+  })
 })
