@@ -1,8 +1,8 @@
 export interface CreateRaceDto {
   trackId: string
-  championshipId: string
+  championship: string
   startDate: string
-  classificationId: string
+  classification: string
 }
 
 export interface UpdateRaceDto {
@@ -11,5 +11,5 @@ export interface UpdateRaceDto {
 }
 
 export interface GetAllRacesDto {
-  championshipId?: string
+  championship?: string
 }

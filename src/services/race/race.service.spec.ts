@@ -6,10 +6,10 @@ describe('Race Service', () => {
   const validRace: Race = {
     id: 'valid_id',
     trackId: 'valid_track_id',
-    championshipId: 'valid_championship_id',
+    championship: 'valid_championship_id',
     startDate: 'valid_start_date',
     isCompleted: true,
-    classificationId: 'valid_classification_id'
+    classification: 'valid_classification_id'
   }
 
   interface SutTypes {
@@ -47,10 +47,10 @@ describe('Race Service', () => {
 
     const dto = {
       trackId: 'valid_track_id',
-      championshipId: 'valid_championship_id',
+      championship: 'valid_championship_id',
       startDate: 'valid_start_date',
       isCompleted: true,
-      classificationId: 'valid_classification_id'
+      classification: 'valid_classification_id'
     }
 
     const result = await sut.create(dto)
@@ -65,10 +65,10 @@ describe('Race Service', () => {
 
     const dto = {
       trackId: 'valid_track_id',
-      championshipId: 'valid_championship_id',
+      championship: 'valid_championship_id',
       startDate: 'valid_start_date',
       isCompleted: true,
-      classificationId: 'valid_classification_id'
+      classification: 'valid_classification_id'
     }
 
     await sut.create(dto)
@@ -97,7 +97,7 @@ describe('Race Service', () => {
   it('should get all races', async () => {
     const { sut } = makeSut()
 
-    const result = await sut.getAll({ championshipId: 'valid_championship_id' })
+    const result = await sut.getAll({ championship: 'valid_championship_id' })
 
     expect(result).toStrictEqual([validRace])
   })
@@ -107,10 +107,10 @@ describe('Race Service', () => {
 
     const getAllRacesSpy = jest.spyOn(raceRepositoryStub, 'getAll')
 
-    await sut.getAll({ championshipId: 'valid_championship_id' })
+    await sut.getAll({ championship: 'valid_championship_id' })
 
     expect(getAllRacesSpy).toHaveBeenCalledWith({
-      championshipId: 'valid_championship_id'
+      championship: 'valid_championship_id'
     })
   })
 
@@ -149,10 +149,10 @@ describe('Race Service', () => {
 
     const dto = {
       trackId: 'invalid_track_id',
-      championshipId: 'invalid_championship_id',
+      championship: 'invalid_championship_id',
       startDate: 'invalid_start_date',
       isCompleted: true,
-      classificationId: 'invalid_classification_id'
+      classification: 'invalid_classification_id'
     }
 
     const promise = sut.create(dto)
@@ -183,7 +183,7 @@ describe('Race Service', () => {
         new Promise((_resolve, reject) => reject(new Error()))
       )
 
-    const promise = sut.getAll({ championshipId: 'invalid_championship_id' })
+    const promise = sut.getAll({ championship: 'invalid_championship_id' })
 
     expect(promise).rejects.toThrow()
   })

@@ -29,8 +29,8 @@ class RaceController implements RaceControllerAbstract {
 
     const requiredFields = [
       'trackId',
-      'championshipId',
-      'classificationId',
+      'championship',
+      'classification',
       'startDate'
     ]
 

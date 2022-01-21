@@ -1,10 +1,10 @@
 interface Race {
   id: string
   trackId: string
-  championshipId: string
+  championship: string
   startDate: string
   isCompleted: boolean
-  classificationId: string
+  classification: string
 }
 
 export default Race

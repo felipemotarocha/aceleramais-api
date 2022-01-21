@@ -21,10 +21,10 @@ describe('Race Controller', () => {
   const validRace: Race = {
     id: 'valid_id',
     trackId: 'valid_track_id',
-    championshipId: 'valid_championship_id',
+    championship: 'valid_championship_id',
     startDate: 'valid_start_date',
     isCompleted: true,
-    classificationId: 'valid_classification_id'
+    classification: 'valid_classification_id'
   }
 
   const makeSut = (): SutTypes => {
@@ -57,10 +57,10 @@ describe('Race Controller', () => {
 
     const dto = {
       trackId: 'valid_track_id',
-      championshipId: 'valid_championship_id',
+      championship: 'valid_championship_id',
       startDate: 'valid_start_date',
       isCompleted: true,
-      classificationId: 'valid_classification_id'
+      classification: 'valid_classification_id'
     }
 
     const result = await sut.create({
@@ -78,10 +78,10 @@ describe('Race Controller', () => {
 
     const dto = {
       trackId: 'valid_track_id',
-      championshipId: 'valid_championship_id',
+      championship: 'valid_championship_id',
       startDate: 'valid_start_date',
       isCompleted: true,
-      classificationId: 'valid_classification_id'
+      classification: 'valid_classification_id'
     }
 
     await sut.create({ body: dto })
@@ -93,10 +93,10 @@ describe('Race Controller', () => {
     const { sut } = makeSut()
 
     const dto = {
-      championshipId: 'valid_championship_id',
+      championship: 'valid_championship_id',
       startDate: 'valid_start_date',
       isCompleted: true,
-      classificationId: 'valid_classification_id'
+      classification: 'valid_classification_id'
     }
 
     const result = await sut.create({ body: dto })
@@ -112,13 +112,13 @@ describe('Race Controller', () => {
       trackId: 'valid_track_id',
       startDate: 'valid_start_date',
       isCompleted: true,
-      classificationId: 'valid_classification_id'
+      classification: 'valid_classification_id'
     }
 
     const result = await sut.create({ body: dto })
 
     expect(result.statusCode).toBe(400)
-    expect(result.body).toStrictEqual(new MissingParamError('championshipId'))
+    expect(result.body).toStrictEqual(new MissingParamError('championship'))
   })
 
   it('should return 400 if no classification id is provided', async () => {
@@ -126,7 +126,7 @@ describe('Race Controller', () => {
 
     const dto = {
       trackId: 'valid_track_id',
-      championshipId: 'valid_championship_id',
+      championship: 'valid_championship_id',
       startDate: 'valid_start_date',
       isCompleted: true
     }
@@ -134,7 +134,7 @@ describe('Race Controller', () => {
     const result = await sut.create({ body: dto })
 
     expect(result.statusCode).toBe(400)
-    expect(result.body).toStrictEqual(new MissingParamError('classificationId'))
+    expect(result.body).toStrictEqual(new MissingParamError('classification'))
   })
 
   it('should return 400 if no start date is provided', async () => {
@@ -142,8 +142,8 @@ describe('Race Controller', () => {
 
     const dto = {
       trackId: 'valid_track_id',
-      championshipId: 'valid_championship_id',
-      classificationId: 'valid_classification_id',
+      championship: 'valid_championship_id',
+      classification: 'valid_classification_id',
       isCompleted: true
     }
 
@@ -185,7 +185,7 @@ describe('Race Controller', () => {
     const { sut } = makeSut()
 
     const result = await sut.getAll({
-      query: { championshipId: 'valid_championship_id' }
+      query: { championship: 'valid_championship_id' }
     })
 
     expect(result.statusCode).toBe(200)
@@ -197,10 +197,10 @@ describe('Race Controller', () => {
 
     const getAllRacesSpy = jest.spyOn(raceServiceStub, 'getAll')
 
-    await sut.getAll({ query: { championshipId: 'valid_championship_id' } })
+    await sut.getAll({ query: { championship: 'valid_championship_id' } })
 
     expect(getAllRacesSpy).toHaveBeenCalledWith({
-      championshipId: 'valid_championship_id'
+      championship: 'valid_championship_id'
     })
   })
 
