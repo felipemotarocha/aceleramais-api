@@ -32,11 +32,13 @@ class MongoRaceRepository implements RaceRepositoryAbstract {
   async getAll(getAllRacesDto: GetAllRacesDto): Promise<Race[]> {
     const races = await this.RaceModel.find(getAllRacesDto || {})
 
-    return races
+    return races.map((race) => MongooseHelper.map<Race>(race.toJSON()))
   }
 
-  update(id: string, updateRaceDto: UpdateRaceDto): Promise<Race> {
-    throw new Error('Method not implemented.')
+  async update(id: string, updateRaceDto: UpdateRaceDto): Promise<Race> {
+    const race = await this.RaceModel.findByIdAndUpdate(id, updateRaceDto)
+
+    return MongooseHelper.map<Race>(race.toJSON())
   }
 }
 
