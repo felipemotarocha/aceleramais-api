@@ -41,8 +41,19 @@ implements RaceClassificationRepositoryAbstract {
     }
   }
 
-  getOne(race: string): Promise<RaceClassfication> {
-    throw new Error('Method not implemented.')
+  async getOne(race: string): Promise<RaceClassfication> {
+    const raceClassification = await this.RaceClassificationModel.findOne({
+      race
+    })
+
+    const classification = raceClassification.classification.map((item) =>
+      item.toJSON()
+    )
+
+    return {
+      ...MongooseHelper.map<RaceClassfication>(raceClassification.toJSON()),
+      classification
+    }
   }
 
   update(
