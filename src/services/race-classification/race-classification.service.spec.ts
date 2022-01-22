@@ -1,4 +1,7 @@
-import { CreateRaceClassificationDto } from '../../dtos/race-classification.dtos'
+import {
+  CreateRaceClassificationDto,
+  UpdateRaceClassificationDto
+} from '../../dtos/race-classification.dtos'
 import RaceClassfication from '../../entities/race-classification.entity'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
 import RaceClassificationService, {
@@ -66,6 +69,27 @@ describe('Race Classification Service', () => {
     const sut = makeSut()
 
     const result = await sut.getOne('valid_id')
+
+    expect(result).toStrictEqual(validRaceClassification)
+  })
+
+  it('should update a Race Classification', async () => {
+    const sut = makeSut()
+
+    const dto: UpdateRaceClassificationDto = {
+      classification: [
+        {
+          position: 1,
+          user: 'valid_id',
+          team: 'valid_id',
+          isRegistered: true,
+          hasFastestLap: true,
+          hasPolePosition: true
+        }
+      ]
+    }
+
+    const result = await sut.update('valid_id', dto)
 
     expect(result).toStrictEqual(validRaceClassification)
   })
