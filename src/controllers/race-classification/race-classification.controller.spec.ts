@@ -1,4 +1,5 @@
 import RaceClassification from '../../entities/race-classification.entity'
+import { ServerError } from '../../errors/controllers.errors'
 
 import { RaceClassificationServiceAbstract } from '../../services/race-classification/race-classification.service'
 import RaceClassificationController, {
@@ -61,22 +62,22 @@ describe('Race Classification Controller', () => {
     expect(result.body).toStrictEqual(validRaceClassification)
   })
 
-  // it('should return 400 if RaceClassificationService getOne method throws', async () => {
-  //   const { sut, raceClassificationServiceStub } = makeSut()
+  it('should return 400 if RaceClassificationService getOne method throws', async () => {
+    const { sut, raceClassificationServiceStub } = makeSut()
 
-  //   jest
-  //     .spyOn(raceClassificationServiceStub, 'getOne')
-  //     .mockReturnValueOnce(
-  //       new Promise((_resolve, reject) => reject(new Error()))
-  //     )
+    jest
+      .spyOn(raceClassificationServiceStub, 'getOne')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
 
-  //   const result = await sut.getOne({
-  //     query: {
-  //       race: validRaceClassification.race
-  //     }
-  //   })
+    const result = await sut.getOne({
+      query: {
+        race: validRaceClassification.race
+      }
+    })
 
-  //   expect(result.statusCode).toBe(400)
-  //   expect(result.body).toStrictEqual(new ServerError())
-  // })
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
 })
