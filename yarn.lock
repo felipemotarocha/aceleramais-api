@@ -3066,6 +3066,11 @@ mongodb@^3.6.9:
   optionalDependencies:
     saslprep "^1.0.0"
 
+mongoose-autopopulate@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/mongoose-autopopulate/-/mongoose-autopopulate-0.16.0.tgz#d3fa11b8ffc2ffc8b107debcdeed2e7bf2947c2b"
+  integrity sha512-OSRETKRTk6B3cF7cSLYPE+iUs/DTIY5+07gVYNzCdTRu4oB3uMahc0qjZYepZqZJKm+nv8SihtSHRM5gScn+fA==
+
 mongoose@^6.1.7:
   version "6.1.7"
   resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-6.1.7.tgz#fc1dfb792e0d2df52aa86064eb1a620d57b1926e"

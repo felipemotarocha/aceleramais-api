@@ -1,6 +1,8 @@
+import Track from './track.entity'
+
 interface Race {
   id: string
-  trackId: string
+  track: Track
   championship: string
   startDate: string
   isCompleted: boolean

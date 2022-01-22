@@ -6,6 +6,12 @@ const raceSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true
   },
+  track: {
+    ref: 'Track',
+    type: Schema.Types.ObjectId,
+    required: true,
+    autopopulate: true
+  },
   startDate: {
     type: String,
     required: true
@@ -19,6 +25,8 @@ const raceSchema = new Schema({
     ref: 'RaceClassification'
   }
 })
+
+raceSchema.plugin(require('mongoose-autopopulate'))
 
 const RaceModel = model('Race', raceSchema)
 
