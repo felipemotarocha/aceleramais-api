@@ -12,6 +12,7 @@ export interface RaceClassificationRepositoryAbstract {
   ): Promise<RaceClassfication>
   getOne(race: string): Promise<RaceClassfication>
   update(
+    id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
   ): Promise<RaceClassfication>
 }
@@ -56,9 +57,24 @@ implements RaceClassificationRepositoryAbstract {
     }
   }
 
-  update(
+  async update(
+    id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
   ): Promise<RaceClassfication> {
-    throw new Error('Method not implemented.')
+    const raceClassification = await this.RaceClassificationModel.findById(id)
+
+    raceClassification.classification =
+      updateRaceClassificationDto.classification
+
+    await raceClassification.save()
+
+    const classification = raceClassification.classification.map((item) =>
+      item.toJSON()
+    )
+
+    return {
+      ...MongooseHelper.map<RaceClassfication>(raceClassification.toJSON()),
+      classification
+    }
   }
 }

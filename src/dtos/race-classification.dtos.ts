@@ -12,7 +12,6 @@ export interface CreateRaceClassificationDto {
 }
 
 export interface UpdateRaceClassificationDto {
-  race: string
   classification: {
     position: number
     user?: string

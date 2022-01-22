@@ -1,4 +1,5 @@
 interface RaceClassfication {
+  id: string
   race: string
   classification: {
     position: number
