@@ -1,4 +1,5 @@
-import { ok } from '../../helpers/controllers.helpers'
+import { ServerError } from '../../errors/controllers.errors'
+import { badRequest, ok } from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
   HttpResponse
@@ -19,11 +20,15 @@ implements RaceClassificationControllerAbstract {
   }
 
   async getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const race = await this.raceClassificationService.getOne(
-      httpRequest.query!.race!
-    )
+    try {
+      const race = await this.raceClassificationService.getOne(
+        httpRequest.query!.race!
+      )
 
-    return ok(race)
+      return ok(race)
+    } catch (_e) {
+      return badRequest(new ServerError())
+    }
   }
 
   update(httpRequest: HttpRequest): Promise<HttpResponse> {
