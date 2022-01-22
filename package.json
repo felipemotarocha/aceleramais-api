@@ -4,8 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "jest --passWithNoTests --runInBand",
-    "test:watch": "jest --passWithNoTests --runInBand --watch",
+    "test": "jest --passWithNoTests --silent --noStackTrace --runInBand",
+    "test:watch": "yarn test --watch",
     "test:staged": "yarn test",
     "test:ci": "yarn test --coverage",
     "husky:prepare": "husky install"

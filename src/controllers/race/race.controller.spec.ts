@@ -312,7 +312,7 @@ describe('Race Controller', () => {
         new Promise((_resolve, reject) => reject(new Error()))
       )
 
-    const result = await sut.getAll({})
+    const result = await sut.getAll({ query: { championshipId: 'valid_id' } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new ServerError())
