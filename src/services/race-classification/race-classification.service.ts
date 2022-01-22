@@ -37,11 +37,14 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
     return await this.raceClassificationRepository.getOne(race)
   }
 
-  update(
+  async update(
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
   ): Promise<RaceClassfication> {
-    throw new Error('Method not implemented.')
+    return await this.raceClassificationRepository.update(
+      id,
+      updateRaceClassificationDto
+    )
   }
 }
 
