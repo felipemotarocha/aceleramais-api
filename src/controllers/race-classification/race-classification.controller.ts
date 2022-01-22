@@ -1,4 +1,8 @@
-import { MissingParamError, ServerError } from '../../errors/controllers.errors'
+import {
+  MissingParamError,
+  NotAllowedFieldsError,
+  ServerError
+} from '../../errors/controllers.errors'
 import { badRequest, ok } from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
@@ -39,6 +43,16 @@ implements RaceClassificationControllerAbstract {
     try {
       if (!httpRequest.query?.race) {
         return badRequest(new MissingParamError('race'))
+      }
+
+      const allowedUpdates = ['classification']
+
+      const someReceivedUpdateIsNotAllowed = Object.keys(httpRequest.body).some(
+        (update) => !allowedUpdates.includes(update)
+      )
+
+      if (someReceivedUpdateIsNotAllowed) {
+        return badRequest(new NotAllowedFieldsError())
       }
 
       const raceClassification = await this.raceClassificationService.update(
