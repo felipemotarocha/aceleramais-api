@@ -1,4 +1,4 @@
-import { ServerError } from '../../errors/controllers.errors'
+import { MissingParamError, ServerError } from '../../errors/controllers.errors'
 import { badRequest, ok } from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
@@ -21,6 +21,10 @@ implements RaceClassificationControllerAbstract {
 
   async getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
+      if (!httpRequest.query?.race) {
+        return badRequest(new MissingParamError('race'))
+      }
+
       const race = await this.raceClassificationService.getOne(
         httpRequest.query!.race!
       )
@@ -33,6 +37,10 @@ implements RaceClassificationControllerAbstract {
 
   async update(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
+      if (!httpRequest.query?.race) {
+        return badRequest(new MissingParamError('race'))
+      }
+
       const raceClassification = await this.raceClassificationService.update(
         httpRequest.query!.id,
         httpRequest.body
