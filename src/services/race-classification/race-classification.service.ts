@@ -2,18 +2,18 @@ import {
   CreateRaceClassificationDto,
   UpdateRaceClassificationDto
 } from '../../dtos/race-classification.dtos'
-import RaceClassfication from '../../entities/race-classification.entity'
+import RaceClassification from '../../entities/race-classification.entity'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
 
 export interface RaceClassificationServiceAbstract {
   create(
     createRaceClassificationDto: CreateRaceClassificationDto
-  ): Promise<RaceClassfication>
-  getOne(race: string): Promise<RaceClassfication>
+  ): Promise<RaceClassification>
+  getOne(race: string): Promise<RaceClassification>
   update(
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
-  ): Promise<RaceClassfication>
+  ): Promise<RaceClassification>
 }
 
 class RaceClassificationService implements RaceClassificationServiceAbstract {
@@ -27,20 +27,20 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
 
   async create(
     createRaceClassificationDto: CreateRaceClassificationDto
-  ): Promise<RaceClassfication> {
+  ): Promise<RaceClassification> {
     return await this.raceClassificationRepository.create(
       createRaceClassificationDto
     )
   }
 
-  async getOne(race: string): Promise<RaceClassfication> {
+  async getOne(race: string): Promise<RaceClassification> {
     return await this.raceClassificationRepository.getOne(race)
   }
 
   async update(
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
-  ): Promise<RaceClassfication> {
+  ): Promise<RaceClassification> {
     return await this.raceClassificationRepository.update(
       id,
       updateRaceClassificationDto

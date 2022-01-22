@@ -2,19 +2,19 @@ import {
   CreateRaceClassificationDto,
   UpdateRaceClassificationDto
 } from '../../dtos/race-classification.dtos'
-import RaceClassfication from '../../entities/race-classification.entity'
+import RaceClassification from '../../entities/race-classification.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import _RaceClassificationModel from '../../models/race-classification.model'
 
 export interface RaceClassificationRepositoryAbstract {
   create(
     createRaceClassificationDto: CreateRaceClassificationDto
-  ): Promise<RaceClassfication>
-  getOne(race: string): Promise<RaceClassfication>
+  ): Promise<RaceClassification>
+  getOne(race: string): Promise<RaceClassification>
   update(
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
-  ): Promise<RaceClassfication>
+  ): Promise<RaceClassification>
 }
 
 export class MongoRaceClassificationRepository
@@ -27,7 +27,7 @@ implements RaceClassificationRepositoryAbstract {
 
   async create(
     createRaceClassificationDto: CreateRaceClassificationDto
-  ): Promise<RaceClassfication> {
+  ): Promise<RaceClassification> {
     const raceClassification = await this.RaceClassificationModel.create(
       createRaceClassificationDto
     )
@@ -37,12 +37,12 @@ implements RaceClassificationRepositoryAbstract {
     )
 
     return {
-      ...MongooseHelper.map<RaceClassfication>(raceClassification.toJSON()),
+      ...MongooseHelper.map<RaceClassification>(raceClassification.toJSON()),
       classification
     }
   }
 
-  async getOne(race: string): Promise<RaceClassfication> {
+  async getOne(race: string): Promise<RaceClassification> {
     const raceClassification = await this.RaceClassificationModel.findOne({
       race
     })
@@ -52,7 +52,7 @@ implements RaceClassificationRepositoryAbstract {
     )
 
     return {
-      ...MongooseHelper.map<RaceClassfication>(raceClassification.toJSON()),
+      ...MongooseHelper.map<RaceClassification>(raceClassification.toJSON()),
       classification
     }
   }
@@ -60,7 +60,7 @@ implements RaceClassificationRepositoryAbstract {
   async update(
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
-  ): Promise<RaceClassfication> {
+  ): Promise<RaceClassification> {
     const raceClassification = await this.RaceClassificationModel.findById(id)
 
     raceClassification.classification =
@@ -73,7 +73,7 @@ implements RaceClassificationRepositoryAbstract {
     )
 
     return {
-      ...MongooseHelper.map<RaceClassfication>(raceClassification.toJSON()),
+      ...MongooseHelper.map<RaceClassification>(raceClassification.toJSON()),
       classification
     }
   }

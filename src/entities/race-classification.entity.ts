@@ -1,4 +1,4 @@
-interface RaceClassfication {
+interface RaceClassification {
   id: string
   race: string
   classification: {
@@ -12,4 +12,4 @@ interface RaceClassfication {
   }[]
 }
 
-export default RaceClassfication
+export default RaceClassification
