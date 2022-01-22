@@ -1,6 +1,10 @@
 import { UpdateRaceClassificationDto } from '../../dtos/race-classification.dtos'
 import RaceClassification from '../../entities/race-classification.entity'
-import { MissingParamError, ServerError } from '../../errors/controllers.errors'
+import {
+  MissingParamError,
+  NotAllowedFieldsError,
+  ServerError
+} from '../../errors/controllers.errors'
 
 import { RaceClassificationServiceAbstract } from '../../services/race-classification/race-classification.service'
 import RaceClassificationController, {
@@ -145,6 +149,18 @@ describe('Race Classification Controller', () => {
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('race'))
+  })
+
+  it('should return 400 when providing an unallowed update', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({
+      body: { race: 'valid_id' },
+      query: { race: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new NotAllowedFieldsError())
   })
 
   it('should return 400 if RaceClassificationService update method throws', async () => {
