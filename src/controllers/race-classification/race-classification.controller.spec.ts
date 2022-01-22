@@ -1,6 +1,6 @@
 import { UpdateRaceClassificationDto } from '../../dtos/race-classification.dtos'
 import RaceClassification from '../../entities/race-classification.entity'
-import { ServerError } from '../../errors/controllers.errors'
+import { MissingParamError, ServerError } from '../../errors/controllers.errors'
 
 import { RaceClassificationServiceAbstract } from '../../services/race-classification/race-classification.service'
 import RaceClassificationController, {
@@ -50,7 +50,7 @@ describe('Race Classification Controller', () => {
     return { sut, raceClassificationServiceStub }
   }
 
-  it('should return 200 on getting a Race Classification by Race ID', async () => {
+  it('should return 200 on getting a Race Classification by Race', async () => {
     const { sut } = makeSut()
 
     const result = await sut.getOne({
@@ -61,6 +61,19 @@ describe('Race Classification Controller', () => {
 
     expect(result.statusCode).toBe(200)
     expect(result.body).toStrictEqual(validRaceClassification)
+  })
+
+  it('should return 400 on getting a Race Classification without providing a Race', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({
+      query: {
+        race: null as any
+      }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('race'))
   })
 
   it('should return 400 if RaceClassificationService getOne method throws', async () => {
@@ -99,12 +112,39 @@ describe('Race Classification Controller', () => {
     }
 
     const result = await sut.update({
-      query: { id: 'valid_id' },
+      query: { race: 'valid_id' },
       body: dto
     })
 
     expect(result.statusCode).toBe(200)
     expect(result.body).toStrictEqual(validRaceClassification)
+  })
+
+  it('should return 400 on updating a Race Classification without providing a Race', async () => {
+    const { sut } = makeSut()
+
+    const dto: UpdateRaceClassificationDto = {
+      classification: [
+        {
+          position: 1,
+          user: 'valid_id',
+          team: 'valid_id',
+          isRegistered: true,
+          hasFastestLap: true,
+          hasPolePosition: true
+        }
+      ]
+    }
+
+    const result = await sut.update({
+      query: {
+        race: null as any
+      },
+      body: dto
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('race'))
   })
 
   it('should return 400 if RaceClassificationService update method throws', async () => {
@@ -130,7 +170,7 @@ describe('Race Classification Controller', () => {
     }
 
     const result = await sut.update({
-      query: { id: 'valid_id' },
+      query: { race: 'valid_id' },
       body: dto
     })
     expect(result.statusCode).toBe(400)
