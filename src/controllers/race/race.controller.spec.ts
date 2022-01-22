@@ -260,4 +260,82 @@ describe('Race Controller', () => {
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new NotAllowedFieldsError())
   })
+
+  it('should return 400 if RaceService create method throws', async () => {
+    const { sut, raceServiceStub } = makeSut()
+
+    jest
+      .spyOn(raceServiceStub, 'create')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const dto = {
+      track: 'valid_track_id',
+      championship: 'valid_championship_id',
+      startDate: 'valid_start_date',
+      isCompleted: true,
+      classification: 'valid_classification_id'
+    }
+
+    const result = await sut.create({
+      body: dto
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
+
+  it('should return 400 if RaceService getOne method throws', async () => {
+    const { sut, raceServiceStub } = makeSut()
+
+    jest
+      .spyOn(raceServiceStub, 'getOne')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.getOne({
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
+
+  it('should return 400 if RaceService getAll method throws', async () => {
+    const { sut, raceServiceStub } = makeSut()
+
+    jest
+      .spyOn(raceServiceStub, 'getAll')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.getAll({})
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
+  it('should return 400 if RaceService update method throws', async () => {
+    const { sut, raceServiceStub } = makeSut()
+
+    jest
+      .spyOn(raceServiceStub, 'update')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const dto = {
+      startDate: 'valid_start_date'
+    }
+
+    const result = await sut.update({
+      body: dto,
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
 })
