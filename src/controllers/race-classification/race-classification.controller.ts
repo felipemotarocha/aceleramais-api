@@ -32,12 +32,16 @@ implements RaceClassificationControllerAbstract {
   }
 
   async update(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const raceClassification = await this.raceClassificationService.update(
-      httpRequest.query!.id,
-      httpRequest.body
-    )
+    try {
+      const raceClassification = await this.raceClassificationService.update(
+        httpRequest.query!.id,
+        httpRequest.body
+      )
 
-    return ok(raceClassification)
+      return ok(raceClassification)
+    } catch (_) {
+      return badRequest(new ServerError())
+    }
   }
 }
 
