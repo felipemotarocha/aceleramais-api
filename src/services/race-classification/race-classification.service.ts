@@ -33,8 +33,8 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
     )
   }
 
-  getOne(race: string): Promise<RaceClassfication> {
-    throw new Error('Method not implemented.')
+  async getOne(race: string): Promise<RaceClassfication> {
+    return await this.raceClassificationRepository.getOne(race)
   }
 
   update(
