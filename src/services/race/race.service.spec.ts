@@ -1,5 +1,5 @@
 import Race from '../../entities/race.entity'
-import { RaceRepositoryAbstract } from '../../repositories/race.repository'
+import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
 import RaceService, { RaceServiceAbstract } from './race.service'
 
 describe('Race Service', () => {

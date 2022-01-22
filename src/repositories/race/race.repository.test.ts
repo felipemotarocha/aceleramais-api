@@ -1,9 +1,9 @@
 import { Types } from 'mongoose'
-import { env } from '../config/env.config'
-import { CreateRaceDto } from '../dtos/race.dtos'
-import MongooseHelper from '../helpers/mongoose.helpers'
-import RaceModel from '../models/race.model'
-import TrackModel from '../models/track.model'
+import { env } from '../../config/env.config'
+import { CreateRaceDto } from '../../dtos/race.dtos'
+import MongooseHelper from '../../helpers/mongoose.helpers'
+import RaceModel from '../../models/race.model'
+import TrackModel from '../../models/track.model'
 import MongoRaceRepository from './race.repository'
 
 describe('Mongo Race Repository', () => {

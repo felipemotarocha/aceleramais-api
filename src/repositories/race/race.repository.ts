@@ -1,7 +1,11 @@
-import { CreateRaceDto, GetAllRacesDto, UpdateRaceDto } from '../dtos/race.dtos'
-import Race from '../entities/race.entity'
-import MongooseHelper from '../helpers/mongoose.helpers'
-import _RaceModel from '../models/race.model'
+import {
+  CreateRaceDto,
+  GetAllRacesDto,
+  UpdateRaceDto
+} from '../../dtos/race.dtos'
+import Race from '../../entities/race.entity'
+import MongooseHelper from '../../helpers/mongoose.helpers'
+import _RaceModel from '../../models/race.model'
 
 export interface RaceRepositoryAbstract {
   create(createRaceDto: CreateRaceDto): Promise<Race>

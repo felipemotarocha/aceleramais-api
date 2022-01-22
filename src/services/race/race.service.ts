@@ -4,7 +4,7 @@ import {
   UpdateRaceDto
 } from '../../dtos/race.dtos'
 import Race from '../../entities/race.entity'
-import { RaceRepositoryAbstract } from '../../repositories/race.repository'
+import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
 
 export interface RaceServiceAbstract {
   create(createRaceDto: CreateRaceDto): Promise<Race>
