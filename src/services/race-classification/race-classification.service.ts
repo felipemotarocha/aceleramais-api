@@ -1,0 +1,48 @@
+import {
+  CreateRaceClassificationDto,
+  UpdateRaceClassificationDto
+} from '../../dtos/race-classification.dtos'
+import RaceClassfication from '../../entities/race-classification.entity'
+import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
+
+export interface RaceClassificationServiceAbstract {
+  create(
+    createRaceClassificationDto: CreateRaceClassificationDto
+  ): Promise<RaceClassfication>
+  getOne(race: string): Promise<RaceClassfication>
+  update(
+    id: string,
+    updateRaceClassificationDto: UpdateRaceClassificationDto
+  ): Promise<RaceClassfication>
+}
+
+class RaceClassificationService implements RaceClassificationServiceAbstract {
+  private readonly raceClassificationRepository: RaceClassificationRepositoryAbstract
+
+  constructor(
+    raceClassificationRepository: RaceClassificationRepositoryAbstract
+  ) {
+    this.raceClassificationRepository = raceClassificationRepository
+  }
+
+  async create(
+    createRaceClassificationDto: CreateRaceClassificationDto
+  ): Promise<RaceClassfication> {
+    return await this.raceClassificationRepository.create(
+      createRaceClassificationDto
+    )
+  }
+
+  getOne(race: string): Promise<RaceClassfication> {
+    throw new Error('Method not implemented.')
+  }
+
+  update(
+    id: string,
+    updateRaceClassificationDto: UpdateRaceClassificationDto
+  ): Promise<RaceClassfication> {
+    throw new Error('Method not implemented.')
+  }
+}
+
+export default RaceClassificationService
