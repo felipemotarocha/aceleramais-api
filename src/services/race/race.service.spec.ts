@@ -5,7 +5,7 @@ import RaceService, { RaceServiceAbstract } from './race.service'
 describe('Race Service', () => {
   const validRace: Race = {
     id: 'valid_id',
-    trackId: 'valid_track_id',
+    track: 'valid_track_id',
     championship: 'valid_championship_id',
     startDate: 'valid_start_date',
     isCompleted: true,
@@ -46,7 +46,7 @@ describe('Race Service', () => {
     const { sut } = makeSut()
 
     const dto = {
-      trackId: 'valid_track_id',
+      track: 'valid_track_id',
       championship: 'valid_championship_id',
       startDate: 'valid_start_date',
       isCompleted: true,
@@ -64,7 +64,7 @@ describe('Race Service', () => {
     const createRaceSpy = jest.spyOn(raceRepositoryStub, 'create')
 
     const dto = {
-      trackId: 'valid_track_id',
+      track: 'valid_track_id',
       championship: 'valid_championship_id',
       startDate: 'valid_start_date',
       isCompleted: true,
@@ -148,7 +148,7 @@ describe('Race Service', () => {
       )
 
     const dto = {
-      trackId: 'invalid_track_id',
+      track: 'invalid_track_id',
       championship: 'invalid_championship_id',
       startDate: 'invalid_start_date',
       isCompleted: true,

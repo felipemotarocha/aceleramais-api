@@ -3,15 +3,29 @@ import { env } from '../config/env.config'
 import { CreateRaceDto } from '../dtos/race.dtos'
 import MongooseHelper from '../helpers/mongoose.helpers'
 import RaceModel from '../models/race.model'
+import TrackModel from '../models/track.model'
 import MongoRaceRepository from './race.repository'
 
 describe('Mongo Race Repository', () => {
+  const validTrack = {
+    id: new Types.ObjectId(),
+    countryCode: 'BR',
+    name: 'Autódromo José Carlos Pace'
+  }
+
   beforeAll(async () => {
     await MongooseHelper.connect(env.mongodbUrl)
   })
 
   beforeEach(async () => {
     await RaceModel.deleteMany({})
+    await TrackModel.deleteMany({})
+
+    await TrackModel.create({
+      _id: validTrack.id,
+      name: validTrack.name,
+      countryCode: validTrack.countryCode
+    })
   })
 
   afterAll(async () => {
@@ -26,6 +40,7 @@ describe('Mongo Race Repository', () => {
     const dto: CreateRaceDto = {
       championship: new Types.ObjectId() as any,
       classification: new Types.ObjectId() as any,
+      track: validTrack.id as any,
       startDate: 'valid_start_date'
     }
 
@@ -35,6 +50,7 @@ describe('Mongo Race Repository', () => {
     expect(result.championship).toStrictEqual(dto.championship)
     expect(result.classification).toStrictEqual(dto.classification)
     expect(result.startDate).toBe(dto.startDate)
+    expect(result.track).toBeTruthy()
   })
 
   it('should call RaceModel create method with correct values', async () => {
@@ -45,6 +61,7 @@ describe('Mongo Race Repository', () => {
     const dto: CreateRaceDto = {
       championship: new Types.ObjectId() as any,
       classification: new Types.ObjectId() as any,
+      track: validTrack.id as any,
       startDate: 'valid_start_date'
     }
 
@@ -60,6 +77,7 @@ describe('Mongo Race Repository', () => {
       id: new Types.ObjectId() as any,
       championship: new Types.ObjectId() as any,
       classification: new Types.ObjectId() as any,
+      track: validTrack.id as any,
       startDate: 'valid_start_date'
     }
 
@@ -71,6 +89,7 @@ describe('Mongo Race Repository', () => {
     expect(result.championship).toStrictEqual(dto.championship)
     expect(result.classification).toStrictEqual(dto.classification)
     expect(result.startDate).toBe(dto.startDate)
+    expect(result.track).toBeTruthy()
   })
 
   it('should call RaceModel findById method with correct values', async () => {
@@ -82,6 +101,7 @@ describe('Mongo Race Repository', () => {
       id: new Types.ObjectId() as any,
       championship: new Types.ObjectId() as any,
       classification: new Types.ObjectId() as any,
+      track: new Types.ObjectId() as any,
       startDate: 'valid_start_date'
     }
 
@@ -99,6 +119,7 @@ describe('Mongo Race Repository', () => {
       id: new Types.ObjectId() as any,
       championship: new Types.ObjectId() as any,
       classification: new Types.ObjectId() as any,
+      track: validTrack.id,
       startDate: 'valid_start_date'
     }
 
@@ -110,6 +131,7 @@ describe('Mongo Race Repository', () => {
     expect(result[0].championship).toStrictEqual(dto.championship)
     expect(result[0].classification).toStrictEqual(dto.classification)
     expect(result[0].startDate).toBe(dto.startDate)
+    expect(result[0].track).toBeTruthy()
   })
 
   it('should call RaceModel find method with correct values', async () => {
@@ -121,6 +143,7 @@ describe('Mongo Race Repository', () => {
       id: new Types.ObjectId() as any,
       championship: new Types.ObjectId() as any,
       classification: new Types.ObjectId() as any,
+      track: new Types.ObjectId() as any,
       startDate: 'valid_start_date'
     }
 
@@ -138,8 +161,10 @@ describe('Mongo Race Repository', () => {
 
     const dto = {
       id: new Types.ObjectId(),
-      startDate: 'new_start_date',
-      championship: new Types.ObjectId()
+      championship: new Types.ObjectId() as any,
+      classification: new Types.ObjectId() as any,
+      track: new Types.ObjectId() as any,
+      startDate: 'valid_start_date'
     }
 
     await RaceModel.create([{ _id: dto.id, ...dto }])
@@ -158,8 +183,10 @@ describe('Mongo Race Repository', () => {
     const updateCollectionSpy = jest.spyOn(RaceModel, 'findByIdAndUpdate')
     const dto = {
       id: new Types.ObjectId(),
-      startDate: 'new_start_date',
-      championship: new Types.ObjectId()
+      championship: new Types.ObjectId() as any,
+      classification: new Types.ObjectId() as any,
+      track: new Types.ObjectId() as any,
+      startDate: 'valid_start_date'
     }
 
     await RaceModel.create([{ _id: dto.id, ...dto }])

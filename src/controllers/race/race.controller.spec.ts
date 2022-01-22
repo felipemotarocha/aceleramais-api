@@ -20,7 +20,7 @@ describe('Race Controller', () => {
 
   const validRace: Race = {
     id: 'valid_id',
-    trackId: 'valid_track_id',
+    track: 'valid_track_id',
     championship: 'valid_championship_id',
     startDate: 'valid_start_date',
     isCompleted: true,
@@ -56,7 +56,7 @@ describe('Race Controller', () => {
     const { sut } = makeSut()
 
     const dto = {
-      trackId: 'valid_track_id',
+      track: 'valid_track_id',
       championship: 'valid_championship_id',
       startDate: 'valid_start_date',
       isCompleted: true,
@@ -77,7 +77,7 @@ describe('Race Controller', () => {
     const createRaceSpy = jest.spyOn(raceServiceStub, 'create')
 
     const dto = {
-      trackId: 'valid_track_id',
+      track: 'valid_track_id',
       championship: 'valid_championship_id',
       startDate: 'valid_start_date',
       isCompleted: true,
@@ -102,14 +102,14 @@ describe('Race Controller', () => {
     const result = await sut.create({ body: dto })
 
     expect(result.statusCode).toBe(400)
-    expect(result.body).toStrictEqual(new MissingParamError('trackId'))
+    expect(result.body).toStrictEqual(new MissingParamError('track'))
   })
 
   it('should return 400 if no championship id is provided', async () => {
     const { sut } = makeSut()
 
     const dto = {
-      trackId: 'valid_track_id',
+      track: 'valid_track_id',
       startDate: 'valid_start_date',
       isCompleted: true,
       classification: 'valid_classification_id'
@@ -125,7 +125,7 @@ describe('Race Controller', () => {
     const { sut } = makeSut()
 
     const dto = {
-      trackId: 'valid_track_id',
+      track: 'valid_track_id',
       championship: 'valid_championship_id',
       startDate: 'valid_start_date',
       isCompleted: true
@@ -141,7 +141,7 @@ describe('Race Controller', () => {
     const { sut } = makeSut()
 
     const dto = {
-      trackId: 'valid_track_id',
+      track: 'valid_track_id',
       championship: 'valid_championship_id',
       classification: 'valid_classification_id',
       isCompleted: true

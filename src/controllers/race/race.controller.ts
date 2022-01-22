@@ -28,7 +28,7 @@ class RaceController implements RaceControllerAbstract {
     const race = await this.raceService.create(httpRequest.body)
 
     const requiredFields = [
-      'trackId',
+      'track',
       'championship',
       'classification',
       'startDate'
@@ -68,7 +68,7 @@ class RaceController implements RaceControllerAbstract {
       return badRequest(new MissingParamError('id'))
     }
 
-    const allowedUpdates = ['trackId', 'startDate']
+    const allowedUpdates = ['track', 'startDate']
 
     const someReceivedUpdateIsNotAllowed = Object.keys(httpRequest.body).some(
       (update) => !allowedUpdates.includes(update)

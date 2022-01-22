@@ -1,12 +1,12 @@
 export interface CreateRaceDto {
-  // trackId: string
+  track: string
   championship: string
   startDate: string
   classification: string
 }
 
 export interface UpdateRaceDto {
-  trackId?: string
+  track?: string
   startDate?: string
 }
 
