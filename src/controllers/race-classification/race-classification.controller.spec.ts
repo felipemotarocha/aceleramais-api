@@ -106,4 +106,34 @@ describe('Race Classification Controller', () => {
     expect(result.statusCode).toBe(200)
     expect(result.body).toStrictEqual(validRaceClassification)
   })
+
+  it('should return 400 if RaceClassificationService update method throws', async () => {
+    const { sut, raceClassificationServiceStub } = makeSut()
+
+    jest
+      .spyOn(raceClassificationServiceStub, 'update')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const dto: UpdateRaceClassificationDto = {
+      classification: [
+        {
+          position: 1,
+          user: 'valid_id',
+          team: 'valid_id',
+          isRegistered: true,
+          hasFastestLap: true,
+          hasPolePosition: true
+        }
+      ]
+    }
+
+    const result = await sut.update({
+      query: { id: 'valid_id' },
+      body: dto
+    })
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
 })
