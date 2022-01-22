@@ -25,65 +25,81 @@ class RaceController implements RaceControllerAbstract {
   }
 
   async create(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const race = await this.raceService.create(httpRequest.body)
+    try {
+      const race = await this.raceService.create(httpRequest.body)
 
-    const requiredFields = [
-      'track',
-      'championship',
-      'classification',
-      'startDate'
-    ]
+      const requiredFields = [
+        'track',
+        'championship',
+        'classification',
+        'startDate'
+      ]
 
-    for (const field of requiredFields) {
-      if (!httpRequest.body[field]) {
-        return badRequest(new MissingParamError(field))
+      for (const field of requiredFields) {
+        if (!httpRequest.body[field]) {
+          return badRequest(new MissingParamError(field))
+        }
       }
-    }
 
-    return created(race)
+      return created(race)
+    } catch (_) {
+      return badRequest(new ServerError())
+    }
   }
 
   async getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
-    if (!httpRequest?.params?.id) {
-      return badRequest(new MissingParamError('id'))
+    try {
+      if (!httpRequest?.params?.id) {
+        return badRequest(new MissingParamError('id'))
+      }
+
+      const race = await this.raceService.getOne(httpRequest.params.id)
+
+      return ok(race)
+    } catch (_) {
+      return badRequest(new ServerError())
     }
-
-    const race = await this.raceService.getOne(httpRequest.params.id)
-
-    return ok(race)
   }
 
   async getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
-    if (!httpRequest?.query) {
+    try {
+      if (!httpRequest?.query) {
+        return badRequest(new ServerError())
+      }
+
+      const race = await this.raceService.getAll(httpRequest.query!)
+
+      return ok(race)
+    } catch (_) {
       return badRequest(new ServerError())
     }
-
-    const race = await this.raceService.getAll(httpRequest.query!)
-
-    return ok(race)
   }
 
   async update(httpRequest: HttpRequest): Promise<HttpResponse> {
-    if (!httpRequest?.params?.id) {
-      return badRequest(new MissingParamError('id'))
+    try {
+      if (!httpRequest?.params?.id) {
+        return badRequest(new MissingParamError('id'))
+      }
+
+      const allowedUpdates = ['track', 'startDate']
+
+      const someReceivedUpdateIsNotAllowed = Object.keys(httpRequest.body).some(
+        (update) => !allowedUpdates.includes(update)
+      )
+
+      if (someReceivedUpdateIsNotAllowed) {
+        return badRequest(new NotAllowedFieldsError())
+      }
+
+      const race = await this.raceService.update(
+        httpRequest.params.id,
+        httpRequest.body
+      )
+
+      return ok(race)
+    } catch (_) {
+      return badRequest(new ServerError())
     }
-
-    const allowedUpdates = ['track', 'startDate']
-
-    const someReceivedUpdateIsNotAllowed = Object.keys(httpRequest.body).some(
-      (update) => !allowedUpdates.includes(update)
-    )
-
-    if (someReceivedUpdateIsNotAllowed) {
-      return badRequest(new NotAllowedFieldsError())
-    }
-
-    const race = await this.raceService.update(
-      httpRequest.params.id,
-      httpRequest.body
-    )
-
-    return ok(race)
   }
 }
 
