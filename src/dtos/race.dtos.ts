@@ -8,6 +8,7 @@ export interface CreateRaceDto {
 export interface UpdateRaceDto {
   track?: string
   startDate?: string
+  classification?: string
 }
 
 export interface GetAllRacesDto {

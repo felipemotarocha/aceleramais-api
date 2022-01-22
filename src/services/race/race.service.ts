@@ -4,6 +4,7 @@ import {
   UpdateRaceDto
 } from '../../dtos/race.dtos'
 import Race from '../../entities/race.entity'
+import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
 import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
 
 export interface RaceServiceAbstract {
@@ -15,13 +16,27 @@ export interface RaceServiceAbstract {
 
 class RaceService implements RaceServiceAbstract {
   private readonly raceRepository: RaceRepositoryAbstract
+  private readonly raceClassificationRepository: RaceClassificationRepositoryAbstract
 
-  constructor(raceRepository: RaceRepositoryAbstract) {
+  constructor(
+    raceRepository: RaceRepositoryAbstract,
+    raceClassificationRepository: RaceClassificationRepositoryAbstract
+  ) {
     this.raceRepository = raceRepository
+    this.raceClassificationRepository = raceClassificationRepository
   }
 
   async create(createRaceDto: CreateRaceDto): Promise<Race> {
-    return await this.raceRepository.create(createRaceDto)
+    const race = await this.raceRepository.create(createRaceDto)
+
+    const raceClassification = await this.raceClassificationRepository.create({
+      race: race.id,
+      classification: []
+    })
+
+    return await this.raceRepository.update(race.id, {
+      classification: raceClassification.id
+    })
   }
 
   async getOne(id: string): Promise<Race> {

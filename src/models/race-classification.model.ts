@@ -44,7 +44,7 @@ const raceClassificationSchema = new Schema({
   },
   classification: {
     type: [classificationSchema],
-    required: true
+    required: false
   }
 })
 

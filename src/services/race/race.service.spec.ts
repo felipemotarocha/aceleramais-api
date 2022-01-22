@@ -1,4 +1,6 @@
+import RaceClassification from '../../entities/race-classification.entity'
 import Race from '../../entities/race.entity'
+import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
 import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
 import RaceService, { RaceServiceAbstract } from './race.service'
 
@@ -12,8 +14,24 @@ describe('Race Service', () => {
     classification: 'valid_classification_id'
   }
 
+  const validRaceClassification: RaceClassification = {
+    id: 'valid_id',
+    race: 'valid_id',
+    classification: [
+      {
+        position: 1,
+        user: 'valid_id',
+        team: 'valid_id',
+        isRegistered: true,
+        hasFastestLap: true,
+        hasPolePosition: true
+      }
+    ]
+  }
+
   interface SutTypes {
     raceRepositoryStub: RaceRepositoryAbstract
+    raceClassificationRepositoryStub: RaceClassificationRepositoryAbstract
     sut: RaceServiceAbstract
   }
 
@@ -36,14 +54,37 @@ describe('Race Service', () => {
       }
     }
 
-    const raceRepositoryStub = new RaceRepositoryStub()
-    const sut = new RaceService(raceRepositoryStub)
+    class RaceClassificationRepositoryStub
+    implements RaceClassificationRepositoryAbstract {
+      async create(): Promise<RaceClassification> {
+        return validRaceClassification
+      }
 
-    return { sut, raceRepositoryStub }
+      async getOne(): Promise<RaceClassification> {
+        return validRaceClassification
+      }
+
+      async update(): Promise<RaceClassification> {
+        return validRaceClassification
+      }
+    }
+
+    const raceRepositoryStub = new RaceRepositoryStub()
+    const raceClassificationRepositoryStub =
+      new RaceClassificationRepositoryStub()
+
+    const sut = new RaceService(
+      raceRepositoryStub,
+      raceClassificationRepositoryStub
+    )
+
+    return { sut, raceRepositoryStub, raceClassificationRepositoryStub }
   }
 
   it('should create a race', async () => {
-    const { sut } = makeSut()
+    const { sut, raceRepositoryStub } = makeSut()
+
+    const updateRaceSpy = jest.spyOn(raceRepositoryStub, 'update')
 
     const dto = {
       track: 'valid_track_id',
@@ -54,6 +95,10 @@ describe('Race Service', () => {
     }
 
     const result = await sut.create(dto)
+
+    expect(updateRaceSpy).toHaveBeenCalledWith(result.id, {
+      classification: validRaceClassification.id
+    })
 
     expect(result).toStrictEqual(validRace)
   })
@@ -68,7 +113,7 @@ describe('Race Service', () => {
       championship: 'valid_championship_id',
       startDate: 'valid_start_date',
       isCompleted: true,
-      classification: 'valid_classification_id'
+      classification: validRaceClassification.id
     }
 
     await sut.create(dto)
