@@ -317,6 +317,7 @@ describe('Race Controller', () => {
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new ServerError())
   })
+
   it('should return 400 if RaceService update method throws', async () => {
     const { sut, raceServiceStub } = makeSut()
 
