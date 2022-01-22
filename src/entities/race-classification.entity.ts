@@ -2,12 +2,10 @@ interface RaceClassfication {
   race: string
   classification: {
     position: number
-    driver: {
-      user?: string
-      userName?: string
-      team: string
-      isRegisterd: boolean
-    }
+    user?: string
+    userName?: string
+    team: string
+    isRegistered: boolean
     hasFastestLap: boolean
     hasPolePosition: boolean
   }[]

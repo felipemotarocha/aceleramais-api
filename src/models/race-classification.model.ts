@@ -1,11 +1,19 @@
 import { model, Schema, Types } from 'mongoose'
 
-const driverSchema = new Schema({
+const classificationSchema = new Schema({
+  position: {
+    type: Number,
+    required: true
+  },
   user: {
     type: Types.ObjectId,
     // TODO: add User ref
     // ref: 'User',
     required: true
+  },
+  userName: {
+    type: String,
+    required: false
   },
   team: {
     type: Types.ObjectId,
@@ -16,14 +24,8 @@ const driverSchema = new Schema({
   isRegistered: {
     type: Boolean,
     required: true
-  }
-})
-
-const classificationSchema = new Schema({
-  driver: {
-    type: driverSchema,
-    required: true
   },
+
   hasFastestLap: {
     type: Boolean,
     required: true
