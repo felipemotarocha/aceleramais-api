@@ -1,7 +1,10 @@
 import { Types } from 'mongoose'
 
 import { env } from '../../config/env.config'
-import { CreateRaceClassificationDto } from '../../dtos/race-classification.dtos'
+import {
+  CreateRaceClassificationDto,
+  UpdateRaceClassificationDto
+} from '../../dtos/race-classification.dtos'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import RaceClassificationModel from '../../models/race-classification.model'
 import { MongoRaceClassificationRepository } from './race-classification.repository'
@@ -87,6 +90,46 @@ describe('Mongo Race Classification Repository', () => {
     )
     expect(result.classification[0].hasPolePosition).toBe(
       validRaceClassification.classification[0].hasPolePosition
+    )
+  })
+
+  it('should update a Race Classification', async () => {
+    const sut = makeSut()
+
+    const raceClassification = await sut.create(validRaceClassification as any)
+
+    const dto: UpdateRaceClassificationDto = {
+      classification: [
+        {
+          position: 2,
+          user: new Types.ObjectId() as any,
+          team: new Types.ObjectId() as any,
+          isRegistered: true,
+          hasFastestLap: false,
+          hasPolePosition: false
+        }
+      ]
+    }
+
+    const result = await sut.update(raceClassification.id, dto)
+
+    expect(result.classification[0].position).toBe(
+      dto.classification[0].position
+    )
+    expect(result.classification[0].user).toStrictEqual(
+      dto.classification[0].user
+    )
+    expect(result.classification[0].team).toStrictEqual(
+      dto.classification[0].team
+    )
+    expect(result.classification[0].isRegistered).toBe(
+      dto.classification[0].isRegistered
+    )
+    expect(result.classification[0].hasFastestLap).toBe(
+      dto.classification[0].hasFastestLap
+    )
+    expect(result.classification[0].hasPolePosition).toBe(
+      dto.classification[0].hasPolePosition
     )
   })
 })
