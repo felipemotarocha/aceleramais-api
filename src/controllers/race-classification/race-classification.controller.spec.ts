@@ -1,3 +1,4 @@
+import { UpdateRaceClassificationDto } from '../../dtos/race-classification.dtos'
 import RaceClassification from '../../entities/race-classification.entity'
 import { ServerError } from '../../errors/controllers.errors'
 
@@ -79,5 +80,30 @@ describe('Race Classification Controller', () => {
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new ServerError())
+  })
+
+  it('should return 200 on update success', async () => {
+    const { sut } = makeSut()
+
+    const dto: UpdateRaceClassificationDto = {
+      classification: [
+        {
+          position: 1,
+          user: 'valid_id',
+          team: 'valid_id',
+          isRegistered: true,
+          hasFastestLap: true,
+          hasPolePosition: true
+        }
+      ]
+    }
+
+    const result = await sut.update({
+      query: { id: 'valid_id' },
+      body: dto
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validRaceClassification)
   })
 })
