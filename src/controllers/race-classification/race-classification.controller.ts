@@ -31,8 +31,13 @@ implements RaceClassificationControllerAbstract {
     }
   }
 
-  update(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async update(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const raceClassification = await this.raceClassificationService.update(
+      httpRequest.query!.id,
+      httpRequest.body
+    )
+
+    return ok(raceClassification)
   }
 }
 
