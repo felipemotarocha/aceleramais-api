@@ -61,4 +61,32 @@ describe('Mongo Race Classification Repository', () => {
       validRaceClassification.classification[0].hasPolePosition
     )
   })
+
+  it('should get a Race Classification by Race', async () => {
+    const sut = makeSut()
+
+    await RaceClassificationModel.create(validRaceClassification)
+
+    const result = await sut.getOne(validRaceClassification.race)
+
+    expect(result.race).toStrictEqual(validRaceClassification.race)
+    expect(result.classification[0].position).toBe(
+      validRaceClassification.classification[0].position
+    )
+    expect(result.classification[0].user).toStrictEqual(
+      validRaceClassification.classification[0].user
+    )
+    expect(result.classification[0].team).toStrictEqual(
+      validRaceClassification.classification[0].team
+    )
+    expect(result.classification[0].isRegistered).toBe(
+      validRaceClassification.classification[0].isRegistered
+    )
+    expect(result.classification[0].hasFastestLap).toBe(
+      validRaceClassification.classification[0].hasFastestLap
+    )
+    expect(result.classification[0].hasPolePosition).toBe(
+      validRaceClassification.classification[0].hasPolePosition
+    )
+  })
 })
