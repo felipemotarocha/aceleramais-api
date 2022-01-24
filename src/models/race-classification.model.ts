@@ -7,9 +7,8 @@ const classificationSchema = new Schema({
   },
   user: {
     type: Types.ObjectId,
-    // TODO: add User ref
-    // ref: 'User',
-    required: true
+    ref: 'User',
+    required: false
   },
   userName: {
     type: String,
@@ -17,15 +16,13 @@ const classificationSchema = new Schema({
   },
   team: {
     type: Types.ObjectId,
-    // TODO: add ChampionshipTeam ref
-    // ref: 'ChampionshipTeam',
-    required: true
+    ref: 'Team',
+    required: false
   },
   isRegistered: {
     type: Boolean,
     required: true
   },
-
   hasFastestLap: {
     type: Boolean,
     required: true
