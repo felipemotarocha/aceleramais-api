@@ -1,4 +1,5 @@
 import ScoringSystem from '../../entities/scoring-system.entity'
+import { MissingParamError } from '../../errors/controllers.errors'
 import { ScoringSystemServiceAbstract } from '../../services/scoring-system/scoring-system.service'
 import {
   ScoringSystemControllerAbstract,
@@ -74,5 +75,31 @@ describe('Scoring System Controller', () => {
     await sut.create({ body: dto })
 
     expect(createScoringSystemSpy).toHaveBeenCalledWith(dto)
+  })
+
+  it('should return 400 if no championship is provided', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      scoringSystem: { 1: 25, 2: 20 }
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('championship'))
+  })
+
+  it('should return 400 if no scoring system is provided', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      championship: 'valid_championship'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('scoringSystem'))
   })
 })
