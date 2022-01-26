@@ -274,4 +274,16 @@ describe('Team Controller', () => {
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('id'))
   })
+
+  it('should call TeamService delete method with correct values', async () => {
+    const { sut, teamServiceStub } = makeSut()
+
+    const deleteTeamSpy = jest.spyOn(teamServiceStub, 'delete')
+
+    await sut.delete({
+      params: { id: 'valid_id' }
+    })
+
+    expect(deleteTeamSpy).toHaveBeenCalledWith('valid_id')
+  })
 })
