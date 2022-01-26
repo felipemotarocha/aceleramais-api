@@ -3,7 +3,6 @@ import {
   UpdateDriverStandingsDto
 } from '../../dtos/driver-standings.dto'
 import DriverStandings from '../../entities/driver-standings'
-import MongooseHelper from '../../helpers/mongoose.helpers'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
 
 export interface DriverStandingsServiceAbstract {
@@ -27,11 +26,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
   async create(
     createDriverStandingsDto: CreateDriverStandingsDto
   ): Promise<DriverStandings> {
-    const driverStandings = await this.driverStandingsRepository.create(
-      createDriverStandingsDto
-    )
-
-    return MongooseHelper.map<DriverStandings>(driverStandings)
+    return await this.driverStandingsRepository.create(createDriverStandingsDto)
   }
 
   update(
@@ -41,7 +36,11 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
     throw new Error('Method not implemented.')
   }
 
-  getOne({ championship }: { championship: string }): Promise<DriverStandings> {
-    throw new Error('Method not implemented.')
+  async getOne({
+    championship
+  }: {
+    championship: string
+  }): Promise<DriverStandings> {
+    return await this.driverStandingsRepository.getOne({ championship })
   }
 }
