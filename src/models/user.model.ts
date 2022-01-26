@@ -1,6 +1,27 @@
 import { model, Schema } from 'mongoose'
 
-const userSchema = new Schema({})
+const userSchema = new Schema({
+  _id: {
+    type: String,
+    required: true
+  },
+  firstName: {
+    type: String,
+    required: true
+  },
+  lastName: {
+    type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
+  },
+  provider: {
+    type: String,
+    required: true
+  }
+})
 
 const UserModel = model('User', userSchema)
 
