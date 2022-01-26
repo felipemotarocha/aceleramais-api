@@ -116,4 +116,41 @@ describe('Driver Standings Service', () => {
 
     expect(promise).rejects.toThrow()
   })
+
+  it('should get a DriverStandings by Championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({ championship: 'valid_championship_id' })
+
+    expect(result).toStrictEqual(validDriverStandings)
+  })
+
+  it('should call DriverStandingsRepository getOne method with correct values', async () => {
+    const { sut, driverStandingsRepositoryStub } = makeSut()
+
+    const getOneDriverStandingssSpy = jest.spyOn(
+      driverStandingsRepositoryStub,
+      'getOne'
+    )
+
+    await sut.getOne({ championship: 'valid_championship_id' })
+
+    expect(getOneDriverStandingssSpy).toHaveBeenCalledWith({
+      championship: 'valid_championship_id'
+    })
+  })
+
+  it('should throws if DriverStandingsRepository getOne method throws', async () => {
+    const { sut, driverStandingsRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(driverStandingsRepositoryStub, 'getOne')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.getOne({ championship: 'invalid_championship_id' })
+
+    expect(promise).rejects.toThrow()
+  })
 })

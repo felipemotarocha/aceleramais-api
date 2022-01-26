@@ -101,22 +101,22 @@ describe('Scoring System Service', () => {
     expect(result).toStrictEqual(validScoringSystem)
   })
 
-  it('should call ScoringSystemRepository getAll method with correct values', async () => {
+  it('should call ScoringSystemRepository getOne method with correct values', async () => {
     const { sut, scoringSystemRepositoryStub } = makeSut()
 
-    const getAllScoringSystemsSpy = jest.spyOn(
+    const getOneScoringSystemsSpy = jest.spyOn(
       scoringSystemRepositoryStub,
       'getOne'
     )
 
     await sut.getOne({ championship: 'valid_championship_id' })
 
-    expect(getAllScoringSystemsSpy).toHaveBeenCalledWith({
+    expect(getOneScoringSystemsSpy).toHaveBeenCalledWith({
       championship: 'valid_championship_id'
     })
   })
 
-  it('should throws if ScoringSystemRepository getAll method throws', async () => {
+  it('should throws if ScoringSystemRepository getOne method throws', async () => {
     const { sut, scoringSystemRepositoryStub } = makeSut()
 
     jest
