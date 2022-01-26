@@ -91,7 +91,11 @@ export class TeamController implements TeamControllerAbstract {
   }
 
   async delete(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const team = await this.teamService.delete(httpRequest!.params!.id)
+    if (!httpRequest.params?.id) {
+      return badRequest(new MissingParamError('id'))
+    }
+
+    const team = await this.teamService.delete(httpRequest.params.id)
 
     return ok(team)
   }
