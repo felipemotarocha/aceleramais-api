@@ -92,4 +92,41 @@ describe('Scoring System Service', () => {
 
     expect(promise).rejects.toThrow()
   })
+
+  it('should get all ScoringSystems by Championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({ championship: 'valid_championship_id' })
+
+    expect(result).toStrictEqual(validScoringSystem)
+  })
+
+  it('should call ScoringSystemRepository getAll method with correct values', async () => {
+    const { sut, scoringSystemRepositoryStub } = makeSut()
+
+    const getAllScoringSystemsSpy = jest.spyOn(
+      scoringSystemRepositoryStub,
+      'getOne'
+    )
+
+    await sut.getOne({ championship: 'valid_championship_id' })
+
+    expect(getAllScoringSystemsSpy).toHaveBeenCalledWith({
+      championship: 'valid_championship_id'
+    })
+  })
+
+  it('should throws if ScoringSystemRepository getAll method throws', async () => {
+    const { sut, scoringSystemRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(scoringSystemRepositoryStub, 'getOne')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.getOne({ championship: 'invalid_championship_id' })
+
+    expect(promise).rejects.toThrow()
+  })
 })
