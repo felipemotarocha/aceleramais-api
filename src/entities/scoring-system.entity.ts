@@ -1,4 +1,5 @@
 interface ScoringSystem {
+  id: string
   championship: string
   scoringSystem: { [key: string]: number }
 }
