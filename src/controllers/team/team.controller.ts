@@ -1,7 +1,6 @@
 import {
   MissingParamError,
-  NotAllowedFieldsError,
-  ServerError
+  NotAllowedFieldsError
 } from '../../errors/controllers.errors'
 import {
   badRequest,
@@ -43,7 +42,7 @@ export class TeamController implements TeamControllerAbstract {
 
       return created(team)
     } catch (_) {
-      return serverError(new ServerError())
+      return serverError()
     }
   }
 
@@ -59,7 +58,7 @@ export class TeamController implements TeamControllerAbstract {
 
       return ok(teams)
     } catch (_) {
-      return serverError(new ServerError())
+      return serverError()
     }
   }
 
@@ -86,7 +85,7 @@ export class TeamController implements TeamControllerAbstract {
 
       return ok(race)
     } catch (_) {
-      return serverError(new ServerError())
+      return serverError()
     }
   }
 
@@ -100,7 +99,7 @@ export class TeamController implements TeamControllerAbstract {
 
       return ok(team)
     } catch (_) {
-      return serverError(new ServerError())
+      return serverError()
     }
   }
 }
