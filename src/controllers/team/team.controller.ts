@@ -48,7 +48,11 @@ export class TeamController implements TeamControllerAbstract {
 
   async getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      if (!httpRequest?.query?.championship) {
+      if (!httpRequest.query) {
+        return badRequest(new MissingParamError('query'))
+      }
+
+      if (!httpRequest.query?.championship) {
         return badRequest(new MissingParamError('championship'))
       }
 
@@ -64,7 +68,11 @@ export class TeamController implements TeamControllerAbstract {
 
   async update(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      if (!httpRequest?.params?.id) {
+      if (!httpRequest.params) {
+        return badRequest(new MissingParamError('params'))
+      }
+
+      if (!httpRequest.params?.id) {
         return badRequest(new MissingParamError('id'))
       }
 
@@ -91,6 +99,10 @@ export class TeamController implements TeamControllerAbstract {
 
   async delete(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
+      if (!httpRequest.params) {
+        return badRequest(new MissingParamError('params'))
+      }
+
       if (!httpRequest.params?.id) {
         return badRequest(new MissingParamError('id'))
       }
