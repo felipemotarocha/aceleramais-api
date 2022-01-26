@@ -286,4 +286,21 @@ describe('Team Controller', () => {
 
     expect(deleteTeamSpy).toHaveBeenCalledWith('valid_id')
   })
+
+  it('should return 500 if TeamService delete method throws', async () => {
+    const { sut, teamServiceStub } = makeSut()
+
+    jest
+      .spyOn(teamServiceStub, 'delete')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.delete({
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
 })
