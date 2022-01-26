@@ -42,7 +42,15 @@ implements DriverStandingsRepositoryAbstract {
     throw new Error('Method not implemented.')
   }
 
-  getOne({ championship }: { championship: string }): Promise<DriverStandings> {
-    throw new Error('Method not implemented.')
+  async getOne({
+    championship
+  }: {
+    championship: string
+  }): Promise<DriverStandings> {
+    const driverStandings = await this.driverStandingsModel.findOne({
+      championship
+    })
+
+    return MongooseHelper.map<DriverStandings>(driverStandings.toJSON())
   }
 }
