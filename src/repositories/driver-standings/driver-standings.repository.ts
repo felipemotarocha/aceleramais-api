@@ -35,11 +35,17 @@ implements DriverStandingsRepositoryAbstract {
     return MongooseHelper.map<DriverStandings>(driverStandings.toJSON())
   }
 
-  update(
+  async update(
     id: string,
     updateDriverStandingsDto: UpdateDriverStandingsDto
   ): Promise<DriverStandings> {
-    throw new Error('Method not implemented.')
+    const driverStandings = await this.driverStandingsModel.findByIdAndUpdate(
+      id,
+      updateDriverStandingsDto,
+      { new: true }
+    )
+
+    return MongooseHelper.map<DriverStandings>(driverStandings.toJSON())
   }
 
   async getOne({

@@ -9,7 +9,6 @@ export interface CreateDriverStandingsDto {
 }
 
 export interface UpdateDriverStandingsDto {
-  championship: string
   standings: {
     user?: string
     userName?: string
