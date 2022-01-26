@@ -1,5 +1,9 @@
 import ScoringSystem from '../../entities/scoring-system.entity'
-import { MissingParamError, ServerError } from '../../errors/controllers.errors'
+import {
+  MissingParamError,
+  NotAllowedFieldsError,
+  ServerError
+} from '../../errors/controllers.errors'
 import { ScoringSystemServiceAbstract } from '../../services/scoring-system/scoring-system.service'
 import {
   ScoringSystemControllerAbstract,
@@ -180,6 +184,75 @@ describe('Scoring System Controller', () => {
 
     const result = await sut.getOne({
       query: { championship: 'valid_championship_id' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
+
+  it('should return 200 on update success', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({
+      body: { scoringSystem: { 1: 30, 2: 25 } },
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validScoringSystem)
+  })
+
+  it('should call ScoringSystemService update method with correct values', async () => {
+    const { sut, scoringSystemServiceStub } = makeSut()
+
+    const updateScoringSystemSpy = jest.spyOn(
+      scoringSystemServiceStub,
+      'update'
+    )
+
+    await sut.update({
+      body: { scoringSystem: { 1: 30, 2: 25 } },
+      params: { id: 'valid_id' }
+    })
+
+    expect(updateScoringSystemSpy).toHaveBeenCalledWith('valid_id', {
+      scoringSystem: { 1: 30, 2: 25 }
+    })
+  })
+
+  it('should return 400 when not providing an id on update', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({ body: {}, params: { id: null as any } })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('id'))
+  })
+
+  it('should return 400 when providing an unallowed update', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({
+      body: { id: 'valid_id', championship: 'valid_championship' },
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new NotAllowedFieldsError())
+  })
+
+  it('should return 500 if ScoringSystemService update method throws', async () => {
+    const { sut, scoringSystemServiceStub } = makeSut()
+
+    jest
+      .spyOn(scoringSystemServiceStub, 'update')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.update({
+      body: { scoringSystem: { 1: 30, 2: 25 } },
+      params: { id: 'valid_id' }
     })
 
     expect(result.statusCode).toBe(500)
