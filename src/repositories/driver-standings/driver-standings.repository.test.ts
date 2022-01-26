@@ -6,6 +6,18 @@ import DriverStandingsModel from '../../models/driver-standings.model'
 import { MongoDriverStandingsRepository } from './driver-standings.repository'
 
 describe('Mongo Driver Standings Repository', () => {
+  const validDriverStandings = {
+    id: new Types.ObjectId() as any,
+    championship: new Types.ObjectId() as any,
+    standings: [
+      {
+        user: new Types.ObjectId() as any,
+        isRegistered: true,
+        position: 1
+      }
+    ]
+  }
+
   beforeAll(async () => {
     await MongooseHelper.connect(env.mongodbUrl)
   })
@@ -43,10 +55,10 @@ describe('Mongo Driver Standings Repository', () => {
     expect(result.standings[0].position).toBe(dto.standings[0].position)
   })
 
-  it('should call ScoringSystemModel create method with correct values', async () => {
+  it('should call DriverStandingsModel create method with correct values', async () => {
     const sut = makeSut()
 
-    const createScoringSystemSpy = jest.spyOn(DriverStandingsModel, 'create')
+    const createDriverStandingsSpy = jest.spyOn(DriverStandingsModel, 'create')
 
     const dto: CreateDriverStandingsDto = {
       championship: new Types.ObjectId() as any,
@@ -60,6 +72,50 @@ describe('Mongo Driver Standings Repository', () => {
     }
     await sut.create(dto)
 
-    expect(createScoringSystemSpy).toHaveBeenCalledWith(dto)
+    expect(createDriverStandingsSpy).toHaveBeenCalledWith(dto)
+  })
+
+  it('should get a Driver Standings by Championship', async () => {
+    const sut = makeSut()
+
+    await DriverStandingsModel.create({
+      _id: validDriverStandings.id,
+      ...validDriverStandings
+    })
+
+    const result = await sut.getOne({
+      championship: validDriverStandings.championship as any
+    })
+
+    expect(result.id).toBeTruthy()
+    expect(result.championship).toStrictEqual(validDriverStandings.championship)
+    expect(result.standings[0].user).toStrictEqual(
+      validDriverStandings.standings[0].user
+    )
+    expect(result.standings[0].isRegistered).toBe(
+      validDriverStandings.standings[0].isRegistered
+    )
+    expect(result.standings[0].position).toBe(
+      validDriverStandings.standings[0].position
+    )
+  })
+
+  it('should call DriverStandingsModel getOne method with correct values', async () => {
+    const sut = makeSut()
+
+    await DriverStandingsModel.create({
+      _id: validDriverStandings.id,
+      ...validDriverStandings
+    })
+
+    const getOneDriverStandingsSpy = jest.spyOn(DriverStandingsModel, 'findOne')
+
+    await sut.getOne({
+      championship: validDriverStandings.championship as any
+    })
+
+    expect(getOneDriverStandingsSpy).toHaveBeenCalledWith({
+      championship: validDriverStandings.championship as any
+    })
   })
 })
