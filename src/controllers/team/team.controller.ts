@@ -90,7 +90,9 @@ export class TeamController implements TeamControllerAbstract {
     }
   }
 
-  delete(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async delete(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const team = await this.teamService.delete(httpRequest!.params!.id)
+
+    return ok(team)
   }
 }
