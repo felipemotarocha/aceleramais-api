@@ -4,6 +4,5 @@ export interface CreateScoringSystemDto {
 }
 
 export interface UpdateScoringSystemDto {
-  championship: string
-  scoringSystem: { [key: string]: number }
+  scoringSystem?: { [key: string]: number }
 }
