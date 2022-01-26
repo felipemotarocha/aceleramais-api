@@ -71,6 +71,26 @@ describe('Team Service', () => {
     expect(createTeamSpy).toHaveBeenCalledWith(dto)
   })
 
+  it('should throws if TeamRepository create method throws', async () => {
+    const { sut, teamRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(teamRepositoryStub, 'create')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const dto = {
+      championship: new Types.ObjectId() as any,
+      name: 'Mercedes',
+      color: '#fff'
+    }
+
+    const promise = sut.create(dto)
+
+    expect(promise).rejects.toThrow()
+  })
+
   it('should get all Teams by Championship', async () => {
     const { sut } = makeSut()
 
@@ -89,6 +109,20 @@ describe('Team Service', () => {
     expect(getAllTeamsSpy).toHaveBeenCalledWith({
       championship: 'valid_championship_id'
     })
+  })
+
+  it('should throws if TearmRepository getAll method throws', async () => {
+    const { sut, teamRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(teamRepositoryStub, 'getAll')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.getAll({ championship: 'invalid_championship_id' })
+
+    expect(promise).rejects.toThrow()
   })
 
   it('should update a Team', async () => {
@@ -115,6 +149,20 @@ describe('Team Service', () => {
     })
   })
 
+  it('should throws if TeamRepository update method throws', async () => {
+    const { sut, teamRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(teamRepositoryStub, 'update')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.update('invalid_id', { name: 'Red Bull' })
+
+    expect(promise).rejects.toThrow()
+  })
+
   it('should delete a Team', async () => {
     const { sut } = makeSut()
 
@@ -131,5 +179,19 @@ describe('Team Service', () => {
     await sut.delete('valid_id')
 
     expect(deleteTeamSpy).toHaveBeenCalledWith('valid_id')
+  })
+
+  it('should throws if TeamRepository delete method throws', async () => {
+    const { sut, teamRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(teamRepositoryStub, 'delete')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.delete('invalid_id')
+
+    expect(promise).rejects.toThrow()
   })
 })
