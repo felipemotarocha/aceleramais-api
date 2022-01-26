@@ -35,7 +35,9 @@ export class TeamService implements TeamServiceAbstract {
     return MongooseHelper.map<Team>(team)
   }
 
-  delete(id: string): Promise<Team> {
-    throw new Error('Method not implemented.')
+  async delete(id: string): Promise<Team> {
+    const team = await this.teamRepository.delete(id)
+
+    return MongooseHelper.map<Team>(team)
   }
 }
