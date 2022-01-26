@@ -265,4 +265,13 @@ describe('Team Controller', () => {
     expect(result.statusCode).toBe(200)
     expect(result.body).toStrictEqual(validTeam)
   })
+
+  it('should return 400 when not providing an id on delete', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.delete({ params: { id: null as any } })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('id'))
+  })
 })
