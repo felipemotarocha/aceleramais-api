@@ -1,5 +1,9 @@
 import { MissingParamError } from '../../errors/controllers.errors'
-import { badRequest, created } from '../../helpers/controllers.helpers'
+import {
+  badRequest,
+  created,
+  serverError
+} from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
   HttpResponse
@@ -22,19 +26,23 @@ implements ScoringSystemControllerAbstract {
   }
 
   async create(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const requiredFields = ['championship', 'scoringSystem']
+    try {
+      const requiredFields = ['championship', 'scoringSystem']
 
-    for (const field of requiredFields) {
-      if (!httpRequest.body[field]) {
-        return badRequest(new MissingParamError(field))
+      for (const field of requiredFields) {
+        if (!httpRequest.body[field]) {
+          return badRequest(new MissingParamError(field))
+        }
       }
+
+      const scoringSystem = await this.scoringSystemService.create(
+        httpRequest.body
+      )
+
+      return created(scoringSystem)
+    } catch (_) {
+      return serverError()
     }
-
-    const scoringSystem = await this.scoringSystemService.create(
-      httpRequest.body
-    )
-
-    return created(scoringSystem)
   }
 
   getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
