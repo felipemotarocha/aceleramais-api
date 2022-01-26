@@ -1,7 +1,7 @@
 import { Types } from 'mongoose'
 
 import { env } from '../../config/env.config'
-import { CreateTeamDto } from '../../dtos/team.dtos'
+import { CreateTeamDto, UpdateTeamDto } from '../../dtos/team.dtos'
 import Team from '../../entities/team.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import TeamModel from '../../models/team.model'
@@ -73,5 +73,42 @@ describe('Mongo Team Repository', () => {
     expect(result[0].championship).toStrictEqual(validTeam.championship)
     expect(result[0].name).toBe(validTeam.name)
     expect(result[0].color).toBe(validTeam.color)
+  })
+
+  it('should update a Team', async () => {
+    const sut = makeSut()
+
+    await TeamModel.create({ _id: validTeam.id, ...validTeam })
+
+    const dto: UpdateTeamDto = {
+      name: 'Red Bull',
+      color: '#fff'
+    }
+
+    const result = await sut.update(validTeam.id, { name: 'Red Bull' })
+
+    expect(result.id).toBeTruthy()
+    expect(result.championship).toStrictEqual(validTeam.championship)
+    expect(result.name).toBe(dto.name)
+    expect(result.color).toBe(dto.color)
+  })
+
+  it('should call TeamModel findByIdAndUpdate method with correct values', async () => {
+    const sut = makeSut()
+
+    const updateCollectionSpy = jest.spyOn(TeamModel, 'findByIdAndUpdate')
+
+    await TeamModel.create({ _id: validTeam.id, ...validTeam })
+
+    const dto: UpdateTeamDto = {
+      name: 'Red Bull',
+      color: '#fff'
+    }
+
+    await sut.update(validTeam.id, dto)
+
+    expect(updateCollectionSpy).toHaveBeenCalledWith(validTeam.id, dto, {
+      new: true
+    })
   })
 })
