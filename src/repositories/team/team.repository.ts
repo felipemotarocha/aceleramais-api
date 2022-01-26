@@ -6,7 +6,7 @@ import _TeamModel from '../../models/team.model'
 export interface TeamRepositoryAbstract {
   create(createTeamDto: CreateTeamDto): Promise<Team>
   getAll(championship: string): Promise<Team[]>
-  update(updateTeamDto: UpdateTeamDto): Promise<Team>
+  update(id: string, updateTeamDto: UpdateTeamDto): Promise<Team>
   delete(id: string): Promise<Team>
 }
 
@@ -29,8 +29,12 @@ export class MongoTeamRepository implements TeamRepositoryAbstract {
     return teams.map((team) => MongooseHelper.map<Team>(team.toJSON()))
   }
 
-  update(updateTeamDto: UpdateTeamDto): Promise<Team> {
-    throw new Error('Method not implemented.')
+  async update(id: string, updateTeamDto: UpdateTeamDto): Promise<Team> {
+    const team = await this.TeamModel.findByIdAndUpdate(id, updateTeamDto, {
+      new: true
+    })
+
+    return MongooseHelper.map<Team>(team.toJSON())
   }
 
   delete(id: string): Promise<Team> {
