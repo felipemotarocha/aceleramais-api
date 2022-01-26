@@ -162,4 +162,21 @@ describe('Team Controller', () => {
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('championship'))
   })
+
+  it('should return 400 if TeamService getAll method throws', async () => {
+    const { sut, teamServiceStub } = makeSut()
+
+    jest
+      .spyOn(teamServiceStub, 'getAll')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.getAll({
+      query: { championship: 'valid_championship_id' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
 })
