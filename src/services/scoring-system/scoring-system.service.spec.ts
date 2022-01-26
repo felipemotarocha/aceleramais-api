@@ -129,4 +129,37 @@ describe('Scoring System Service', () => {
 
     expect(promise).rejects.toThrow()
   })
+
+  it('should call ScoringSystemRepository update method with correct values', async () => {
+    const { sut, scoringSystemRepositoryStub } = makeSut()
+
+    const updateScoringSystemSpy = jest.spyOn(
+      scoringSystemRepositoryStub,
+      'update'
+    )
+
+    await sut.update('valid_id', {
+      scoringSystem: { 1: 30, 2: 25 }
+    })
+
+    expect(updateScoringSystemSpy).toHaveBeenCalledWith('valid_id', {
+      scoringSystem: { 1: 30, 2: 25 }
+    })
+  })
+
+  it('should throws if ScoringSystemRepository update method throws', async () => {
+    const { sut, scoringSystemRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(scoringSystemRepositoryStub, 'update')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.update('invalid_id', {
+      scoringSystem: { 1: 30, 2: 25 }
+    })
+
+    expect(promise).rejects.toThrow()
+  })
 })
