@@ -1,6 +1,9 @@
 import { Types } from 'mongoose'
 import { env } from '../../config/env.config'
-import { CreateScoringSystemDto } from '../../dtos/scoring-system.dtos'
+import {
+  CreateScoringSystemDto,
+  UpdateScoringSystemDto
+} from '../../dtos/scoring-system.dtos'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import ScoringSystemModel from '../../models/scoring-system.model'
 import { MongoScoringSystemRepository } from './scoring-system.repository'
@@ -90,5 +93,47 @@ describe('Mongo Scoring System Repository', () => {
     expect(getOneScoringSystemSpy).toHaveBeenCalledWith({
       championship: validScoringSystem.championship as any
     })
+  })
+
+  it('should update a Scoring System', async () => {
+    const sut = makeSut()
+
+    await ScoringSystemModel.create([
+      { _id: validScoringSystem.id, ...validScoringSystem }
+    ])
+
+    const dto: UpdateScoringSystemDto = {
+      scoringSystem: { 1: 30, 2: 25 }
+    }
+
+    const result = await sut.update(validScoringSystem.id.toHexString(), dto)
+
+    expect(result.id).toBeTruthy()
+    expect(result.scoringSystem).toStrictEqual(dto.scoringSystem)
+  })
+
+  it('should call ScoringSystemModel findByIdAndUpdate method with correct values', async () => {
+    const sut = makeSut()
+
+    const updateCollectionSpy = jest.spyOn(
+      ScoringSystemModel,
+      'findByIdAndUpdate'
+    )
+
+    await ScoringSystemModel.create([
+      { _id: validScoringSystem.id, ...validScoringSystem }
+    ])
+
+    const dto: UpdateScoringSystemDto = {
+      scoringSystem: { 1: 30, 2: 25 }
+    }
+
+    await sut.update(validScoringSystem.id.toHexString(), dto)
+
+    expect(updateCollectionSpy).toHaveBeenCalledWith(
+      validScoringSystem.id.toHexString(),
+      dto,
+      { new: true }
+    )
   })
 })
