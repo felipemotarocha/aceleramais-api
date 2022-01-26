@@ -136,4 +136,42 @@ describe('Mongo Scoring System Repository', () => {
       { new: true }
     )
   })
+
+  it('should delete a Scoring System', async () => {
+    const sut = makeSut()
+
+    await ScoringSystemModel.create({
+      _id: validScoringSystem.id,
+      ...validScoringSystem
+    })
+
+    const result = await sut.delete(validScoringSystem.id.toHexString())
+
+    expect(result.id).toBeTruthy()
+    expect(result.championship).toStrictEqual(validScoringSystem.championship)
+    expect(result.scoringSystem).toStrictEqual(validScoringSystem.scoringSystem)
+  })
+
+  it('should call ScoringSystemModel findByIdAndDelete method with correct values', async () => {
+    const sut = makeSut()
+
+    const deleteScoringSystemSpy = jest.spyOn(
+      ScoringSystemModel,
+      'findByIdAndDelete'
+    )
+
+    await ScoringSystemModel.create({
+      _id: validScoringSystem.id,
+      ...validScoringSystem
+    })
+
+    await sut.delete(validScoringSystem.id.toHexString())
+
+    expect(deleteScoringSystemSpy).toHaveBeenCalledWith(
+      validScoringSystem.id.toHexString(),
+      {
+        new: true
+      }
+    )
+  })
 })
