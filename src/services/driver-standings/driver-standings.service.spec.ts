@@ -153,4 +153,58 @@ describe('Driver Standings Service', () => {
 
     expect(promise).rejects.toThrow()
   })
+
+  it('should call DriverStandingsRepository update method with correct values', async () => {
+    const { sut, driverStandingsRepositoryStub } = makeSut()
+
+    const updateDriverStandingsSpy = jest.spyOn(
+      driverStandingsRepositoryStub,
+      'update'
+    )
+
+    await sut.update('valid_id', {
+      standings: [
+        {
+          user: undefined,
+          userName: 'Max Verstappen',
+          isRegistered: false,
+          position: 1
+        }
+      ]
+    })
+
+    expect(updateDriverStandingsSpy).toHaveBeenCalledWith('valid_id', {
+      standings: [
+        {
+          user: undefined,
+          userName: 'Max Verstappen',
+          isRegistered: false,
+          position: 1
+        }
+      ]
+    })
+  })
+
+  it('should throws if DriverStandingsRepository update method throws', async () => {
+    const { sut, driverStandingsRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(driverStandingsRepositoryStub, 'update')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.update('invalid_id', {
+      standings: [
+        {
+          user: undefined,
+          userName: 'Max Verstappen',
+          isRegistered: false,
+          position: 1
+        }
+      ]
+    })
+
+    expect(promise).rejects.toThrow()
+  })
 })
