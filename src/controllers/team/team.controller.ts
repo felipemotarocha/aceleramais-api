@@ -44,15 +44,19 @@ export class TeamController implements TeamControllerAbstract {
   }
 
   async getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
-    if (!httpRequest?.query?.championship) {
-      return badRequest(new MissingParamError('championship'))
+    try {
+      if (!httpRequest?.query?.championship) {
+        return badRequest(new MissingParamError('championship'))
+      }
+
+      const teams = await this.teamService.getAll({
+        championship: httpRequest!.query!.championship
+      })
+
+      return ok(teams)
+    } catch (_) {
+      return serverError(new ServerError())
     }
-
-    const teams = await this.teamService.getAll({
-      championship: httpRequest!.query!.championship
-    })
-
-    return ok(teams)
   }
 
   update(httpRequest: HttpRequest): Promise<HttpResponse> {
