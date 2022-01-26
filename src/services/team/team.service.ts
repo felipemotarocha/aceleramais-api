@@ -29,8 +29,10 @@ export class TeamService implements TeamServiceAbstract {
     return teams.map((team) => MongooseHelper.map<Team>(team))
   }
 
-  update(id: string, updateTeamDto: UpdateTeamDto): Promise<Team> {
-    throw new Error('Method not implemented.')
+  async update(id: string, updateTeamDto: UpdateTeamDto): Promise<Team> {
+    const team = await this.teamRepository.update(id, updateTeamDto)
+
+    return MongooseHelper.map<Team>(team)
   }
 
   delete(id: string): Promise<Team> {
