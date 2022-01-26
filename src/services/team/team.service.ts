@@ -5,7 +5,7 @@ import { TeamRepositoryAbstract } from '../../repositories/team/team.repository'
 
 export interface TeamServiceAbstract {
   create(createTeamDto: CreateTeamDto): Promise<Team>
-  getAll(championship: string): Promise<Team[]>
+  getAll({ championship }: { championship: string }): Promise<Team[]>
   update(id: string, updateTeamDto: UpdateTeamDto): Promise<Team>
   delete(id: string): Promise<Team>
 }
@@ -23,8 +23,10 @@ export class TeamService implements TeamServiceAbstract {
     return MongooseHelper.map<Team>(team)
   }
 
-  getAll(championship: string): Promise<Team[]> {
-    throw new Error('Method not implemented.')
+  async getAll({ championship }: { championship: string }): Promise<Team[]> {
+    const teams = await this.teamRepository.getAll({ championship })
+
+    return teams.map((team) => MongooseHelper.map<Team>(team))
   }
 
   update(id: string, updateTeamDto: UpdateTeamDto): Promise<Team> {
