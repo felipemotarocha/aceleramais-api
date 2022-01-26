@@ -70,4 +70,24 @@ describe('Team Service', () => {
 
     expect(createTeamSpy).toHaveBeenCalledWith(dto)
   })
+
+  it('should get all Teams by Championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ championship: 'valid_championship_id' })
+
+    expect(result).toStrictEqual([validTeam])
+  })
+
+  it('should call RaceRepository getAll method with correct values', async () => {
+    const { sut, teamRepositoryStub } = makeSut()
+
+    const getAllRacesSpy = jest.spyOn(teamRepositoryStub, 'getAll')
+
+    await sut.getAll({ championship: 'valid_championship_id' })
+
+    expect(getAllRacesSpy).toHaveBeenCalledWith({
+      championship: 'valid_championship_id'
+    })
+  })
 })
