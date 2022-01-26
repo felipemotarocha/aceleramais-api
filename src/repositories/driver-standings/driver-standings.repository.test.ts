@@ -1,6 +1,9 @@
 import { Types } from 'mongoose'
 import { env } from '../../config/env.config'
-import { CreateDriverStandingsDto } from '../../dtos/driver-standings.dto'
+import {
+  CreateDriverStandingsDto,
+  UpdateDriverStandingsDto
+} from '../../dtos/driver-standings.dto'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import DriverStandingsModel from '../../models/driver-standings.model'
 import { MongoDriverStandingsRepository } from './driver-standings.repository'
@@ -70,6 +73,7 @@ describe('Mongo Driver Standings Repository', () => {
         }
       ]
     }
+
     await sut.create(dto)
 
     expect(createDriverStandingsSpy).toHaveBeenCalledWith(dto)
@@ -117,5 +121,67 @@ describe('Mongo Driver Standings Repository', () => {
     expect(getOneDriverStandingsSpy).toHaveBeenCalledWith({
       championship: validDriverStandings.championship as any
     })
+  })
+
+  it('should update a Driver Standings', async () => {
+    const sut = makeSut()
+
+    await DriverStandingsModel.create([
+      { _id: validDriverStandings.id, ...validDriverStandings }
+    ])
+
+    const dto: UpdateDriverStandingsDto = {
+      standings: [
+        {
+          user: undefined,
+          userName: 'Max Verstappen',
+          isRegistered: false,
+          position: 1
+        }
+      ]
+    }
+
+    const result = await sut.update(validDriverStandings.id.toHexString(), dto)
+
+    expect(result.id).toBeTruthy()
+    expect(result.standings).toStrictEqual([
+      {
+        userName: 'Max Verstappen',
+        isRegistered: false,
+        position: 1
+      }
+    ])
+  })
+
+  it('should call DriverStandingsModel findByIdAndUpdate method with correct values', async () => {
+    const sut = makeSut()
+
+    const updateCollectionSpy = jest.spyOn(
+      DriverStandingsModel,
+      'findByIdAndUpdate'
+    )
+
+    await DriverStandingsModel.create([
+      { _id: validDriverStandings.id, ...validDriverStandings }
+    ])
+
+    const dto: UpdateDriverStandingsDto = {
+      standings: [
+        {
+          user: undefined,
+          userName: 'Max Verstappen',
+          isRegistered: false,
+          position: 1
+        }
+      ]
+    }
+
+    await sut.update(validDriverStandings.id.toHexString(), dto)
+
+    expect(updateCollectionSpy).toHaveBeenCalledWith(
+      validDriverStandings.id.toHexString(),
+      dto,
+      { new: true }
+    )
   })
 })
