@@ -130,4 +130,36 @@ describe('Team Controller', () => {
     expect(result.statusCode).toBe(500)
     expect(result.body).toStrictEqual(new ServerError())
   })
+
+  it('should return 200 when getting all Teams by Championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({
+      query: { championship: 'valid_championship_id' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual([validTeam])
+  })
+
+  it('should call TeamService getAll method with correct values', async () => {
+    const { sut, teamServiceStub } = makeSut()
+
+    const getAllTeamsSpy = jest.spyOn(teamServiceStub, 'getAll')
+
+    await sut.getAll({ query: { championship: 'valid_championship_id' } })
+
+    expect(getAllTeamsSpy).toHaveBeenCalledWith({
+      championship: 'valid_championship_id'
+    })
+  })
+
+  it('should return 400 when getting all Teams without providing a query', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ query: null as any })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('championship'))
+  })
 })
