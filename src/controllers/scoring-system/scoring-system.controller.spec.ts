@@ -124,4 +124,65 @@ describe('Scoring System Controller', () => {
     expect(result.statusCode).toBe(500)
     expect(result.body).toStrictEqual(new ServerError())
   })
+
+  it('should return 200 when getting all ScoringSystems by Championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({
+      query: { championship: 'valid_championship_id' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validScoringSystem)
+  })
+
+  it('should call ScoringSystemService getOne method with correct values', async () => {
+    const { sut, scoringSystemServiceStub } = makeSut()
+
+    const getOneScoringSystemsSpy = jest.spyOn(
+      scoringSystemServiceStub,
+      'getOne'
+    )
+
+    await sut.getOne({ query: { championship: 'valid_championship_id' } })
+
+    expect(getOneScoringSystemsSpy).toHaveBeenCalledWith({
+      championship: 'valid_championship_id'
+    })
+  })
+
+  it('should return 400 when getting all ScoringSystems without providing a query', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({ query: undefined })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('query'))
+  })
+
+  it('should return 400 when getting all ScoringSystems without providing a Championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({ query: { championship: null as any } })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('championship'))
+  })
+
+  it('should return 400 if ScoringSystemService getOne method throws', async () => {
+    const { sut, scoringSystemServiceStub } = makeSut()
+
+    jest
+      .spyOn(scoringSystemServiceStub, 'getOne')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.getOne({
+      query: { championship: 'valid_championship_id' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
 })
