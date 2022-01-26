@@ -114,4 +114,22 @@ describe('Team Service', () => {
       name: 'Red Bull'
     })
   })
+
+  it('should delete a Team', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.delete('valid_id')
+
+    expect(result).toStrictEqual(validTeam)
+  })
+
+  it('should call TeamRepository delete method with correct values', async () => {
+    const { sut, teamRepositoryStub } = makeSut()
+
+    const deleteTeamSpy = jest.spyOn(teamRepositoryStub, 'delete')
+
+    await sut.delete('valid_id')
+
+    expect(deleteTeamSpy).toHaveBeenCalledWith('valid_id')
+  })
 })
