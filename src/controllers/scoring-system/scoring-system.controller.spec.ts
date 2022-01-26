@@ -173,7 +173,7 @@ describe('Scoring System Controller', () => {
     expect(result.body).toStrictEqual(new MissingParamError('championship'))
   })
 
-  it('should return 400 if ScoringSystemService getOne method throws', async () => {
+  it('should return 500 if ScoringSystemService getOne method throws', async () => {
     const { sut, scoringSystemServiceStub } = makeSut()
 
     jest
@@ -252,6 +252,82 @@ describe('Scoring System Controller', () => {
 
     const result = await sut.update({
       body: { scoringSystem: { 1: 30, 2: 25 } },
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
+
+  it('should return 200 on delete success', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.delete({
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validScoringSystem)
+  })
+
+  it('should return 400 when not providing an id on delete', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.delete({ params: { id: null as any } })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('id'))
+  })
+
+  it('should call ScoringSystemService delete method with correct values', async () => {
+    const { sut, scoringSystemServiceStub } = makeSut()
+
+    const deleteScoringSystemSpy = jest.spyOn(
+      scoringSystemServiceStub,
+      'delete'
+    )
+
+    await sut.delete({
+      params: { id: 'valid_id' }
+    })
+
+    expect(deleteScoringSystemSpy).toHaveBeenCalledWith('valid_id')
+  })
+
+  it('should return 400 when not providing params on delete', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.delete({ params: undefined })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('params'))
+  })
+
+  it('should call ScoringSystemService delete method with correct values', async () => {
+    const { sut, scoringSystemServiceStub } = makeSut()
+
+    const deleteScoringSystemSpy = jest.spyOn(
+      scoringSystemServiceStub,
+      'delete'
+    )
+
+    await sut.delete({
+      params: { id: 'valid_id' }
+    })
+
+    expect(deleteScoringSystemSpy).toHaveBeenCalledWith('valid_id')
+  })
+
+  it('should return 500 if ScoringSystemService delete method throws', async () => {
+    const { sut, scoringSystemServiceStub } = makeSut()
+
+    jest
+      .spyOn(scoringSystemServiceStub, 'delete')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.delete({
       params: { id: 'valid_id' }
     })
 
