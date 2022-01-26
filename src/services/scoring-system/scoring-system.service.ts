@@ -36,11 +36,11 @@ export class ScoringSystemService implements ScoringSystemServiceAbstract {
     return await this.scoringSystemRepository.getOne({ championship })
   }
 
-  update(
+  async update(
     id: string,
     updateScoringSystemDto: UpdateScoringSystemDto
   ): Promise<ScoringSystem> {
-    throw new Error('Method not implemented.')
+    return await this.scoringSystemRepository.update(id, updateScoringSystemDto)
   }
 
   delete(id: string): Promise<ScoringSystem> {
