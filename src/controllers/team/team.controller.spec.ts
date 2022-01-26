@@ -2,7 +2,11 @@ import { Types } from 'mongoose'
 
 import { CreateTeamDto, UpdateTeamDto } from '../../dtos/team.dtos'
 import Team from '../../entities/team.entity'
-import { MissingParamError, ServerError } from '../../errors/controllers.errors'
+import {
+  MissingParamError,
+  NotAllowedFieldsError,
+  ServerError
+} from '../../errors/controllers.errors'
 import { TeamServiceAbstract } from '../../services/team/team.service'
 import { TeamController, TeamControllerAbstract } from './team.controller'
 
@@ -174,6 +178,77 @@ describe('Team Controller', () => {
 
     const result = await sut.getAll({
       query: { championship: 'valid_championship_id' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
+
+  it('should return 200 on update success', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({
+      body: { name: 'valid_name', color: 'valid_color' },
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validTeam)
+  })
+
+  it('should call TeamService update method with correct values', async () => {
+    const { sut, teamServiceStub } = makeSut()
+
+    const updateTeamSpy = jest.spyOn(teamServiceStub, 'update')
+
+    await sut.update({
+      body: { name: 'valid_name', color: 'valid_color' },
+      params: { id: 'valid_id' }
+    })
+
+    expect(updateTeamSpy).toHaveBeenCalledWith('valid_id', {
+      name: 'valid_name',
+      color: 'valid_color'
+    })
+  })
+
+  it('should return 400 when not providing an id on update', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({ body: {}, params: { id: null as any } })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('id'))
+  })
+
+  it('should return 400 when providing an unallowed update', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({
+      body: { id: 'valid_id' },
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new NotAllowedFieldsError())
+  })
+
+  it('should return 500 if TeamService update method throws', async () => {
+    const { sut, teamServiceStub } = makeSut()
+
+    jest
+      .spyOn(teamServiceStub, 'update')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const dto = {
+      name: 'valid_name'
+    }
+
+    const result = await sut.update({
+      body: dto,
+      params: { id: 'valid_id' }
     })
 
     expect(result.statusCode).toBe(500)
