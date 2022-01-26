@@ -130,6 +130,16 @@ describe('Scoring System Service', () => {
     expect(promise).rejects.toThrow()
   })
 
+  it('should update a Scoring System', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update('valid_id', {
+      scoringSystem: { 1: 30, 2: 25 }
+    })
+
+    expect(result).toStrictEqual(validScoringSystem)
+  })
+
   it('should call ScoringSystemRepository update method with correct values', async () => {
     const { sut, scoringSystemRepositoryStub } = makeSut()
 
