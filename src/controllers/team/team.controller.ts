@@ -2,6 +2,7 @@ import { MissingParamError, ServerError } from '../../errors/controllers.errors'
 import {
   badRequest,
   created,
+  ok,
   serverError
 } from '../../helpers/controllers.helpers'
 import {
@@ -42,8 +43,16 @@ export class TeamController implements TeamControllerAbstract {
     }
   }
 
-  getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
+    if (!httpRequest?.query?.championship) {
+      return badRequest(new MissingParamError('championship'))
+    }
+
+    const teams = await this.teamService.getAll({
+      championship: httpRequest!.query!.championship
+    })
+
+    return ok(teams)
   }
 
   update(httpRequest: HttpRequest): Promise<HttpResponse> {
