@@ -43,7 +43,7 @@ export class ScoringSystemService implements ScoringSystemServiceAbstract {
     return await this.scoringSystemRepository.update(id, updateScoringSystemDto)
   }
 
-  delete(id: string): Promise<ScoringSystem> {
-    throw new Error('Method not implemented.')
+  async delete(id: string): Promise<ScoringSystem> {
+    return await this.scoringSystemRepository.delete(id)
   }
 }
