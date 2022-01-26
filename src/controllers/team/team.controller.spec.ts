@@ -2,7 +2,7 @@ import { Types } from 'mongoose'
 
 import { CreateTeamDto, UpdateTeamDto } from '../../dtos/team.dtos'
 import Team from '../../entities/team.entity'
-import { MissingParamError } from '../../errors/controllers.errors'
+import { MissingParamError, ServerError } from '../../errors/controllers.errors'
 import { TeamServiceAbstract } from '../../services/team/team.service'
 import { TeamController, TeamControllerAbstract } from './team.controller'
 
@@ -107,5 +107,27 @@ describe('Team Controller', () => {
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('name'))
+  })
+
+  it('should return 400 if TeamService create method throws', async () => {
+    const { sut, teamServiceStub } = makeSut()
+
+    jest
+      .spyOn(teamServiceStub, 'create')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const dto = {
+      name: 'valid_name',
+      championship: 'valid_championship',
+      color: 'valid_color'
+    }
+    const result = await sut.create({
+      body: dto
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
   })
 })
