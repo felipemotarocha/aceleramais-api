@@ -1,4 +1,5 @@
-import { created } from '../../helpers/controllers.helpers'
+import { MissingParamError } from '../../errors/controllers.errors'
+import { badRequest, created } from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
   HttpResponse
@@ -20,6 +21,14 @@ export class TeamController implements TeamControllerAbstract {
   }
 
   async create(httpRequest: HttpRequest): Promise<HttpResponse> {
+    const requiredFields = ['name', 'championship']
+
+    for (const field of requiredFields) {
+      if (!httpRequest.body[field]) {
+        return badRequest(new MissingParamError(field))
+      }
+    }
+
     const team = await this.teamService.create(httpRequest.body)
 
     return created(team)
