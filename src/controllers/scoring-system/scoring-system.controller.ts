@@ -100,7 +100,23 @@ implements ScoringSystemControllerAbstract {
     }
   }
 
-  delete(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async delete(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      if (!httpRequest.params) {
+        return badRequest(new MissingParamError('params'))
+      }
+
+      if (!httpRequest.params?.id) {
+        return badRequest(new MissingParamError('id'))
+      }
+
+      const scoringSystem = await this.scoringSystemService.delete(
+        httpRequest.params.id
+      )
+
+      return ok(scoringSystem)
+    } catch (_) {
+      return serverError()
+    }
   }
 }

@@ -86,12 +86,12 @@ export class TeamController implements TeamControllerAbstract {
         return badRequest(new NotAllowedFieldsError())
       }
 
-      const race = await this.teamService.update(
+      const team = await this.teamService.update(
         httpRequest.params.id,
         httpRequest.body
       )
 
-      return ok(race)
+      return ok(team)
     } catch (_) {
       return serverError()
     }
