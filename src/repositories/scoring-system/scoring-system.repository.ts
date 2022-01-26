@@ -46,11 +46,17 @@ implements ScoringSystemRepositoryAbstract {
     return MongooseHelper.map<ScoringSystem>(scoringSystem.toJSON())
   }
 
-  update(
+  async update(
     id: string,
     updateScoringSystemDto: UpdateScoringSystemDto
   ): Promise<ScoringSystem> {
-    throw new Error('Method not implemented.')
+    const scoringSystem = await this.scoringSystemModel.findByIdAndUpdate(
+      id,
+      updateScoringSystemDto,
+      { new: true }
+    )
+
+    return MongooseHelper.map<ScoringSystem>(scoringSystem.toJSON())
   }
 
   delete(id: string): Promise<ScoringSystem> {
