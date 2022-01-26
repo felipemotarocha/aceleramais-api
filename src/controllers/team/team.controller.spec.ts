@@ -161,7 +161,16 @@ describe('Team Controller', () => {
   it('should return 400 when getting all Teams without providing a query', async () => {
     const { sut } = makeSut()
 
-    const result = await sut.getAll({ query: null as any })
+    const result = await sut.getAll({ query: undefined })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('query'))
+  })
+
+  it('should return 400 when getting all Teams without providing a Championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ query: { championship: null as any } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('championship'))
@@ -273,6 +282,27 @@ describe('Team Controller', () => {
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('id'))
+  })
+
+  it('should call TeamService delete method with correct values', async () => {
+    const { sut, teamServiceStub } = makeSut()
+
+    const deleteTeamSpy = jest.spyOn(teamServiceStub, 'delete')
+
+    await sut.delete({
+      params: { id: 'valid_id' }
+    })
+
+    expect(deleteTeamSpy).toHaveBeenCalledWith('valid_id')
+  })
+
+  it('should return 400 when not providing params on delete', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.delete({ params: undefined })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('params'))
   })
 
   it('should call TeamService delete method with correct values', async () => {
