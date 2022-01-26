@@ -111,4 +111,29 @@ describe('Mongo Team Repository', () => {
       new: true
     })
   })
+
+  it('should delete a Team', async () => {
+    const sut = makeSut()
+
+    await TeamModel.create({ _id: validTeam.id, ...validTeam })
+
+    const result = await sut.delete(validTeam.id)
+
+    expect(result.id).toBeTruthy()
+    expect(result.championship).toStrictEqual(validTeam.championship)
+    expect(result.name).toBe(validTeam.name)
+    expect(result.color).toBe(validTeam.color)
+  })
+
+  it('should call TeamModel findByIdAndDelete method with correct values', async () => {
+    const sut = makeSut()
+
+    const updateCollectionSpy = jest.spyOn(TeamModel, 'findByIdAndDelete')
+
+    await TeamModel.create({ _id: validTeam.id, ...validTeam })
+
+    await sut.delete(validTeam.id)
+
+    expect(updateCollectionSpy).toHaveBeenCalledWith(validTeam.id)
+  })
 })
