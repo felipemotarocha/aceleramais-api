@@ -1,4 +1,8 @@
-import { MissingParamError, ServerError } from '../../errors/controllers.errors'
+import {
+  MissingParamError,
+  NotAllowedFieldsError,
+  ServerError
+} from '../../errors/controllers.errors'
 import {
   badRequest,
   created,
@@ -59,8 +63,31 @@ export class TeamController implements TeamControllerAbstract {
     }
   }
 
-  update(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async update(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      if (!httpRequest?.params?.id) {
+        return badRequest(new MissingParamError('id'))
+      }
+
+      const allowedUpdates = ['name', 'color']
+
+      const someReceivedUpdateIsNotAllowed = Object.keys(httpRequest.body).some(
+        (update) => !allowedUpdates.includes(update)
+      )
+
+      if (someReceivedUpdateIsNotAllowed) {
+        return badRequest(new NotAllowedFieldsError())
+      }
+
+      const race = await this.teamService.update(
+        httpRequest.params.id,
+        httpRequest.body
+      )
+
+      return ok(race)
+    } catch (_) {
+      return serverError(new ServerError())
+    }
   }
 
   delete(httpRequest: HttpRequest): Promise<HttpResponse> {
