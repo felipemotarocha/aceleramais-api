@@ -34,8 +34,16 @@ implements ScoringSystemRepositoryAbstract {
     return MongooseHelper.map<ScoringSystem>(scoringSystem.toJSON())
   }
 
-  getOne({ championship }: { championship: string }): Promise<ScoringSystem> {
-    throw new Error('Method not implemented.')
+  async getOne({
+    championship
+  }: {
+    championship: string
+  }): Promise<ScoringSystem> {
+    const scoringSystem = await this.scoringSystemModel.findOne({
+      championship
+    })
+
+    return MongooseHelper.map<ScoringSystem>(scoringSystem.toJSON())
   }
 
   update(
