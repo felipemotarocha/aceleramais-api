@@ -29,11 +29,14 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
     return await this.driverStandingsRepository.create(createDriverStandingsDto)
   }
 
-  update(
+  async update(
     id: string,
     updateDriverStandingsDto: UpdateDriverStandingsDto
   ): Promise<DriverStandings> {
-    throw new Error('Method not implemented.')
+    return await this.driverStandingsRepository.update(
+      id,
+      updateDriverStandingsDto
+    )
   }
 
   async getOne({
