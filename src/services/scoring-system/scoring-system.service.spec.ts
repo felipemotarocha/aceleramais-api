@@ -162,4 +162,39 @@ describe('Scoring System Service', () => {
 
     expect(promise).rejects.toThrow()
   })
+
+  it('should delete a ScoringSystem', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.delete('valid_id')
+
+    expect(result).toStrictEqual(validScoringSystem)
+  })
+
+  it('should call ScoringSystemRepository delete method with correct values', async () => {
+    const { sut, scoringSystemRepositoryStub } = makeSut()
+
+    const deleteScoringSystemSpy = jest.spyOn(
+      scoringSystemRepositoryStub,
+      'delete'
+    )
+
+    await sut.delete('valid_id')
+
+    expect(deleteScoringSystemSpy).toHaveBeenCalledWith('valid_id')
+  })
+
+  it('should throws if ScoringSystemRepository delete method throws', async () => {
+    const { sut, scoringSystemRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(scoringSystemRepositoryStub, 'delete')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.delete('invalid_id')
+
+    expect(promise).rejects.toThrow()
+  })
 })
