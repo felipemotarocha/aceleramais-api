@@ -254,4 +254,15 @@ describe('Team Controller', () => {
     expect(result.statusCode).toBe(500)
     expect(result.body).toStrictEqual(new ServerError())
   })
+
+  it('should return 200 on delete success', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.delete({
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validTeam)
+  })
 })
