@@ -1,5 +1,5 @@
 import ScoringSystem from '../../entities/scoring-system.entity'
-import { MissingParamError } from '../../errors/controllers.errors'
+import { MissingParamError, ServerError } from '../../errors/controllers.errors'
 import { ScoringSystemServiceAbstract } from '../../services/scoring-system/scoring-system.service'
 import {
   ScoringSystemControllerAbstract,
@@ -101,5 +101,27 @@ describe('Scoring System Controller', () => {
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('scoringSystem'))
+  })
+
+  it('should return 500 if ScoringSystemService create method throws', async () => {
+    const { sut, scoringSystemServiceStub } = makeSut()
+
+    jest
+      .spyOn(scoringSystemServiceStub, 'create')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const dto = {
+      championship: 'valid_championship',
+      scoringSystem: { 1: 25, 2: 20 }
+    }
+
+    const result = await sut.create({
+      body: dto
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
   })
 })
