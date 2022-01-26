@@ -79,15 +79,39 @@ describe('Team Service', () => {
     expect(result).toStrictEqual([validTeam])
   })
 
-  it('should call RaceRepository getAll method with correct values', async () => {
+  it('should call TeamRepository getAll method with correct values', async () => {
     const { sut, teamRepositoryStub } = makeSut()
 
-    const getAllRacesSpy = jest.spyOn(teamRepositoryStub, 'getAll')
+    const getAllTeamsSpy = jest.spyOn(teamRepositoryStub, 'getAll')
 
     await sut.getAll({ championship: 'valid_championship_id' })
 
-    expect(getAllRacesSpy).toHaveBeenCalledWith({
+    expect(getAllTeamsSpy).toHaveBeenCalledWith({
       championship: 'valid_championship_id'
+    })
+  })
+
+  it('should update a Team', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update('valid_id', {
+      name: 'Red Bull'
+    })
+
+    expect(result).toStrictEqual(validTeam)
+  })
+
+  it('should call TeamRepository update method with correct values', async () => {
+    const { sut, teamRepositoryStub } = makeSut()
+
+    const updateTeamSpy = jest.spyOn(teamRepositoryStub, 'update')
+
+    await sut.update('valid_id', {
+      name: 'Red Bull'
+    })
+
+    expect(updateTeamSpy).toHaveBeenCalledWith('valid_id', {
+      name: 'Red Bull'
     })
   })
 })
