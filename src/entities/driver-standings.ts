@@ -1,4 +1,5 @@
 interface DriverStandings {
+  id: string
   championship: string
   standings: {
     user?: string
