@@ -6,6 +6,12 @@ import ScoringSystemModel from '../../models/scoring-system.model'
 import { MongoScoringSystemRepository } from './scoring-system.repository'
 
 describe('Mongo Scoring System Repository', () => {
+  const validScoringSystem = {
+    id: new Types.ObjectId(),
+    championship: new Types.ObjectId(),
+    scoringSystem: { 1: 25, 2: 20 }
+  }
+
   beforeAll(async () => {
     await MongooseHelper.connect(env.mongodbUrl)
   })
@@ -48,5 +54,41 @@ describe('Mongo Scoring System Repository', () => {
     await sut.create(dto)
 
     expect(createScoringSystemSpy).toHaveBeenCalledWith(dto)
+  })
+
+  it('should get a Scoring System by Championship', async () => {
+    const sut = makeSut()
+
+    await ScoringSystemModel.create({
+      _id: validScoringSystem.id,
+      ...validScoringSystem
+    })
+
+    const result = await sut.getOne({
+      championship: validScoringSystem.championship as any
+    })
+
+    expect(result.id).toBeTruthy()
+    expect(result.championship).toStrictEqual(validScoringSystem.championship)
+    expect(result.scoringSystem).toStrictEqual(validScoringSystem.scoringSystem)
+  })
+
+  it('should call ScoringSystemModel getOne method with correct values', async () => {
+    const sut = makeSut()
+
+    await ScoringSystemModel.create({
+      _id: validScoringSystem.id,
+      ...validScoringSystem
+    })
+
+    const getOneScoringSystemSpy = jest.spyOn(ScoringSystemModel, 'findOne')
+
+    await sut.getOne({
+      championship: validScoringSystem.championship as any
+    })
+
+    expect(getOneScoringSystemSpy).toHaveBeenCalledWith({
+      championship: validScoringSystem.championship as any
+    })
   })
 })
