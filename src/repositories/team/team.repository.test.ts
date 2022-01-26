@@ -49,7 +49,7 @@ describe('Mongo Team Repository', () => {
   it('should call TeamModel create method with correct values', async () => {
     const sut = makeSut()
 
-    const createCollectionSpy = jest.spyOn(TeamModel, 'create')
+    const createTeamSpy = jest.spyOn(TeamModel, 'create')
 
     const dto: CreateTeamDto = {
       championship: new Types.ObjectId() as any,
@@ -59,7 +59,7 @@ describe('Mongo Team Repository', () => {
 
     await sut.create(dto)
 
-    expect(createCollectionSpy).toHaveBeenCalledWith(dto)
+    expect(createTeamSpy).toHaveBeenCalledWith(dto)
   })
 
   it('should get all Teams by Championship', async () => {
@@ -67,7 +67,7 @@ describe('Mongo Team Repository', () => {
 
     await TeamModel.create(validTeam)
 
-    const result = await sut.getAll(validTeam.championship)
+    const result = await sut.getAll({ championship: validTeam.championship })
 
     expect(result[0].id).toBeTruthy()
     expect(result[0].championship).toStrictEqual(validTeam.championship)
@@ -96,7 +96,7 @@ describe('Mongo Team Repository', () => {
   it('should call TeamModel findByIdAndUpdate method with correct values', async () => {
     const sut = makeSut()
 
-    const updateCollectionSpy = jest.spyOn(TeamModel, 'findByIdAndUpdate')
+    const updateTeamSpy = jest.spyOn(TeamModel, 'findByIdAndUpdate')
 
     await TeamModel.create({ _id: validTeam.id, ...validTeam })
 
@@ -107,7 +107,7 @@ describe('Mongo Team Repository', () => {
 
     await sut.update(validTeam.id, dto)
 
-    expect(updateCollectionSpy).toHaveBeenCalledWith(validTeam.id, dto, {
+    expect(updateTeamSpy).toHaveBeenCalledWith(validTeam.id, dto, {
       new: true
     })
   })
@@ -128,12 +128,12 @@ describe('Mongo Team Repository', () => {
   it('should call TeamModel findByIdAndDelete method with correct values', async () => {
     const sut = makeSut()
 
-    const updateCollectionSpy = jest.spyOn(TeamModel, 'findByIdAndDelete')
+    const deleteTeamSpy = jest.spyOn(TeamModel, 'findByIdAndDelete')
 
     await TeamModel.create({ _id: validTeam.id, ...validTeam })
 
     await sut.delete(validTeam.id)
 
-    expect(updateCollectionSpy).toHaveBeenCalledWith(validTeam.id)
+    expect(deleteTeamSpy).toHaveBeenCalledWith(validTeam.id, { new: true })
   })
 })

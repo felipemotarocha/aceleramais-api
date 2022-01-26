@@ -5,7 +5,7 @@ import _TeamModel from '../../models/team.model'
 
 export interface TeamRepositoryAbstract {
   create(createTeamDto: CreateTeamDto): Promise<Team>
-  getAll(championship: string): Promise<Team[]>
+  getAll({ championship }: { championship: string }): Promise<Team[]>
   update(id: string, updateTeamDto: UpdateTeamDto): Promise<Team>
   delete(id: string): Promise<Team>
 }
@@ -23,7 +23,7 @@ export class MongoTeamRepository implements TeamRepositoryAbstract {
     return MongooseHelper.map<Team>(team.toJSON())
   }
 
-  async getAll(championship: string): Promise<Team[]> {
+  async getAll({ championship }: { championship: string }): Promise<Team[]> {
     const teams = await this.TeamModel.find({ championship })
 
     return teams.map((team) => MongooseHelper.map<Team>(team.toJSON()))
@@ -38,7 +38,7 @@ export class MongoTeamRepository implements TeamRepositoryAbstract {
   }
 
   async delete(id: string): Promise<Team> {
-    const team = await this.TeamModel.findByIdAndDelete(id)
+    const team = await this.TeamModel.findByIdAndDelete(id, { new: true })
 
     return MongooseHelper.map<Team>(team.toJSON())
   }
