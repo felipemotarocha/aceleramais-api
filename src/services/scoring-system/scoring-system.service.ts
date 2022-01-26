@@ -28,8 +28,12 @@ export class ScoringSystemService implements ScoringSystemServiceAbstract {
     return await this.scoringSystemRepository.create(createScoringSystemDto)
   }
 
-  getOne({ championship }: { championship: string }): Promise<ScoringSystem> {
-    throw new Error('Method not implemented.')
+  async getOne({
+    championship
+  }: {
+    championship: string
+  }): Promise<ScoringSystem> {
+    return await this.scoringSystemRepository.getOne({ championship })
   }
 
   update(
