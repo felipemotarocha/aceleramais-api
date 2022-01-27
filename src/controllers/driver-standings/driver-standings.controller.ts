@@ -1,5 +1,10 @@
 import { MissingParamError } from '../../errors/controllers.errors'
-import { badRequest, created } from '../../helpers/controllers.helpers'
+import {
+  badRequest,
+  created,
+  ok,
+  serverError
+} from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
   HttpResponse
@@ -53,7 +58,23 @@ implements DriverStandingsControllerAbstract {
     throw new Error('Method not implemented.')
   }
 
-  getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      if (!httpRequest.query) {
+        return badRequest(new MissingParamError('query'))
+      }
+
+      if (!httpRequest.query?.championship) {
+        return badRequest(new MissingParamError('championship'))
+      }
+
+      const scoringSystem = await this.driverStandingsService.getOne({
+        championship: httpRequest.query.championship
+      })
+
+      return ok(scoringSystem)
+    } catch (_) {
+      return serverError()
+    }
   }
 }
