@@ -17,3 +17,9 @@ export class NotAllowedFieldsError extends Error {
     )
   }
 }
+
+export class InvalidFieldError extends Error {
+  constructor(field: string) {
+    super(`The ${field} is invalid.`)
+  }
+}
