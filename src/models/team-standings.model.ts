@@ -1,16 +1,23 @@
 import { model, Schema, Types } from 'mongoose'
 
-const standingsSchema = new Schema({
-  team: {
-    type: Types.ObjectId,
-    ref: 'Team',
-    required: true
+const standingsSchema = new Schema(
+  {
+    team: {
+      type: Types.ObjectId,
+      ref: 'Team',
+      required: true
+    },
+    position: {
+      type: Number,
+      required: true
+    },
+    points: {
+      type: Number,
+      required: true
+    }
   },
-  position: {
-    type: Number,
-    required: true
-  }
-})
+  { _id: false }
+)
 
 const teamStandingsSchema = new Schema({
   championship: {
