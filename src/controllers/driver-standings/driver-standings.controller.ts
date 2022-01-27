@@ -29,6 +29,16 @@ implements DriverStandingsControllerAbstract {
       }
     }
 
+    const someUserIsInvalid = httpRequest.body.standings.some(
+      (item) => !item.user && item.isRegistered
+    )
+
+    if (someUserIsInvalid) {
+      return badRequest(
+        new Error('Some user provided on the standings is invalid.')
+      )
+    }
+
     const driverStandings = await this.driverStandingsService.create(
       httpRequest.body
     )
