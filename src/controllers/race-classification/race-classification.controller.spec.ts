@@ -192,4 +192,114 @@ describe('Race Classification Controller', () => {
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new ServerError())
   })
+
+  it('should return 400 if user is null and isRegistered is true', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      classification: [
+        {
+          position: 1,
+          userName: 'valid_userName',
+          team: 'valid_id',
+          isRegistered: true,
+          hasFastestLap: true,
+          hasPolePosition: true
+        }
+      ]
+    }
+
+    const result = await sut.update({
+      body: dto,
+      query: { race: 'valid_race' }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(
+      new Error('Some user provided on the classification is invalid.')
+    )
+  })
+
+  it('should return 400 if user and userName are provided', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      classification: [
+        {
+          position: 1,
+          user: 'valid_user',
+          userName: 'valid_user_name',
+          team: 'valid_id',
+          isRegistered: true,
+          hasFastestLap: true,
+          hasPolePosition: true
+        }
+      ]
+    }
+
+    const result = await sut.update({
+      body: dto,
+      query: { race: 'valid_race' }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(
+      new Error('Some user provided on the classification is invalid.')
+    )
+  })
+
+  it('should return 400 if userName are provided and isRegistered is true', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      classification: [
+        {
+          position: 1,
+          userName: 'valid_user_name',
+          team: 'valid_id',
+          isRegistered: true,
+          hasFastestLap: true,
+          hasPolePosition: true
+        }
+      ]
+    }
+
+    const result = await sut.update({
+      body: dto,
+      query: { race: 'valid_race' }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(
+      new Error('Some user provided on the classification is invalid.')
+    )
+  })
+
+  it('should return 400 if user is provided and isRegistered is false', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      classification: [
+        {
+          position: 1,
+          user: 'valid_user',
+          userName: 'valid_user_name',
+          team: 'valid_id',
+          isRegistered: false,
+          hasFastestLap: true,
+          hasPolePosition: true
+        }
+      ]
+    }
+
+    const result = await sut.update({
+      body: dto,
+      query: { race: 'valid_race' }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(
+      new Error('Some user provided on the classification is invalid.')
+    )
+  })
 })
