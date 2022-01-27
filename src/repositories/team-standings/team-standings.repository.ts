@@ -1,0 +1,60 @@
+import {
+  CreateTeamStandingsDto,
+  UpdateTeamStandingsDto
+} from '../../dtos/team-standings.dto'
+import TeamStandings from '../../entities/team-standings.entity'
+import MongooseHelper from '../../helpers/mongoose.helpers'
+import TeamStandingsModel from '../../models/team-standings.model'
+
+export interface TeamStandingsRepositoryAbstract {
+  create(createTeamStandingsDto: CreateTeamStandingsDto): Promise<TeamStandings>
+  update(
+    id: string,
+    updateTeamStandingsDto: UpdateTeamStandingsDto
+  ): Promise<TeamStandings>
+  getOne({ championship }: { championship: string }): Promise<TeamStandings>
+}
+
+export class MongoTeamStandingsRepository
+implements TeamStandingsRepositoryAbstract {
+  private readonly teamStandingsModel: typeof TeamStandingsModel
+
+  constructor(teamStandingsModel: typeof TeamStandingsModel) {
+    this.teamStandingsModel = teamStandingsModel
+  }
+
+  async create(
+    createTeamStandingsDto: CreateTeamStandingsDto
+  ): Promise<TeamStandings> {
+    const teamStandings = await this.teamStandingsModel.create(
+      createTeamStandingsDto
+    )
+
+    return MongooseHelper.map<TeamStandings>(teamStandings.toJSON())
+  }
+
+  async update(
+    id: string,
+    updateTeamStandingsDto: UpdateTeamStandingsDto
+  ): Promise<TeamStandings> {
+    const teamStandings = await this.teamStandingsModel.findByIdAndUpdate(
+      id,
+      updateTeamStandingsDto,
+      { new: true }
+    )
+
+    return MongooseHelper.map<TeamStandings>(teamStandings.toJSON())
+  }
+
+  async getOne({
+    championship
+  }: {
+    championship: string
+  }): Promise<TeamStandings> {
+    const teamStandings = await this.teamStandingsModel.findOne({
+      championship
+    })
+
+    return MongooseHelper.map<TeamStandings>(teamStandings.toJSON())
+  }
+}
