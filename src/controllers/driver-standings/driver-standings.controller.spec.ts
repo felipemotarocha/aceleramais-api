@@ -1,5 +1,6 @@
 import { CreateDriverStandingsDto } from '../../dtos/driver-standings.dto'
 import DriverStandings from '../../entities/driver-standings'
+import { MissingParamError } from '../../errors/controllers.errors'
 import { DriverStandingsServiceAbstract } from '../../services/driver-standings/driver-standings.service'
 import {
   DriverStandingsControllerAbstract,
@@ -89,8 +90,41 @@ describe('Driver Standings Controller', () => {
         }
       ]
     }
+
     await sut.create({ body: dto })
 
     expect(createDriverStandingsSpy).toHaveBeenCalledWith(dto)
+  })
+
+  it('should return 400 if no championship is provided', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      standings: [
+        {
+          user: 'valid_user',
+          isRegistered: true,
+          position: 1
+        }
+      ]
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('championship'))
+  })
+
+  it('should return 400 if no standings is provided', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      championship: 'valid_championship'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('standings'))
   })
 })
