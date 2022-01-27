@@ -55,6 +55,20 @@ implements RaceClassificationControllerAbstract {
         return badRequest(new NotAllowedFieldsError())
       }
 
+      const someUserIsInvalid = httpRequest.body.classification.some(
+        (item) =>
+          (!item.user && item.isRegistered) ||
+          (item.user && item.userName) ||
+          (item.user && !item.isRegistered) ||
+          (item.userName && item.isRegistered)
+      )
+
+      if (someUserIsInvalid) {
+        return badRequest(
+          new Error('Some user provided on the classification is invalid.')
+        )
+      }
+
       const raceClassification = await this.raceClassificationService.update(
         httpRequest.query!.id,
         httpRequest.body
