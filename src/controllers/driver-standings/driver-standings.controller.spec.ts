@@ -149,4 +149,49 @@ describe('Driver Standings Controller', () => {
       new Error('Some user provided on the standings is invalid.')
     )
   })
+
+  it('should return 400 if user and userName are provided', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      championship: 'valid_championship',
+      standings: [
+        {
+          user: 'valid_user',
+          userName: 'Max Verstappen',
+          isRegistered: false,
+          position: 1
+        }
+      ]
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(
+      new Error('Some user provided on the standings is invalid.')
+    )
+  })
+
+  it('should return 400 if user is provided and isRegistered is false', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      championship: 'valid_championship',
+      standings: [
+        {
+          user: 'valid_user',
+          isRegistered: false,
+          position: 1
+        }
+      ]
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(
+      new Error('Some user provided on the standings is invalid.')
+    )
+  })
 })
