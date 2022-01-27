@@ -30,7 +30,10 @@ implements DriverStandingsControllerAbstract {
     }
 
     const someUserIsInvalid = httpRequest.body.standings.some(
-      (item) => !item.user && item.isRegistered
+      (item) =>
+        (!item.user && item.isRegistered) ||
+        (item.user && item.userName) ||
+        (item.user && !item.isRegistered)
     )
 
     if (someUserIsInvalid) {
