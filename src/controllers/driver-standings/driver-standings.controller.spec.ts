@@ -127,4 +127,26 @@ describe('Driver Standings Controller', () => {
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('standings'))
   })
+
+  it('should return 400 if user is null and isRegistered is true', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      championship: 'valid_championship',
+      standings: [
+        {
+          userName: 'Max Verstappen',
+          isRegistered: true,
+          position: 1
+        }
+      ]
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(
+      new Error('Some user provided on the standings is invalid.')
+    )
+  })
 })
