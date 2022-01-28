@@ -25,12 +25,14 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     championshipRepository: ChampionshipRepositoryAbstract,
     teamRepository: TeamRepositoryAbstract,
     driverStandingsRepository: DriverStandingsRepositoryAbstract,
-    teamStandingsRepository: TeamStandingsRepositoryAbstract
+    teamStandingsRepository: TeamStandingsRepositoryAbstract,
+    scoringSystemRepository: ScoringSystemRepositoryAbstract
   ) {
     this.championshipRepository = championshipRepository
     this.teamRepository = teamRepository
     this.driverStandingsRepository = driverStandingsRepository
     this.teamStandingsRepository = teamStandingsRepository
+    this.scoringSystemRepository = scoringSystemRepository
   }
 
   async create(
@@ -63,6 +65,12 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     const teamStandings = await this.teamStandingsRepository.create({
       championship: championshipId,
       standings: []
+    })
+
+    // eslint-disable-next-line no-unused-vars
+    const scoringSystem = await this.scoringSystemRepository.create({
+      championship: championshipId,
+      scoringSystem: createChampionshipDto.scoringSystem
     })
 
     return {
