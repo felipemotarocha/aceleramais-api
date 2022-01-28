@@ -10,10 +10,13 @@ import { TeamStandingsRepositoryAbstract } from '../../repositories/team-standin
 import { TeamRepositoryAbstract } from '../../repositories/team/team.repository'
 
 export interface ChampionshipServiceAbstract {
-  create(
-    id: string,
+  create({
+    id,
+    createChampionshipDto
+  }: {
+    id?: string
     createChampionshipDto: CreateChampionshipDto
-  ): Promise<Championship>
+  }): Promise<Championship>
   getOne({ id }: { id: string }): Promise<Championship>
 }
 
@@ -44,10 +47,13 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     this.raceClassificationRepository = raceClassificationRepository
   }
 
-  async create(
-    id: string,
+  async create({
+    id = new Types.ObjectId() as any,
+    createChampionshipDto
+  }: {
+    id?: string
     createChampionshipDto: CreateChampionshipDto
-  ): Promise<Championship> {
+  }): Promise<Championship> {
     const championshipId = id
     const { name, description, platform, avatarImageUrl } =
       createChampionshipDto
