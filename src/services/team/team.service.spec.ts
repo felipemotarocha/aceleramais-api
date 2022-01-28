@@ -22,6 +22,10 @@ describe('Team Service', () => {
         return validTeam
       }
 
+      async bulkCreate(): Promise<Team[]> {
+        return [validTeam]
+      }
+
       async getAll(): Promise<Team[]> {
         return [validTeam]
       }
