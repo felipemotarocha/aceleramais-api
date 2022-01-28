@@ -1,4 +1,5 @@
 export interface CreateRaceDto {
+  _id?: string
   track: string
   championship: string
   startDate: string

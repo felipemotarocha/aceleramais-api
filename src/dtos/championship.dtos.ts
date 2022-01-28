@@ -36,4 +36,6 @@ export interface CreateChampionshipMongoDto {
     isRegistered: boolean
   }[]
   scoringSystem: string
+  driverStandings: string
+  teamStandings: string
 }
