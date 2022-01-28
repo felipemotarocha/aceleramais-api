@@ -1,10 +1,13 @@
 import { Types } from 'mongoose'
 import Championship from '../../entities/championship.entity'
 import DriverStandings from '../../entities/driver-standings'
+import ScoringSystem from '../../entities/scoring-system.entity'
 import TeamStandings from '../../entities/team-standings.entity'
 import Team from '../../entities/team.entity'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
+import { ScoringSystemRepositoryAbstract } from '../../repositories/scoring-system/scoring-system.repository'
+import { TeamStandingsRepositoryAbstract } from '../../repositories/team-standings/team-standings.repository'
 import { TeamRepositoryAbstract } from '../../repositories/team/team.repository'
 import { TeamStandingsServiceAbstract } from '../team-standings/team-standings.service'
 import {
@@ -58,10 +61,18 @@ describe('Championship Service', () => {
     ]
   }
 
+  const validScoringSystem = {
+    id: 'valid_id',
+    championship: 'valid_championship',
+    scoringSystem: { 1: 25, 2: 20 }
+  }
+
   interface SutTypes {
     championshipStandingsRepositoryStub: ChampionshipRepositoryAbstract
     teamRepositoryStub: TeamRepositoryAbstract
     driverStandingsRepositoryStub: DriverStandingsRepositoryAbstract
+    teamStandingsRepositoryStub: TeamStandingsRepositoryAbstract
+    scoringSystemRepositoryStub: ScoringSystemRepositoryAbstract
     sut: ChampionshipServiceAbstract
   }
   const makeSut = (): SutTypes => {
@@ -134,22 +145,45 @@ describe('Championship Service', () => {
       }
     }
 
+    class ScoringSystemRepositoryStub
+    implements ScoringSystemRepositoryAbstract {
+      async create(): Promise<ScoringSystem> {
+        return validScoringSystem
+      }
+
+      async getOne(): Promise<ScoringSystem> {
+        return validScoringSystem
+      }
+
+      async update(): Promise<ScoringSystem> {
+        return validScoringSystem
+      }
+
+      async delete(): Promise<ScoringSystem> {
+        return validScoringSystem
+      }
+    }
+
     const teamRepositoryStub = new TeamRepositoryStub()
     const driverStandingsRepositoryStub = new DriverStandingsRepositoryStub()
     const championshipStandingsRepositoryStub = new ChampionshipRepositoryStub()
-    const teamStandingsServiceStub = new TeamStandingsServiceStub()
+    const teamStandingsRepositoryStub = new TeamStandingsServiceStub()
+    const scoringSystemRepositoryStub = new ScoringSystemRepositoryStub()
 
     const sut = new ChampionshipService(
       championshipStandingsRepositoryStub,
       teamRepositoryStub,
       driverStandingsRepositoryStub,
-      teamStandingsServiceStub
+      teamStandingsRepositoryStub,
+      scoringSystemRepositoryStub
     )
 
     return {
       championshipStandingsRepositoryStub,
       teamRepositoryStub,
       driverStandingsRepositoryStub,
+      teamStandingsRepositoryStub,
+      scoringSystemRepositoryStub,
       sut
     }
   }
@@ -207,10 +241,10 @@ describe('Championship Service', () => {
   })
 
   it('should create the Championship Team Standings', async () => {
-    const { sut, driverStandingsRepositoryStub } = makeSut()
+    const { sut, teamStandingsRepositoryStub } = makeSut()
 
     const createTeamStandingsSpy = jest.spyOn(
-      driverStandingsRepositoryStub,
+      teamStandingsRepositoryStub,
       'create'
     )
 
@@ -230,5 +264,31 @@ describe('Championship Service', () => {
       standings: []
     })
     expect(createTeamStandingsSpy).toHaveReturned()
+  })
+
+  it('should create the Championship Scoring System', async () => {
+    const { sut, scoringSystemRepositoryStub } = makeSut()
+
+    const createScoringSystemSpy = jest.spyOn(
+      scoringSystemRepositoryStub,
+      'create'
+    )
+
+    await sut.create(validChampionship.id, {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      scoringSystem: { 1: 25 }
+    })
+
+    expect(createScoringSystemSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      scoringSystem: { 1: 25 }
+    })
+    expect(createScoringSystemSpy).toHaveReturned()
   })
 })
