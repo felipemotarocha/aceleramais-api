@@ -71,4 +71,32 @@ describe('Championship Controller', () => {
     expect(result.statusCode).toBe(201)
     expect(result.body).toStrictEqual(validChampionship)
   })
+
+  it('should call ChampionshipService create method with correct values', async () => {
+    const { sut, championshipStandingsServiceStub } = makeSut()
+
+    const createChampionshipSpy = jest.spyOn(
+      championshipStandingsServiceStub,
+      'create'
+    )
+
+    const dto = {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: ['valid_race'],
+      teams: ['valid_team'],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      scoringSystem: 'valid_scoring_system',
+      teamStandings: 'valid_team_standings',
+      driverStandings: 'valid_driver_standings'
+    }
+
+    await sut.create({ body: dto })
+
+    expect(createChampionshipSpy).toHaveBeenCalledWith({
+      createChampionshipDto: dto
+    })
+  })
 })
