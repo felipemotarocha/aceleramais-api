@@ -46,6 +46,23 @@ describe('Mongo Team Repository', () => {
     expect(result.color).toBe(dto.color)
   })
 
+  it('should create Teams', async () => {
+    const sut = makeSut()
+
+    const dto: CreateTeamDto = {
+      championship: new Types.ObjectId() as any,
+      name: 'Mercedes',
+      color: '#fff'
+    }
+
+    const result = await sut.bulkCreate([dto])
+
+    expect(result[0].id).toBeTruthy()
+    expect(result[0].championship).toStrictEqual(dto.championship)
+    expect(result[0].name).toBe(dto.name)
+    expect(result[0].color).toBe(dto.color)
+  })
+
   it('should call TeamModel create method with correct values', async () => {
     const sut = makeSut()
 
