@@ -16,7 +16,7 @@ const driversSchema = new Schema(
       ref: 'Team',
       required: false
     },
-    isRegisterd: {
+    isRegistered: {
       type: Boolean,
       required: true
     }

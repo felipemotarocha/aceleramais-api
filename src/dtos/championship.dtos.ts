@@ -6,7 +6,7 @@ export interface CreateChampionshipDto {
   races: {
     startDate: string
     track: string
-  }
+  }[]
   teams?: {
     name: string
     color?: string
@@ -17,4 +17,23 @@ export interface CreateChampionshipDto {
     team?: string
     isRegistered: boolean
   }[]
+  scoringSystem: {
+    [key: string]: number
+  }
+}
+
+export interface CreateChampionshipMongoDto {
+  name: string
+  description: string
+  platform: string
+  avatarImageUrl?: string
+  races: string[]
+  teams?: string[]
+  drivers?: {
+    user?: string
+    userName?: string
+    team?: string
+    isRegistered: boolean
+  }[]
+  scoringSystem: string
 }
