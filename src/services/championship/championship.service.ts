@@ -1,7 +1,10 @@
+import { Types } from 'mongoose'
 import { CreateChampionshipDto } from '../../dtos/championship.dtos'
 import Championship from '../../entities/championship.entity'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
+import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
+import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
 import { ScoringSystemRepositoryAbstract } from '../../repositories/scoring-system/scoring-system.repository'
 import { TeamStandingsRepositoryAbstract } from '../../repositories/team-standings/team-standings.repository'
 import { TeamRepositoryAbstract } from '../../repositories/team/team.repository'
@@ -20,19 +23,25 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
   private readonly driverStandingsRepository: DriverStandingsRepositoryAbstract
   private readonly teamStandingsRepository: TeamStandingsRepositoryAbstract
   private readonly scoringSystemRepository: ScoringSystemRepositoryAbstract
+  private readonly raceRepository: RaceRepositoryAbstract
+  private readonly raceClassificationRepository: RaceClassificationRepositoryAbstract
 
   constructor(
     championshipRepository: ChampionshipRepositoryAbstract,
     teamRepository: TeamRepositoryAbstract,
     driverStandingsRepository: DriverStandingsRepositoryAbstract,
     teamStandingsRepository: TeamStandingsRepositoryAbstract,
-    scoringSystemRepository: ScoringSystemRepositoryAbstract
+    scoringSystemRepository: ScoringSystemRepositoryAbstract,
+    raceRepository: RaceRepositoryAbstract,
+    raceClassificationRepository: RaceClassificationRepositoryAbstract
   ) {
     this.championshipRepository = championshipRepository
     this.teamRepository = teamRepository
     this.driverStandingsRepository = driverStandingsRepository
     this.teamStandingsRepository = teamStandingsRepository
     this.scoringSystemRepository = scoringSystemRepository
+    this.raceRepository = raceRepository
+    this.raceClassificationRepository = raceClassificationRepository
   }
 
   async create(
@@ -40,6 +49,8 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     createChampionshipDto: CreateChampionshipDto
   ): Promise<Championship> {
     const championshipId = id
+    const { name, description, platform, avatarImageUrl } =
+      createChampionshipDto
 
     let teamIds: string[] = []
 
@@ -51,41 +62,56 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
         }))
       )
 
-      // eslint-disable-next-line no-unused-vars
       teamIds = teams.map((team) => team.id)
     }
 
-    // eslint-disable-next-line no-unused-vars
     const driverStandings = await this.driverStandingsRepository.create({
       championship: championshipId,
       standings: []
     })
 
-    // eslint-disable-next-line no-unused-vars
     const teamStandings = await this.teamStandingsRepository.create({
       championship: championshipId,
       standings: []
     })
 
-    // eslint-disable-next-line no-unused-vars
     const scoringSystem = await this.scoringSystemRepository.create({
       championship: championshipId,
       scoringSystem: createChampionshipDto.scoringSystem
     })
 
-    return {
-      id: 'valid_id',
-      description: 'valid_description',
-      name: 'valid_name',
-      platform: 'valid_platform',
-      avatarImageUrl: 'valid_url',
-      races: ['valid_race'],
-      teams: ['valid_team'],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: 'valid_scoring_system',
-      teamStandings: 'valid_team_standings',
-      driverStandings: 'valid_driver_standings'
+    const races: string[] = []
+
+    for (const race of createChampionshipDto.races) {
+      const raceId = new Types.ObjectId()
+
+      const raceClassification = await this.raceClassificationRepository.create(
+        { race: raceId as any, classification: [] }
+      )
+      const result = await this.raceRepository.create({
+        _id: raceId as any,
+        championship: championshipId,
+        classification: raceClassification.id,
+        startDate: race.startDate,
+        track: race.track
+      })
+
+      races.push(result.id)
     }
+
+    const championship = await this.championshipRepository.create({
+      name,
+      description,
+      platform,
+      avatarImageUrl,
+      scoringSystem: scoringSystem.id,
+      driverStandings: driverStandings.id,
+      teamStandings: teamStandings.id,
+      teams: teamIds,
+      races
+    })
+
+    return championship
   }
 
   getOne({ id }: { id: string }): Promise<Championship> {
