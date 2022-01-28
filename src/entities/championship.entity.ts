@@ -1,10 +1,13 @@
 export interface ChampionshipDriver {
-  user: string
-  team: string
+  user?: string
+  userName?: string
+  team?: string
+  isRegistered: boolean
 }
 
 interface Championship {
   id: string
+  avatarImageUrl: string
   name: string
   description: string
   platform: string
