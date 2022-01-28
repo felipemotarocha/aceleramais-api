@@ -53,16 +53,16 @@ const championshipSchema = new Schema({
   teams: {
     type: [Types.ObjectId],
     ref: 'Team',
-    required: false
+    required: true
   },
   driverStandings: {
     type: Types.ObjectId,
     ref: 'DriverStandings',
-    required: false
+    required: true
   },
   teamStandings: {
     type: Types.ObjectId,
-    required: false,
+    required: true,
     ref: 'TeamStandings'
   },
   scoringSystem: {

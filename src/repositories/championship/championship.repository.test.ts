@@ -43,7 +43,9 @@ describe('Mongo Driver Standings Repository', () => {
       races: [new Types.ObjectId() as any],
       teams: [new Types.ObjectId() as any],
       drivers: [{ user: new Types.ObjectId() as any, isRegistered: true }],
-      scoringSystem: new Types.ObjectId() as any
+      scoringSystem: new Types.ObjectId() as any,
+      teamStandings: new Types.ObjectId() as any,
+      driverStandings: new Types.ObjectId() as any
     }
 
     const result = await sut.create(dto)
@@ -72,6 +74,8 @@ describe('Mongo Driver Standings Repository', () => {
       races: [new Types.ObjectId() as any],
       teams: [new Types.ObjectId() as any],
       drivers: [{ user: new Types.ObjectId() as any, isRegistered: true }],
+      teamStandings: new Types.ObjectId() as any,
+      driverStandings: new Types.ObjectId() as any,
       scoringSystem: new Types.ObjectId() as any
     }
 
@@ -92,7 +96,9 @@ describe('Mongo Driver Standings Repository', () => {
       races: [new Types.ObjectId() as any],
       teams: [new Types.ObjectId() as any],
       drivers: [{ user: new Types.ObjectId() as any, isRegistered: true }],
-      scoringSystem: new Types.ObjectId() as any
+      scoringSystem: new Types.ObjectId() as any,
+      teamStandings: new Types.ObjectId() as any,
+      driverStandings: new Types.ObjectId() as any
     }
 
     await ChampionshipModel.create({ _id: dto.id, ...dto })
@@ -124,7 +130,9 @@ describe('Mongo Driver Standings Repository', () => {
       races: [new Types.ObjectId() as any],
       teams: [new Types.ObjectId() as any],
       drivers: [{ user: new Types.ObjectId() as any, isRegistered: true }],
-      scoringSystem: new Types.ObjectId() as any
+      scoringSystem: new Types.ObjectId() as any,
+      teamStandings: new Types.ObjectId() as any,
+      driverStandings: new Types.ObjectId() as any
     }
 
     await ChampionshipModel.create({ _id: dto.id, ...dto })
