@@ -1,11 +1,15 @@
 import { Types } from 'mongoose'
 import Championship from '../../entities/championship.entity'
 import DriverStandings from '../../entities/driver-standings'
+import RaceClassification from '../../entities/race-classification.entity'
+import Race from '../../entities/race.entity'
 import ScoringSystem from '../../entities/scoring-system.entity'
 import TeamStandings from '../../entities/team-standings.entity'
 import Team from '../../entities/team.entity'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
+import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
+import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
 import { ScoringSystemRepositoryAbstract } from '../../repositories/scoring-system/scoring-system.repository'
 import { TeamStandingsRepositoryAbstract } from '../../repositories/team-standings/team-standings.repository'
 import { TeamRepositoryAbstract } from '../../repositories/team/team.repository'
@@ -67,12 +71,38 @@ describe('Championship Service', () => {
     scoringSystem: { 1: 25, 2: 20 }
   }
 
+  const validRace = {
+    id: 'valid_id',
+    track: 'valid_track_id',
+    championship: 'valid_championship_id',
+    startDate: 'valid_start_date',
+    isCompleted: true,
+    classification: 'valid_classification_id'
+  }
+
+  const validRaceClassification = {
+    id: 'valid_id',
+    race: 'valid_id',
+    classification: [
+      {
+        position: 1,
+        user: 'valid_id',
+        team: 'valid_id',
+        isRegistered: true,
+        hasFastestLap: true,
+        hasPolePosition: true
+      }
+    ]
+  }
+
   interface SutTypes {
     championshipStandingsRepositoryStub: ChampionshipRepositoryAbstract
     teamRepositoryStub: TeamRepositoryAbstract
     driverStandingsRepositoryStub: DriverStandingsRepositoryAbstract
     teamStandingsRepositoryStub: TeamStandingsRepositoryAbstract
     scoringSystemRepositoryStub: ScoringSystemRepositoryAbstract
+    raceRepositoryStub: RaceRepositoryAbstract
+    raceClassificationRepositoryStub: RaceClassificationRepositoryAbstract
     sut: ChampionshipServiceAbstract
   }
   const makeSut = (): SutTypes => {
@@ -164,18 +194,56 @@ describe('Championship Service', () => {
       }
     }
 
+    class RaceRepositoryStub implements RaceRepositoryAbstract {
+      async create(): Promise<Race> {
+        return validRace
+      }
+
+      async getOne(): Promise<Race> {
+        return validRace
+      }
+
+      async getAll(): Promise<Race[]> {
+        return [validRace]
+      }
+
+      async update(): Promise<Race> {
+        return validRace
+      }
+    }
+
+    class RaceClassificationRepositoryStub
+    implements RaceClassificationRepositoryAbstract {
+      async create(): Promise<RaceClassification> {
+        return validRaceClassification
+      }
+
+      async getOne(): Promise<RaceClassification> {
+        return validRaceClassification
+      }
+
+      async update(): Promise<RaceClassification> {
+        return validRaceClassification
+      }
+    }
+
     const teamRepositoryStub = new TeamRepositoryStub()
     const driverStandingsRepositoryStub = new DriverStandingsRepositoryStub()
     const championshipStandingsRepositoryStub = new ChampionshipRepositoryStub()
     const teamStandingsRepositoryStub = new TeamStandingsServiceStub()
     const scoringSystemRepositoryStub = new ScoringSystemRepositoryStub()
+    const raceRepositoryStub = new RaceRepositoryStub()
+    const raceClassificationRepositoryStub =
+      new RaceClassificationRepositoryStub()
 
     const sut = new ChampionshipService(
       championshipStandingsRepositoryStub,
       teamRepositoryStub,
       driverStandingsRepositoryStub,
       teamStandingsRepositoryStub,
-      scoringSystemRepositoryStub
+      scoringSystemRepositoryStub,
+      raceRepositoryStub,
+      raceClassificationRepositoryStub
     )
 
     return {
@@ -184,6 +252,8 @@ describe('Championship Service', () => {
       driverStandingsRepositoryStub,
       teamStandingsRepositoryStub,
       scoringSystemRepositoryStub,
+      raceRepositoryStub,
+      raceClassificationRepositoryStub,
       sut
     }
   }
@@ -193,7 +263,7 @@ describe('Championship Service', () => {
 
     const createTeamSpy = jest.spyOn(teamRepositoryStub, 'bulkCreate')
 
-    await sut.create(validChampionship.id, {
+    const result = await sut.create(validChampionship.id, {
       description: 'valid_description',
       name: 'valid_name',
       platform: 'valid_platform',
@@ -212,6 +282,7 @@ describe('Championship Service', () => {
       }
     ])
     expect(createTeamSpy).toHaveReturned()
+    expect(result.teams).toStrictEqual(['valid_team'])
   })
 
   it('should create the Championship Driver Standings', async () => {
@@ -222,7 +293,7 @@ describe('Championship Service', () => {
       'create'
     )
 
-    await sut.create(validChampionship.id, {
+    const result = await sut.create(validChampionship.id, {
       description: 'valid_description',
       name: 'valid_name',
       platform: 'valid_platform',
@@ -238,6 +309,7 @@ describe('Championship Service', () => {
       standings: []
     })
     expect(createDriverStandingsSpy).toHaveReturned()
+    expect(result.driverStandings).toBe('valid_driver_standings')
   })
 
   it('should create the Championship Team Standings', async () => {
@@ -248,7 +320,7 @@ describe('Championship Service', () => {
       'create'
     )
 
-    await sut.create(validChampionship.id, {
+    const result = await sut.create(validChampionship.id, {
       description: 'valid_description',
       name: 'valid_name',
       platform: 'valid_platform',
@@ -264,6 +336,7 @@ describe('Championship Service', () => {
       standings: []
     })
     expect(createTeamStandingsSpy).toHaveReturned()
+    expect(result.teamStandings).toBe('valid_team_standings')
   })
 
   it('should create the Championship Scoring System', async () => {
@@ -274,7 +347,7 @@ describe('Championship Service', () => {
       'create'
     )
 
-    await sut.create(validChampionship.id, {
+    const result = await sut.create(validChampionship.id, {
       description: 'valid_description',
       name: 'valid_name',
       platform: 'valid_platform',
@@ -290,5 +363,48 @@ describe('Championship Service', () => {
       scoringSystem: { 1: 25 }
     })
     expect(createScoringSystemSpy).toHaveReturned()
+    expect(result.scoringSystem).toBe('valid_scoring_system')
+  })
+
+  it('should create the Championship Races', async () => {
+    const { sut, raceRepositoryStub } = makeSut()
+
+    const createScoringSystemSpy = jest.spyOn(raceRepositoryStub, 'create')
+
+    const result = await sut.create(validChampionship.id, {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [
+        { track: 'valid_track', startDate: 'valid_start_date' },
+        { track: 'valid_track', startDate: 'valid_start_date' },
+        { track: 'valid_track', startDate: 'valid_start_date' }
+      ],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      scoringSystem: { 1: 25 }
+    })
+
+    expect(createScoringSystemSpy).toHaveBeenCalledTimes(3)
+    expect(createScoringSystemSpy).toHaveReturnedTimes(3)
+    expect(result.races).toStrictEqual(['valid_race'])
+  })
+
+  it('should create the Championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.create(validChampionship.id, {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      scoringSystem: { 1: 25 }
+    })
+
+    expect(result).toStrictEqual(validChampionship)
   })
 })
