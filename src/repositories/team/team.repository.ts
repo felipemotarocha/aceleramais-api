@@ -5,6 +5,7 @@ import _TeamModel from '../../models/team.model'
 
 export interface TeamRepositoryAbstract {
   create(createTeamDto: CreateTeamDto): Promise<Team>
+  bulkCreate(bulkCreateTeamDto: CreateTeamDto[]): Promise<Team[]>
   getAll({ championship }: { championship: string }): Promise<Team[]>
   update(id: string, updateTeamDto: UpdateTeamDto): Promise<Team>
   delete(id: string): Promise<Team>
@@ -21,6 +22,12 @@ export class MongoTeamRepository implements TeamRepositoryAbstract {
     const team = await this.TeamModel.create(createTeamDto)
 
     return MongooseHelper.map<Team>(team.toJSON())
+  }
+
+  async bulkCreate(bulkCreateTeamDto: CreateTeamDto[]): Promise<Team[]> {
+    const teams = await this.TeamModel.create(bulkCreateTeamDto)
+
+    return teams.map((team) => MongooseHelper.map(team.toJSON()))
   }
 
   async getAll({ championship }: { championship: string }): Promise<Team[]> {
