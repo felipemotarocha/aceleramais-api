@@ -407,4 +407,14 @@ describe('Championship Service', () => {
 
     expect(result).toStrictEqual(validChampionship)
   })
+
+  it('should get a Championship by ID', async () => {
+    const { sut } = makeSut()
+
+    jest.setTimeout(10000)
+
+    const result = await sut.getOne({ id: 'valid_id' })
+
+    expect(result).toStrictEqual(validChampionship)
+  })
 })
