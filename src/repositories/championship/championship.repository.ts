@@ -7,7 +7,7 @@ export interface ChampionshipRepositoryAbstract {
   create(
     createChampionshipDto: CreateChampionshipMongoDto
   ): Promise<Championship>
-  getOne({ championship }: { championship: string }): Promise<Championship>
+  getOne({ id }: { id: string }): Promise<Championship>
 }
 
 export class MongoChampionshipRepository
@@ -28,7 +28,9 @@ implements ChampionshipRepositoryAbstract {
     return MongooseHelper.map<Championship>(championship.toJSON())
   }
 
-  getOne({ championship }: { championship: string }): Promise<Championship> {
-    throw new Error('Method not implemented.')
+  async getOne({ id }: { id: string }): Promise<Championship> {
+    const championship = await this.championshipModel.findById(id)
+
+    return MongooseHelper.map<Championship>(championship.toJSON())
   }
 }
