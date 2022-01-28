@@ -114,7 +114,9 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     return championship
   }
 
-  getOne({ id }: { id: string }): Promise<Championship> {
-    throw new Error('Method not implemented.')
+  async getOne({ id }: { id: string }): Promise<Championship> {
+    const championship = await this.championshipRepository.getOne({ id })
+
+    return championship
   }
 }
