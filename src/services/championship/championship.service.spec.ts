@@ -263,15 +263,18 @@ describe('Championship Service', () => {
 
     const createTeamSpy = jest.spyOn(teamRepositoryStub, 'bulkCreate')
 
-    const result = await sut.create(validChampionship.id, {
-      description: 'valid_description',
-      name: 'valid_name',
-      platform: 'valid_platform',
-      avatarImageUrl: 'valid_url',
-      races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
-      teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: { 1: 25 }
+    const result = await sut.create({
+      id: validChampionship.id,
+      createChampionshipDto: {
+        description: 'valid_description',
+        name: 'valid_name',
+        platform: 'valid_platform',
+        avatarImageUrl: 'valid_url',
+        races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
+        teams: [{ name: 'valid_name', color: 'valid_color' }],
+        drivers: [{ user: 'valid_user', isRegistered: true }],
+        scoringSystem: { 1: 25 }
+      }
     })
 
     expect(createTeamSpy).toHaveBeenCalledWith([
@@ -293,15 +296,18 @@ describe('Championship Service', () => {
       'create'
     )
 
-    const result = await sut.create(validChampionship.id, {
-      description: 'valid_description',
-      name: 'valid_name',
-      platform: 'valid_platform',
-      avatarImageUrl: 'valid_url',
-      races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
-      teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: { 1: 25 }
+    const result = await sut.create({
+      id: validChampionship.id,
+      createChampionshipDto: {
+        description: 'valid_description',
+        name: 'valid_name',
+        platform: 'valid_platform',
+        avatarImageUrl: 'valid_url',
+        races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
+        teams: [{ name: 'valid_name', color: 'valid_color' }],
+        drivers: [{ user: 'valid_user', isRegistered: true }],
+        scoringSystem: { 1: 25 }
+      }
     })
 
     expect(createDriverStandingsSpy).toHaveBeenCalledWith({
@@ -320,15 +326,18 @@ describe('Championship Service', () => {
       'create'
     )
 
-    const result = await sut.create(validChampionship.id, {
-      description: 'valid_description',
-      name: 'valid_name',
-      platform: 'valid_platform',
-      avatarImageUrl: 'valid_url',
-      races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
-      teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: { 1: 25 }
+    const result = await sut.create({
+      id: validChampionship.id,
+      createChampionshipDto: {
+        description: 'valid_description',
+        name: 'valid_name',
+        platform: 'valid_platform',
+        avatarImageUrl: 'valid_url',
+        races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
+        teams: [{ name: 'valid_name', color: 'valid_color' }],
+        drivers: [{ user: 'valid_user', isRegistered: true }],
+        scoringSystem: { 1: 25 }
+      }
     })
 
     expect(createTeamStandingsSpy).toHaveBeenCalledWith({
@@ -347,15 +356,18 @@ describe('Championship Service', () => {
       'create'
     )
 
-    const result = await sut.create(validChampionship.id, {
-      description: 'valid_description',
-      name: 'valid_name',
-      platform: 'valid_platform',
-      avatarImageUrl: 'valid_url',
-      races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
-      teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: { 1: 25 }
+    const result = await sut.create({
+      id: validChampionship.id,
+      createChampionshipDto: {
+        description: 'valid_description',
+        name: 'valid_name',
+        platform: 'valid_platform',
+        avatarImageUrl: 'valid_url',
+        races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
+        teams: [{ name: 'valid_name', color: 'valid_color' }],
+        drivers: [{ user: 'valid_user', isRegistered: true }],
+        scoringSystem: { 1: 25 }
+      }
     })
 
     expect(createScoringSystemSpy).toHaveBeenCalledWith({
@@ -371,19 +383,22 @@ describe('Championship Service', () => {
 
     const createScoringSystemSpy = jest.spyOn(raceRepositoryStub, 'create')
 
-    const result = await sut.create(validChampionship.id, {
-      description: 'valid_description',
-      name: 'valid_name',
-      platform: 'valid_platform',
-      avatarImageUrl: 'valid_url',
-      races: [
-        { track: 'valid_track', startDate: 'valid_start_date' },
-        { track: 'valid_track', startDate: 'valid_start_date' },
-        { track: 'valid_track', startDate: 'valid_start_date' }
-      ],
-      teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: { 1: 25 }
+    const result = await sut.create({
+      id: validChampionship.id,
+      createChampionshipDto: {
+        description: 'valid_description',
+        name: 'valid_name',
+        platform: 'valid_platform',
+        avatarImageUrl: 'valid_url',
+        races: [
+          { track: 'valid_track', startDate: 'valid_start_date' },
+          { track: 'valid_track', startDate: 'valid_start_date' },
+          { track: 'valid_track', startDate: 'valid_start_date' }
+        ],
+        teams: [{ name: 'valid_name', color: 'valid_color' }],
+        drivers: [{ user: 'valid_user', isRegistered: true }],
+        scoringSystem: { 1: 25 }
+      }
     })
 
     expect(createScoringSystemSpy).toHaveBeenCalledTimes(3)
@@ -394,15 +409,18 @@ describe('Championship Service', () => {
   it('should create the Championship', async () => {
     const { sut } = makeSut()
 
-    const result = await sut.create(validChampionship.id, {
-      description: 'valid_description',
-      name: 'valid_name',
-      platform: 'valid_platform',
-      avatarImageUrl: 'valid_url',
-      races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
-      teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: { 1: 25 }
+    const result = await sut.create({
+      id: validChampionship.id,
+      createChampionshipDto: {
+        description: 'valid_description',
+        name: 'valid_name',
+        platform: 'valid_platform',
+        avatarImageUrl: 'valid_url',
+        races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
+        teams: [{ name: 'valid_name', color: 'valid_color' }],
+        drivers: [{ user: 'valid_user', isRegistered: true }],
+        scoringSystem: { 1: 25 }
+      }
     })
 
     expect(result).toStrictEqual(validChampionship)
