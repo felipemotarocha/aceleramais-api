@@ -23,10 +23,12 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
 
   constructor(
     championshipRepository: ChampionshipRepositoryAbstract,
-    teamRepository: TeamRepositoryAbstract
+    teamRepository: TeamRepositoryAbstract,
+    driverStandingsRepository: DriverStandingsRepositoryAbstract
   ) {
     this.championshipRepository = championshipRepository
     this.teamRepository = teamRepository
+    this.driverStandingsRepository = driverStandingsRepository
   }
 
   async create(
@@ -48,6 +50,12 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       // eslint-disable-next-line no-unused-vars
       teamIds = teams.map((team) => team.id)
     }
+
+    // eslint-disable-next-line no-unused-vars
+    const driverStandings = await this.driverStandingsRepository.create({
+      championship: championshipId,
+      standings: []
+    })
 
     return {
       id: 'valid_id',
