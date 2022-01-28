@@ -1,7 +1,9 @@
 import { Types } from 'mongoose'
 import Championship from '../../entities/championship.entity'
+import DriverStandings from '../../entities/driver-standings'
 import Team from '../../entities/team.entity'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
+import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
 import { TeamRepositoryAbstract } from '../../repositories/team/team.repository'
 import {
   ChampionshipServiceAbstract,
@@ -30,9 +32,22 @@ describe('Championship Service', () => {
     color: '#fff'
   }
 
+  const validDriverStandings = {
+    id: 'valid_id',
+    championship: 'valid_championship',
+    standings: [
+      {
+        user: 'valid_user',
+        isRegistered: true,
+        position: 1
+      }
+    ]
+  }
+
   interface SutTypes {
     championshipStandingsRepositoryStub: ChampionshipRepositoryAbstract
     teamRepositoryStub: TeamRepositoryAbstract
+    driverStandingsRepositoryStub: DriverStandingsRepositoryAbstract
     sut: ChampionshipServiceAbstract
   }
   const makeSut = (): SutTypes => {
@@ -68,15 +83,41 @@ describe('Championship Service', () => {
       }
     }
 
+    class DriverStandingsRepositoryStub
+    implements DriverStandingsRepositoryAbstract {
+      async create(): Promise<DriverStandings> {
+        return validDriverStandings
+      }
+
+      async getOne(): Promise<DriverStandings> {
+        return validDriverStandings
+      }
+
+      async update(): Promise<DriverStandings> {
+        return validDriverStandings
+      }
+
+      async delete(): Promise<DriverStandings> {
+        return validDriverStandings
+      }
+    }
+
     const teamRepositoryStub = new TeamRepositoryStub()
+    const driverStandingsRepositoryStub = new DriverStandingsRepositoryStub()
     const championshipStandingsRepositoryStub = new ChampionshipRepositoryStub()
 
     const sut = new ChampionshipService(
       championshipStandingsRepositoryStub,
-      teamRepositoryStub
+      teamRepositoryStub,
+      driverStandingsRepositoryStub
     )
 
-    return { championshipStandingsRepositoryStub, teamRepositoryStub, sut }
+    return {
+      championshipStandingsRepositoryStub,
+      teamRepositoryStub,
+      driverStandingsRepositoryStub,
+      sut
+    }
   }
 
   it('should create the Championship Teams', async () => {
@@ -103,5 +144,31 @@ describe('Championship Service', () => {
       }
     ])
     expect(createTeamSpy).toHaveReturned()
+  })
+
+  it('should create the Championship Driver Standings', async () => {
+    const { sut, driverStandingsRepositoryStub } = makeSut()
+
+    const createDriverStandingsSpy = jest.spyOn(
+      driverStandingsRepositoryStub,
+      'create'
+    )
+
+    await sut.create(validChampionship.id, {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      scoringSystem: { 1: 25 }
+    })
+
+    expect(createDriverStandingsSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      standings: []
+    })
+    expect(createDriverStandingsSpy).toHaveReturned()
   })
 })
