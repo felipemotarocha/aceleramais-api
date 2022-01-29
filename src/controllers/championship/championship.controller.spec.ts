@@ -26,7 +26,7 @@ describe('Championship Controller', () => {
   }
 
   interface SutTypes {
-    championshipStandingsServiceStub: ChampionshipServiceAbstract
+    championshipServicestub: ChampionshipServiceAbstract
     sut: ChampionshipControllerAbstract
   }
 
@@ -49,10 +49,10 @@ describe('Championship Controller', () => {
       }
     }
 
-    const championshipStandingsServiceStub = new ChampionshipServiceStub()
-    const sut = new ChampionshipController(championshipStandingsServiceStub)
+    const championshipServicestub = new ChampionshipServiceStub()
+    const sut = new ChampionshipController(championshipServicestub)
 
-    return { sut, championshipStandingsServiceStub }
+    return { sut, championshipServicestub }
   }
 
   it('should return 201 on creation success', async () => {
@@ -78,12 +78,9 @@ describe('Championship Controller', () => {
   })
 
   it('should call ChampionshipService create method with correct values', async () => {
-    const { sut, championshipStandingsServiceStub } = makeSut()
+    const { sut, championshipServicestub } = makeSut()
 
-    const createChampionshipSpy = jest.spyOn(
-      championshipStandingsServiceStub,
-      'create'
-    )
+    const createChampionshipSpy = jest.spyOn(championshipServicestub, 'create')
 
     const dto = {
       description: 'valid_description',
@@ -430,10 +427,10 @@ describe('Championship Controller', () => {
   })
 
   it('should return 500 if ChampionshipService create method throws', async () => {
-    const { sut, championshipStandingsServiceStub } = makeSut()
+    const { sut, championshipServicestub } = makeSut()
 
     jest
-      .spyOn(championshipStandingsServiceStub, 'create')
+      .spyOn(championshipServicestub, 'create')
       .mockReturnValueOnce(
         new Promise((_resolve, reject) => reject(new Error()))
       )
@@ -452,6 +449,50 @@ describe('Championship Controller', () => {
     }
 
     const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
+
+  it('should return 200 on getting a Championship by ID', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({ params: { id: 'valid_id' } })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validChampionship)
+  })
+
+  it('should return 400 when getting a Championship without providing a params', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({ params: undefined })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('params'))
+  })
+
+  it('should return 400 when getting a Championship without providing a Championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({ params: { id: null as any } })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('id'))
+  })
+
+  it('should return 500 if DriverStandingsService getOne method throws', async () => {
+    const { sut, championshipServicestub } = makeSut()
+
+    jest
+      .spyOn(championshipServicestub, 'getOne')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.getOne({
+      params: { id: 'valid_id' }
+    })
 
     expect(result.statusCode).toBe(500)
     expect(result.body).toStrictEqual(new ServerError())
