@@ -1,3 +1,12 @@
-import app from './config/app.config'
+import { env } from '../config/env.config'
+import MongooseHelper from '../helpers/mongoose.helpers'
 
-app.listen(5050, () => console.log('server running at 5050'))
+MongooseHelper.connect(env.mongodbUrl)
+  .then(async () => {
+    const app = (await import('./config/app.config')).default
+
+    app.listen(env.port, () =>
+      console.log(`Server running at http://localhost:${env.port}`)
+    )
+  })
+  .catch(console.error)
