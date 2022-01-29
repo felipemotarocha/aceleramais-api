@@ -33,4 +33,21 @@ describe('Championship Routes', () => {
       })
       .expect(201)
   })
+
+  it('should get a Championship by ID', async () => {
+    const { body } = await request(app)
+      .post('/api/championship')
+      .send({
+        description: 'valid_description',
+        name: 'valid_name',
+        platform: 'valid_platform',
+        avatarImageUrl: 'valid_url',
+        races: [{ startDate: 'valid_start_date', track: new Types.ObjectId() }],
+        teams: [{ name: 'valid_name', color: 'valid_color' }],
+        drivers: [{ user: new Types.ObjectId(), isRegistered: true }],
+        scoringSystem: { 1: 25, 2: 20 }
+      })
+
+    await request(app).get(`/api/championship/${body.id}`).expect(200)
+  })
 })
