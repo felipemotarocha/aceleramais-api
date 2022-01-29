@@ -57,6 +57,16 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       return badRequest(new InvalidFieldError('scoringSystem'))
     }
 
+    if (httpRequest.body.teams) {
+      const someTeamIsInvalid = httpRequest.body.teams.some(
+        (team) => !team.name
+      )
+
+      if (someTeamIsInvalid) {
+        return badRequest(new InvalidFieldError('teams'))
+      }
+    }
+
     const championship = await this.championshipService.create({
       createChampionshipDto: httpRequest.body
     })
