@@ -1,7 +1,8 @@
 import Championship from '../../entities/championship.entity'
 import {
   InvalidFieldError,
-  MissingParamError
+  MissingParamError,
+  ServerError
 } from '../../errors/controllers.errors'
 import { ChampionshipServiceAbstract } from '../../services/championship/championship.service'
 import {
@@ -426,5 +427,33 @@ describe('Championship Controller', () => {
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('drivers'))
+  })
+
+  it('should return 500 if ChampionshipService create method throws', async () => {
+    const { sut, championshipStandingsServiceStub } = makeSut()
+
+    jest
+      .spyOn(championshipStandingsServiceStub, 'create')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const dto = {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      scoringSystem: { 1: 25, 2: 20 },
+      teamStandings: 'valid_team_standings',
+      driverStandings: 'valid_driver_standings'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
   })
 })
