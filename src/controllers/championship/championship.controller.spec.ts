@@ -1,5 +1,8 @@
 import Championship from '../../entities/championship.entity'
-import { MissingParamError } from '../../errors/controllers.errors'
+import {
+  InvalidFieldError,
+  MissingParamError
+} from '../../errors/controllers.errors'
 import { ChampionshipServiceAbstract } from '../../services/championship/championship.service'
 import {
   ChampionshipControllerAbstract,
@@ -59,7 +62,7 @@ describe('Championship Controller', () => {
       name: 'valid_name',
       platform: 'valid_platform',
       avatarImageUrl: 'valid_url',
-      races: ['valid_race'],
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: 'valid_scoring_system',
@@ -86,7 +89,7 @@ describe('Championship Controller', () => {
       name: 'valid_name',
       platform: 'valid_platform',
       avatarImageUrl: 'valid_url',
-      races: ['valid_race'],
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: 'valid_scoring_system',
@@ -108,7 +111,7 @@ describe('Championship Controller', () => {
       description: 'valid_description',
       platform: 'valid_platform',
       avatarImageUrl: 'valid_url',
-      races: ['valid_race'],
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: 'valid_scoring_system',
@@ -129,7 +132,7 @@ describe('Championship Controller', () => {
       name: 'valid_name',
       platform: 'valid_platform',
       avatarImageUrl: 'valid_url',
-      races: ['valid_race'],
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: 'valid_scoring_system',
@@ -150,7 +153,7 @@ describe('Championship Controller', () => {
       name: 'valid_name',
       description: 'valid_description',
       avatarImageUrl: 'valid_url',
-      races: ['valid_race'],
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: 'valid_scoring_system',
@@ -195,7 +198,7 @@ describe('Championship Controller', () => {
       platform: 'valid_platform',
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
-      races: ['valid_race'],
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings'
     }
@@ -204,5 +207,70 @@ describe('Championship Controller', () => {
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('scoringSystem'))
+  })
+
+  it('should return 400 if no scoring system is provided', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      name: 'valid_name',
+      description: 'valid_description',
+      avatarImageUrl: 'valid_url',
+      platform: 'valid_platform',
+      teams: ['valid_team'],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
+      teamStandings: 'valid_team_standings',
+      driverStandings: 'valid_driver_standings'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('scoringSystem'))
+  })
+
+  it('should return 400 if some race does not contain a track', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ startDate: 'valid_start_date', track: null }],
+      teams: ['valid_team'],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      scoringSystem: 'valid_scoring_system',
+      teamStandings: 'valid_team_standings',
+      driverStandings: 'valid_driver_standings'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new InvalidFieldError('races'))
+  })
+
+  it('should return 400 if some race does not contain a start date', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ startDate: null, track: 'valid_track' }],
+      teams: ['valid_team'],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      scoringSystem: 'valid_scoring_system',
+      teamStandings: 'valid_team_standings',
+      driverStandings: 'valid_driver_standings'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new InvalidFieldError('races'))
   })
 })
