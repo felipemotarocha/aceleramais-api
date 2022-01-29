@@ -1,9 +1,8 @@
 import request from 'supertest'
-import { env } from '../../config/env.config'
-import MongooseHelper from '../../helpers/mongoose.helpers'
-import ChampionshipModel from '../../models/championship.model'
-
 import app from '../config/app.config'
+import { env } from '../config/env.config'
+import MongooseHelper from '../helpers/mongoose.helpers'
+import ChampionshipModel from '../models/championship.model'
 
 describe('Championship Routes', () => {
   beforeAll(async () => {

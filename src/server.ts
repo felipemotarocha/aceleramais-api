@@ -1,5 +1,5 @@
-import { env } from '../config/env.config'
-import MongooseHelper from '../helpers/mongoose.helpers'
+import { env } from './config/env.config'
+import MongooseHelper from './helpers/mongoose.helpers'
 
 MongooseHelper.connect(env.mongodbUrl)
   .then(async () => {

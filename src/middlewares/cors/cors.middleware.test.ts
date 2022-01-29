@@ -1,5 +1,4 @@
 import request from 'supertest'
-
 import app from '../../config/app.config'
 
 describe('CORS Middleware', () => {
