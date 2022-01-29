@@ -67,6 +67,22 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       }
     }
 
+    if (httpRequest.body.drivers) {
+      const someDriverIsInvalid = httpRequest.body.drivers.some(
+        (item) =>
+          (!item.user && item.isRegistered) ||
+          (item.user && item.userName) ||
+          (item.user && !item.isRegistered) ||
+          (item.userName && item.isRegistered) ||
+          item.isRegistered === undefined ||
+          item.isRegistered === null
+      )
+
+      if (someDriverIsInvalid) {
+        return badRequest(new InvalidFieldError('drivers'))
+      }
+    }
+
     const championship = await this.championshipService.create({
       createChampionshipDto: httpRequest.body
     })
