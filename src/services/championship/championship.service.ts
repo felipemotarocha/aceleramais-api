@@ -55,7 +55,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     createChampionshipDto: CreateChampionshipDto
   }): Promise<Championship> {
     const championshipId = id
-    const { name, description, platform, avatarImageUrl } =
+    const { name, description, platform, avatarImageUrl, drivers } =
       createChampionshipDto
 
     let teamIds: string[] = []
@@ -114,7 +114,8 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       driverStandings: driverStandings.id,
       teamStandings: teamStandings.id,
       teams: teamIds,
-      races
+      races,
+      drivers
     })
 
     return championship

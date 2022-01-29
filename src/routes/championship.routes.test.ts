@@ -1,3 +1,4 @@
+import { Types } from 'mongoose'
 import request from 'supertest'
 import app from '../config/app.config'
 import { env } from '../config/env.config'
@@ -25,13 +26,11 @@ describe('Championship Routes', () => {
         name: 'valid_name',
         platform: 'valid_platform',
         avatarImageUrl: 'valid_url',
-        races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
+        races: [{ startDate: 'valid_start_date', track: new Types.ObjectId() }],
         teams: [{ name: 'valid_name', color: 'valid_color' }],
-        drivers: [{ user: 'valid_user', isRegistered: true }],
-        scoringSystem: { 1: 25, 2: 20 },
-        teamStandings: 'valid_team_standings',
-        driverStandings: 'valid_driver_standings'
+        drivers: [{ user: new Types.ObjectId(), isRegistered: true }],
+        scoringSystem: { 1: 25, 2: 20 }
       })
-      .expect(200)
+      .expect(201)
   })
 })

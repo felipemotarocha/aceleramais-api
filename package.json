@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "sucrase-node src/main/server.ts",
+    "start": "sucrase-node src/server.ts",
     "test": "jest --passWithNoTests --runInBand",
     "test:watch": "jest --passWithNoTests --runInBand --watch",
     "test:staged": "yarn test",
