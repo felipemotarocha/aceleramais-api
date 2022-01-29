@@ -1,4 +1,7 @@
-import { MissingParamError } from '../../errors/controllers.errors'
+import {
+  InvalidFieldError,
+  MissingParamError
+} from '../../errors/controllers.errors'
 import { badRequest, created } from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
@@ -31,6 +34,14 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       if (!httpRequest.body[field]) {
         return badRequest(new MissingParamError(field))
       }
+    }
+
+    const someRaceIsInvalid = httpRequest.body.races.some(
+      (race) => !race.track || !race.startDate
+    )
+
+    if (someRaceIsInvalid) {
+      return badRequest(new InvalidFieldError('races'))
     }
 
     const championship = await this.championshipService.create({
