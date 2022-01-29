@@ -339,4 +339,92 @@ describe('Championship Controller', () => {
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('teams'))
   })
+
+  it('should return 400 if some driver is invalid', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
+      teams: [{ name: 'valid_team', color: 'valid_color' }],
+      drivers: [{ userName: 'valid_user_name', isRegistered: true }],
+      scoringSystem: { 1: 20 },
+      teamStandings: 'valid_team_standings',
+      driverStandings: 'valid_driver_standings'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new InvalidFieldError('drivers'))
+  })
+
+  it('should return 400 if some driver is invalid', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
+      teams: [{ name: 'valid_team', color: 'valid_color' }],
+      drivers: [{ user: 'valid_user', isRegistered: false }],
+      scoringSystem: { 1: 20 },
+      teamStandings: 'valid_team_standings',
+      driverStandings: 'valid_driver_standings'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new InvalidFieldError('drivers'))
+  })
+
+  it('should return 400 if some driver is invalid', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
+      teams: [{ name: 'valid_team', color: 'valid_color' }],
+      drivers: [{ user: 'valid_user' }],
+      scoringSystem: { 1: 20 },
+      teamStandings: 'valid_team_standings',
+      driverStandings: 'valid_driver_standings'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new InvalidFieldError('drivers'))
+  })
+
+  it('should return 400 if some driver is invalid', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
+      teams: [{ name: 'valid_team', color: 'valid_color' }],
+      drivers: [{ userName: 'valid_user' }],
+      scoringSystem: { 1: 20 },
+      teamStandings: 'valid_team_standings',
+      driverStandings: 'valid_driver_standings'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new InvalidFieldError('drivers'))
+  })
 })
