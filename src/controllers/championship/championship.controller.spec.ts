@@ -65,7 +65,7 @@ describe('Championship Controller', () => {
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: 'valid_scoring_system',
+      scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings'
     }
@@ -92,7 +92,7 @@ describe('Championship Controller', () => {
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: 'valid_scoring_system',
+      scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings'
     }
@@ -114,7 +114,7 @@ describe('Championship Controller', () => {
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: 'valid_scoring_system',
+      scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings'
     }
@@ -135,7 +135,7 @@ describe('Championship Controller', () => {
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: 'valid_scoring_system',
+      scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings'
     }
@@ -156,7 +156,7 @@ describe('Championship Controller', () => {
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: 'valid_scoring_system',
+      scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings'
     }
@@ -177,7 +177,7 @@ describe('Championship Controller', () => {
       platform: 'valid_platform',
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: 'valid_scoring_system',
+      scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings'
     }
@@ -241,7 +241,7 @@ describe('Championship Controller', () => {
       races: [{ startDate: 'valid_start_date', track: null }],
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: 'valid_scoring_system',
+      scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings'
     }
@@ -263,7 +263,7 @@ describe('Championship Controller', () => {
       races: [{ startDate: null, track: 'valid_track' }],
       teams: ['valid_team'],
       drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: 'valid_scoring_system',
+      scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings'
     }
@@ -272,5 +272,49 @@ describe('Championship Controller', () => {
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('races'))
+  })
+
+  it('should return 400 if scoring system is invalid', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
+      teams: ['valid_team'],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      scoringSystem: { 1: 'a' },
+      teamStandings: 'valid_team_standings',
+      driverStandings: 'valid_driver_standings'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new InvalidFieldError('scoringSystem'))
+  })
+
+  it('should return 400 if scoring system is invalid', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
+      teams: ['valid_team'],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      scoringSystem: { a: 1 },
+      teamStandings: 'valid_team_standings',
+      driverStandings: 'valid_driver_standings'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new InvalidFieldError('scoringSystem'))
   })
 })
