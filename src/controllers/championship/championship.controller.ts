@@ -5,6 +5,7 @@ import {
 import {
   badRequest,
   created,
+  ok,
   serverError
 } from '../../helpers/controllers.helpers'
 import {
@@ -98,7 +99,23 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
     }
   }
 
-  getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      if (!httpRequest.params) {
+        return badRequest(new MissingParamError('params'))
+      }
+
+      if (!httpRequest.params?.id) {
+        return badRequest(new MissingParamError('id'))
+      }
+
+      const scoringSystem = await this.championshipService.getOne({
+        id: httpRequest.params.id
+      })
+
+      return ok(scoringSystem)
+    } catch (_) {
+      return serverError()
+    }
   }
 }
