@@ -63,7 +63,7 @@ describe('Championship Controller', () => {
       platform: 'valid_platform',
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
-      teams: ['valid_team'],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
@@ -90,7 +90,7 @@ describe('Championship Controller', () => {
       platform: 'valid_platform',
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
-      teams: ['valid_team'],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
@@ -112,7 +112,7 @@ describe('Championship Controller', () => {
       platform: 'valid_platform',
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
-      teams: ['valid_team'],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
@@ -133,7 +133,7 @@ describe('Championship Controller', () => {
       platform: 'valid_platform',
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
-      teams: ['valid_team'],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
@@ -154,7 +154,7 @@ describe('Championship Controller', () => {
       description: 'valid_description',
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
-      teams: ['valid_team'],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
@@ -175,7 +175,7 @@ describe('Championship Controller', () => {
       description: 'valid_description',
       avatarImageUrl: 'valid_url',
       platform: 'valid_platform',
-      teams: ['valid_team'],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
@@ -196,7 +196,7 @@ describe('Championship Controller', () => {
       description: 'valid_description',
       avatarImageUrl: 'valid_url',
       platform: 'valid_platform',
-      teams: ['valid_team'],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teamStandings: 'valid_team_standings',
@@ -217,7 +217,7 @@ describe('Championship Controller', () => {
       description: 'valid_description',
       avatarImageUrl: 'valid_url',
       platform: 'valid_platform',
-      teams: ['valid_team'],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teamStandings: 'valid_team_standings',
@@ -239,7 +239,7 @@ describe('Championship Controller', () => {
       platform: 'valid_platform',
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: null }],
-      teams: ['valid_team'],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
@@ -261,7 +261,7 @@ describe('Championship Controller', () => {
       platform: 'valid_platform',
       avatarImageUrl: 'valid_url',
       races: [{ startDate: null, track: 'valid_track' }],
-      teams: ['valid_team'],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
@@ -283,7 +283,7 @@ describe('Championship Controller', () => {
       platform: 'valid_platform',
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
-      teams: ['valid_team'],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: { 1: 'a' },
       teamStandings: 'valid_team_standings',
@@ -305,7 +305,7 @@ describe('Championship Controller', () => {
       platform: 'valid_platform',
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
-      teams: ['valid_team'],
+      teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: { a: 1 },
       teamStandings: 'valid_team_standings',
@@ -316,5 +316,27 @@ describe('Championship Controller', () => {
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('scoringSystem'))
+  })
+
+  it('should return 400 if some team is invalid', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
+      teams: [{ name: null, color: 'valid_color' }],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      scoringSystem: { 1: 20 },
+      teamStandings: 'valid_team_standings',
+      driverStandings: 'valid_driver_standings'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new InvalidFieldError('teams'))
   })
 })
