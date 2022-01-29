@@ -1,8 +1,23 @@
 import request from 'supertest'
+import { env } from '../../config/env.config'
+import MongooseHelper from '../../helpers/mongoose.helpers'
+import ChampionshipModel from '../../models/championship.model'
 
 import app from '../config/app.config'
 
 describe('Championship Routes', () => {
+  beforeAll(async () => {
+    await MongooseHelper.connect(env.mongodbUrl)
+  })
+
+  beforeEach(async () => {
+    await ChampionshipModel.deleteMany({})
+  })
+
+  afterAll(async () => {
+    await MongooseHelper.disconnect()
+  })
+
   it('should return a Championship on success', async () => {
     await request(app)
       .post('/api/championship')

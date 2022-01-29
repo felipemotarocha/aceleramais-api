@@ -6,18 +6,6 @@ import ChampionshipModel from '../../models/championship.model'
 import { MongoChampionshipRepository } from './championship.repository'
 
 describe('Mongo Driver Standings Repository', () => {
-  //   const validChampionship = {
-  //     id: new Types.ObjectId() as any,
-  //     championship: new Types.ObjectId() as any,
-  //     standings: [
-  //       {
-  //         user: new Types.ObjectId() as any,
-  //         isRegistered: true,
-  //         position: 1
-  //       }
-  //     ]
-  //   }
-
   beforeAll(async () => {
     await MongooseHelper.connect(env.mongodbUrl)
   })
