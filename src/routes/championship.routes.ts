@@ -8,6 +8,11 @@ const championshipRoutes = (router: Router): void => {
     '/championship',
     adaptRoute(makeChampionshipController(), 'create')
   )
+
+  router.get(
+    '/championship/:id',
+    adaptRoute(makeChampionshipController(), 'getOne')
+  )
 }
 
 export default championshipRoutes
