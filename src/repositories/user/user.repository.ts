@@ -25,8 +25,10 @@ export class MongoUserRepository implements UserRepositoryAbstract {
     return MongooseHelper.map<User>(user.toJSON())
   }
 
-  getOne(id: string): Promise<User> {
-    throw new Error('Method not implemented.')
+  async getOne(id: string): Promise<User> {
+    const user = await this.userModel.findOne({ _id: id })
+
+    return MongooseHelper.map<User>(user.toJSON())
   }
 
   update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
