@@ -58,4 +58,49 @@ describe('User Repository', () => {
 
     expect(createUserSpy).toHaveBeenCalledWith({ _id: dto.id, ...dto })
   })
+
+  it('should get an User by ID', async () => {
+    const sut = makeSut()
+
+    const dto: CreateUserDto = {
+      id: 'valid_id',
+      email: 'valid_email',
+      firstName: 'valid_first_name',
+      lastName: 'valid_last_name',
+      provider: 'valid_provider',
+      userName: 'valid_user_name'
+    }
+
+    await UserModel.create({ _id: dto.id, ...dto })
+
+    const result = await sut.getOne(dto.id)
+
+    expect(result.id).toBe(dto.id)
+    expect(result.email).toBe(dto.email)
+    expect(result.firstName).toBe(dto.firstName)
+    expect(result.lastName).toBe(dto.lastName)
+    expect(result.provider).toBe(dto.provider)
+    expect(result.userName).toBe(dto.userName)
+  })
+
+  it('should call UserModel findOne method with correct values', async () => {
+    const sut = makeSut()
+
+    const getOneUserSpy = jest.spyOn(UserModel, 'findOne')
+
+    const dto: CreateUserDto = {
+      id: 'valid_id',
+      email: 'valid_email',
+      firstName: 'valid_first_name',
+      lastName: 'valid_last_name',
+      provider: 'valid_provider',
+      userName: 'valid_user_name'
+    }
+
+    await UserModel.create({ _id: dto.id, ...dto })
+
+    await sut.getOne(dto.id)
+
+    expect(getOneUserSpy).toHaveBeenCalledWith({ _id: dto.id })
+  })
 })
