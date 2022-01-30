@@ -189,4 +189,60 @@ describe('User Controller', () => {
     expect(result.statusCode).toBe(500)
     expect(result.body).toStrictEqual(new ServerError())
   })
+
+  it('should return 200 when getting an User by ID', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({
+      query: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validUser)
+  })
+
+  it('should call UserService getOne method with correct values', async () => {
+    const { sut, userServiceStub } = makeSut()
+
+    const getOneUserSpy = jest.spyOn(userServiceStub, 'getOne')
+
+    await sut.getOne({ query: { id: 'valid_id' } })
+
+    expect(getOneUserSpy).toHaveBeenCalledWith('valid_id')
+  })
+
+  it('should return 400 when getting all Users without providing a query', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({ query: undefined })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('query'))
+  })
+
+  it('should return 400 when getting all Users without providing an ID', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({ query: { id: null as any } })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('id'))
+  })
+
+  it('should return 400 if UserService getOne method throws', async () => {
+    const { sut, userServiceStub } = makeSut()
+
+    jest
+      .spyOn(userServiceStub, 'getOne')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.getOne({
+      query: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
 })
