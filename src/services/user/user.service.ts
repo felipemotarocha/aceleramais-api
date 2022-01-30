@@ -23,7 +23,7 @@ export class UserService implements UserServiceAbstract {
     return await this.userRepository.getOne(id)
   }
 
-  update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    throw new Error('Method not implemented.')
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
+    return await this.userRepository.update(id, updateUserDto)
   }
 }
