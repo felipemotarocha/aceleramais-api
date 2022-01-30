@@ -1,4 +1,7 @@
-import { MissingParamError } from '../../errors/controllers.errors'
+import {
+  MissingParamError,
+  NotAllowedFieldsError
+} from '../../errors/controllers.errors'
 import {
   badRequest,
   created,
@@ -67,7 +70,34 @@ export class UserController implements UserControllerAbstract {
     }
   }
 
-  update(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async update(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      if (!httpRequest.params) {
+        return badRequest(new MissingParamError('params'))
+      }
+
+      if (!httpRequest.params?.id) {
+        return badRequest(new MissingParamError('id'))
+      }
+
+      const allowedUpdates = ['firstName', 'lastName', 'userName']
+
+      const someReceivedUpdateIsNotAllowed = Object.keys(httpRequest.body).some(
+        (update) => !allowedUpdates.includes(update)
+      )
+
+      if (someReceivedUpdateIsNotAllowed) {
+        return badRequest(new NotAllowedFieldsError())
+      }
+
+      const team = await this.userService.update(
+        httpRequest.params.id,
+        httpRequest.body
+      )
+
+      return ok(team)
+    } catch (_) {
+      return serverError()
+    }
   }
 }
