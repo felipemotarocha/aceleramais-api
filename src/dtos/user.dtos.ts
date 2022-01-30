@@ -8,7 +8,7 @@ export interface CreateUserDto {
 }
 
 export interface UpdateUserDto {
-  firstName: string
-  lastName: string
-  userName: string
+  firstName?: string
+  lastName?: string
+  userName?: string
 }
