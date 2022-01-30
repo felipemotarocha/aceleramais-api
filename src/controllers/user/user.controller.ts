@@ -2,6 +2,7 @@ import { MissingParamError } from '../../errors/controllers.errors'
 import {
   badRequest,
   created,
+  ok,
   serverError
 } from '../../helpers/controllers.helpers'
 import {
@@ -48,8 +49,22 @@ export class UserController implements UserControllerAbstract {
     }
   }
 
-  getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      if (!httpRequest.query) {
+        return badRequest(new MissingParamError('query'))
+      }
+
+      if (!httpRequest.query?.id) {
+        return badRequest(new MissingParamError('id'))
+      }
+
+      const teams = await this.userService.getOne(httpRequest!.query!.id)
+
+      return ok(teams)
+    } catch (_) {
+      return serverError()
+    }
   }
 
   update(httpRequest: HttpRequest): Promise<HttpResponse> {
