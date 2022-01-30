@@ -1,4 +1,4 @@
-import { CreateUserDto } from '../../dtos/user.dtos'
+import { CreateUserDto, UpdateUserDto } from '../../dtos/user.dtos'
 import User from '../../entities/user.entity'
 import { UserRepositoryAbstract } from '../../repositories/user/user.repository'
 import { UserServiceAbstract, UserService } from './user.service'
@@ -126,6 +126,50 @@ describe('User Service', () => {
       )
 
     const promise = sut.getOne('valid_id')
+
+    expect(promise).rejects.toThrow()
+  })
+
+  it('should Update an User', async () => {
+    const { sut } = makeSut()
+
+    const dto: UpdateUserDto = {
+      firstName: 'new_first_name'
+    }
+
+    const result = await sut.update('valid_id', dto)
+
+    expect(result).toStrictEqual(validUser)
+  })
+
+  it('should call UserRepository update method with correct values', async () => {
+    const { sut, userRepositoryStub } = makeSut()
+
+    const updateUserSpy = jest.spyOn(userRepositoryStub, 'update')
+
+    const dto: UpdateUserDto = {
+      firstName: 'new_first_name'
+    }
+
+    await sut.update('valid_id', dto)
+
+    expect(updateUserSpy).toHaveBeenCalledWith('valid_id', dto)
+  })
+
+  it('should throws if UserRepository update method throws', async () => {
+    const { sut, userRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(userRepositoryStub, 'update')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const dto: UpdateUserDto = {
+      firstName: 'new_first_name'
+    }
+
+    const promise = sut.update('valid_id', dto)
 
     expect(promise).rejects.toThrow()
   })
