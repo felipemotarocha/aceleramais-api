@@ -1,6 +1,10 @@
 import { CreateUserDto } from '../../dtos/user.dtos'
 import User from '../../entities/user.entity'
-import { MissingParamError, ServerError } from '../../errors/controllers.errors'
+import {
+  MissingParamError,
+  NotAllowedFieldsError,
+  ServerError
+} from '../../errors/controllers.errors'
 import { UserServiceAbstract } from '../../services/user/user.service'
 import { UserController, UserControllerAbstract } from './user.controller'
 
@@ -240,6 +244,72 @@ describe('User Controller', () => {
 
     const result = await sut.getOne({
       query: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
+
+  it('should return 200 on update success', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({
+      body: { firstName: 'new_first_name' },
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validUser)
+  })
+
+  it('should call UserService update method with correct values', async () => {
+    const { sut, userServiceStub } = makeSut()
+
+    const updateUserSpy = jest.spyOn(userServiceStub, 'update')
+
+    await sut.update({
+      body: { firstName: 'new_first_name' },
+      params: { id: 'valid_id' }
+    })
+
+    expect(updateUserSpy).toHaveBeenCalledWith('valid_id', {
+      firstName: 'new_first_name'
+    })
+  })
+
+  it('should return 400 when not providing an id on update', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({ body: {}, params: { id: null as any } })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('id'))
+  })
+
+  it('should return 400 when providing an unallowed update', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({
+      body: { email: 'valid_id' },
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new NotAllowedFieldsError())
+  })
+
+  it('should return 500 if UserService update method throws', async () => {
+    const { sut, userServiceStub } = makeSut()
+
+    jest
+      .spyOn(userServiceStub, 'update')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.update({
+      body: { firstName: 'new_first_name' },
+      params: { id: 'valid_id' }
     })
 
     expect(result.statusCode).toBe(500)
