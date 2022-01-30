@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
-import adaptRoute from '../adapters/express-routes.adapter'
-import makeUserController from '../factories/user.factory'
+import adaptRoute from '../../adapters/express-routes.adapter'
+import makeUserController from '../../factories/user.factory'
 
 const userRoutes = (router: Router): void => {
   router.post('/user', adaptRoute(makeUserController(), 'create'))

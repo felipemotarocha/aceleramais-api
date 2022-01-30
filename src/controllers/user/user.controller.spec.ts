@@ -198,7 +198,7 @@ describe('User Controller', () => {
     const { sut } = makeSut()
 
     const result = await sut.getOne({
-      query: { id: 'valid_id' }
+      params: { id: 'valid_id' }
     })
 
     expect(result.statusCode).toBe(200)
@@ -210,24 +210,24 @@ describe('User Controller', () => {
 
     const getOneUserSpy = jest.spyOn(userServiceStub, 'getOne')
 
-    await sut.getOne({ query: { id: 'valid_id' } })
+    await sut.getOne({ params: { id: 'valid_id' } })
 
     expect(getOneUserSpy).toHaveBeenCalledWith('valid_id')
   })
 
-  it('should return 400 when getting all Users without providing a query', async () => {
+  it('should return 400 when getting all Users without providing a params', async () => {
     const { sut } = makeSut()
 
-    const result = await sut.getOne({ query: undefined })
+    const result = await sut.getOne({ params: undefined })
 
     expect(result.statusCode).toBe(400)
-    expect(result.body).toStrictEqual(new MissingParamError('query'))
+    expect(result.body).toStrictEqual(new MissingParamError('params'))
   })
 
   it('should return 400 when getting all Users without providing an ID', async () => {
     const { sut } = makeSut()
 
-    const result = await sut.getOne({ query: { id: null as any } })
+    const result = await sut.getOne({ params: { id: null as any } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('id'))
@@ -243,7 +243,7 @@ describe('User Controller', () => {
       )
 
     const result = await sut.getOne({
-      query: { id: 'valid_id' }
+      params: { id: 'valid_id' }
     })
 
     expect(result.statusCode).toBe(500)

@@ -44,9 +44,9 @@ export class UserController implements UserControllerAbstract {
         }
       }
 
-      const team = await this.userService.create(httpRequest.body)
+      const user = await this.userService.create(httpRequest.body)
 
-      return created(team)
+      return created(user)
     } catch (_) {
       return serverError()
     }
@@ -54,17 +54,17 @@ export class UserController implements UserControllerAbstract {
 
   async getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      if (!httpRequest.query) {
-        return badRequest(new MissingParamError('query'))
+      if (!httpRequest.params) {
+        return badRequest(new MissingParamError('params'))
       }
 
-      if (!httpRequest.query?.id) {
+      if (!httpRequest.params?.id) {
         return badRequest(new MissingParamError('id'))
       }
 
-      const teams = await this.userService.getOne(httpRequest!.query!.id)
+      const users = await this.userService.getOne(httpRequest!.params!.id)
 
-      return ok(teams)
+      return ok(users)
     } catch (_) {
       return serverError()
     }
@@ -90,12 +90,12 @@ export class UserController implements UserControllerAbstract {
         return badRequest(new NotAllowedFieldsError())
       }
 
-      const team = await this.userService.update(
+      const user = await this.userService.update(
         httpRequest.params.id,
         httpRequest.body
       )
 
-      return ok(team)
+      return ok(user)
     } catch (_) {
       return serverError()
     }
