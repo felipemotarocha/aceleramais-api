@@ -56,10 +56,10 @@ describe('User Service', () => {
     expect(result).toStrictEqual(validUser)
   })
 
-  it('should call TeamRepository create method with correct values', async () => {
+  it('should call UserRepository create method with correct values', async () => {
     const { sut, userRepositoryStub } = makeSut()
 
-    const createTeamSpy = jest.spyOn(userRepositoryStub, 'create')
+    const createUserSpy = jest.spyOn(userRepositoryStub, 'create')
 
     const dto: CreateUserDto = {
       id: 'valid_id',
@@ -72,10 +72,10 @@ describe('User Service', () => {
 
     await sut.create(dto)
 
-    expect(createTeamSpy).toHaveBeenCalledWith(dto)
+    expect(createUserSpy).toHaveBeenCalledWith(dto)
   })
 
-  it('should throws if TeamRepository create method throws', async () => {
+  it('should throws if UserRepository create method throws', async () => {
     const { sut, userRepositoryStub } = makeSut()
 
     jest
@@ -94,6 +94,38 @@ describe('User Service', () => {
     }
 
     const promise = sut.create(dto)
+
+    expect(promise).rejects.toThrow()
+  })
+
+  it('should get an User by ID', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne('valid_id')
+
+    expect(result).toStrictEqual(validUser)
+  })
+
+  it('should call UserRepository getOne method with correct values', async () => {
+    const { sut, userRepositoryStub } = makeSut()
+
+    const getOneUserSpy = jest.spyOn(userRepositoryStub, 'getOne')
+
+    await sut.getOne('valid_id')
+
+    expect(getOneUserSpy).toHaveBeenCalledWith('valid_id')
+  })
+
+  it('should throws if UserRepository getOne method throws', async () => {
+    const { sut, userRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(userRepositoryStub, 'getOne')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.getOne('valid_id')
 
     expect(promise).rejects.toThrow()
   })
