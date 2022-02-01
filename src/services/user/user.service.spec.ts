@@ -101,7 +101,15 @@ describe('User Service', () => {
   it('should get an User by ID', async () => {
     const { sut } = makeSut()
 
-    const result = await sut.getOne('valid_id')
+    const result = await sut.getOne({ id: 'valid_id' })
+
+    expect(result).toStrictEqual(validUser)
+  })
+
+  it('should get an User by userName', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getOne({ userName: 'valid_user_name' })
 
     expect(result).toStrictEqual(validUser)
   })
@@ -111,9 +119,12 @@ describe('User Service', () => {
 
     const getOneUserSpy = jest.spyOn(userRepositoryStub, 'getOne')
 
-    await sut.getOne('valid_id')
+    await sut.getOne({ id: 'valid_id', userName: undefined })
 
-    expect(getOneUserSpy).toHaveBeenCalledWith('valid_id')
+    expect(getOneUserSpy).toHaveBeenCalledWith({
+      id: 'valid_id',
+      userName: undefined
+    })
   })
 
   it('should throws if UserRepository getOne method throws', async () => {
@@ -125,7 +136,7 @@ describe('User Service', () => {
         new Promise((_resolve, reject) => reject(new Error()))
       )
 
-    const promise = sut.getOne('valid_id')
+    const promise = sut.getOne({ id: 'valid_id' })
 
     expect(promise).rejects.toThrow()
   })

@@ -198,7 +198,7 @@ describe('User Controller', () => {
     const { sut } = makeSut()
 
     const result = await sut.getOne({
-      params: { id: 'valid_id' }
+      query: { id: 'valid_id' }
     })
 
     expect(result.statusCode).toBe(200)
@@ -210,27 +210,32 @@ describe('User Controller', () => {
 
     const getOneUserSpy = jest.spyOn(userServiceStub, 'getOne')
 
-    await sut.getOne({ params: { id: 'valid_id' } })
+    await sut.getOne({ query: { id: 'valid_id' } })
 
-    expect(getOneUserSpy).toHaveBeenCalledWith('valid_id')
+    expect(getOneUserSpy).toHaveBeenCalledWith({
+      id: 'valid_id',
+      userName: undefined
+    })
   })
 
-  it('should return 400 when getting all Users without providing a params', async () => {
+  it('should return 400 when getting all Users without providing a query', async () => {
     const { sut } = makeSut()
 
-    const result = await sut.getOne({ params: undefined })
+    const result = await sut.getOne({ query: undefined })
 
     expect(result.statusCode).toBe(400)
-    expect(result.body).toStrictEqual(new MissingParamError('params'))
+    expect(result.body).toStrictEqual(new MissingParamError('query'))
   })
 
-  it('should return 400 when getting all Users without providing an ID', async () => {
+  it('should return 400 when getting all Users without providing an ID or an userName', async () => {
     const { sut } = makeSut()
 
-    const result = await sut.getOne({ params: { id: null as any } })
+    const result = await sut.getOne({
+      query: { id: null as any, userName: null as any }
+    })
 
     expect(result.statusCode).toBe(400)
-    expect(result.body).toStrictEqual(new MissingParamError('id'))
+    expect(result.body).toStrictEqual(new MissingParamError('id/userName'))
   })
 
   it('should return 400 if UserService getOne method throws', async () => {
@@ -243,7 +248,7 @@ describe('User Controller', () => {
       )
 
     const result = await sut.getOne({
-      params: { id: 'valid_id' }
+      query: { id: 'valid_id' }
     })
 
     expect(result.statusCode).toBe(500)
