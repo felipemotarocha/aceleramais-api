@@ -5,7 +5,13 @@ import UserModel from '../../models/user.model'
 
 export interface UserRepositoryAbstract {
   create(createUserDto: CreateUserDto): Promise<User>
-  getOne({ id, userName }: { id?: string; userName?: string }): Promise<User>
+  getOne({
+    id,
+    userName
+  }: {
+    id?: string
+    userName?: string
+  }): Promise<User | null>
   update(id: string, updateUserDto: UpdateUserDto): Promise<User>
 }
 
@@ -31,7 +37,7 @@ export class MongoUserRepository implements UserRepositoryAbstract {
   }: {
     id?: string
     userName?: string
-  }): Promise<User> {
+  }): Promise<User | null> {
     let user: any
 
     if (id) {
@@ -41,6 +47,8 @@ export class MongoUserRepository implements UserRepositoryAbstract {
     if (userName) {
       user = await this.userModel.findOne({ userName })
     }
+
+    if (!user) return null
 
     return MongooseHelper.map<User>(user.toJSON())
   }

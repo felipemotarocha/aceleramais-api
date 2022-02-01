@@ -5,6 +5,7 @@ import {
 import {
   badRequest,
   created,
+  notFound,
   ok,
   serverError
 } from '../../helpers/controllers.helpers'
@@ -62,12 +63,14 @@ export class UserController implements UserControllerAbstract {
         return badRequest(new MissingParamError('id/userName'))
       }
 
-      const users = await this.userService.getOne({
+      const user = await this.userService.getOne({
         id: httpRequest.query.id,
         userName: httpRequest.query.userName
       })
 
-      return ok(users)
+      if (!user) return notFound()
+
+      return ok(user)
     } catch (_) {
       return serverError()
     }

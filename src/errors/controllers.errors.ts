@@ -10,6 +10,12 @@ export class ServerError extends Error {
   }
 }
 
+export class NotFoundError extends Error {
+  constructor() {
+    super('No register with the provided params were found.')
+  }
+}
+
 export class NotAllowedFieldsError extends Error {
   constructor() {
     super(

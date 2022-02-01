@@ -4,7 +4,13 @@ import { UserRepositoryAbstract } from '../../repositories/user/user.repository'
 
 export interface UserServiceAbstract {
   create(createUserDto: CreateUserDto): Promise<User>
-  getOne({ id, userName }: { id?: string; userName?: string }): Promise<User>
+  getOne({
+    id,
+    userName
+  }: {
+    id?: string
+    userName?: string
+  }): Promise<User | null>
   update(id: string, updateUserDto: UpdateUserDto): Promise<User>
 }
 
@@ -25,7 +31,7 @@ export class UserService implements UserServiceAbstract {
   }: {
     id?: string
     userName?: string
-  }): Promise<User> {
+  }): Promise<User | null> {
     return await this.userRepository.getOne({ id, userName })
   }
 

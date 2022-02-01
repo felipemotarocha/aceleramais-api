@@ -1,4 +1,4 @@
-import { ServerError } from '../errors/controllers.errors'
+import { NotFoundError, ServerError } from '../errors/controllers.errors'
 import { HttpResponse } from '../protocols/controllers.protocols'
 
 export const ok = (data: any): HttpResponse => {
@@ -19,6 +19,13 @@ export const badRequest = (error: Error): HttpResponse => {
   return {
     statusCode: 400,
     body: error
+  }
+}
+
+export const notFound = (): HttpResponse => {
+  return {
+    statusCode: 404,
+    body: new NotFoundError()
   }
 }
 
