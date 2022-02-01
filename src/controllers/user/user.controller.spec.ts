@@ -3,6 +3,7 @@ import User from '../../entities/user.entity'
 import {
   MissingParamError,
   NotAllowedFieldsError,
+  NotFoundError,
   ServerError
 } from '../../errors/controllers.errors'
 import { UserServiceAbstract } from '../../services/user/user.service'
@@ -203,6 +204,21 @@ describe('User Controller', () => {
 
     expect(result.statusCode).toBe(200)
     expect(result.body).toStrictEqual(validUser)
+  })
+
+  it('should return 200 when not finding an User', async () => {
+    const { sut, userServiceStub } = makeSut()
+
+    jest
+      .spyOn(userServiceStub, 'getOne')
+      .mockReturnValueOnce(new Promise((resolve, _reject) => resolve(null)))
+
+    const result = await sut.getOne({
+      query: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(404)
+    expect(result.body).toStrictEqual(new NotFoundError())
   })
 
   it('should call UserService getOne method with correct values', async () => {

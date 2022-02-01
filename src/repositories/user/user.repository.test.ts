@@ -75,12 +75,12 @@ describe('User Repository', () => {
 
     const result = await sut.getOne({ id: dto.id })
 
-    expect(result.id).toBe(dto.id)
-    expect(result.email).toBe(dto.email)
-    expect(result.firstName).toBe(dto.firstName)
-    expect(result.lastName).toBe(dto.lastName)
-    expect(result.provider).toBe(dto.provider)
-    expect(result.userName).toBe(dto.userName)
+    expect(result!.id).toBe(dto.id)
+    expect(result!.email).toBe(dto.email)
+    expect(result!.firstName).toBe(dto.firstName)
+    expect(result!.lastName).toBe(dto.lastName)
+    expect(result!.provider).toBe(dto.provider)
+    expect(result!.userName).toBe(dto.userName)
   })
 
   it('should get an User by userName', async () => {
@@ -99,12 +99,12 @@ describe('User Repository', () => {
 
     const result = await sut.getOne({ userName: dto.userName })
 
-    expect(result.id).toBe(dto.id)
-    expect(result.email).toBe(dto.email)
-    expect(result.firstName).toBe(dto.firstName)
-    expect(result.lastName).toBe(dto.lastName)
-    expect(result.provider).toBe(dto.provider)
-    expect(result.userName).toBe(dto.userName)
+    expect(result!.id).toBe(dto.id)
+    expect(result!.email).toBe(dto.email)
+    expect(result!.firstName).toBe(dto.firstName)
+    expect(result!.lastName).toBe(dto.lastName)
+    expect(result!.provider).toBe(dto.provider)
+    expect(result!.userName).toBe(dto.userName)
   })
 
   it('should call UserModel findOne method with correct values', async () => {
