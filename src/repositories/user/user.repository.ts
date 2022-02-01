@@ -5,7 +5,7 @@ import UserModel from '../../models/user.model'
 
 export interface UserRepositoryAbstract {
   create(createUserDto: CreateUserDto): Promise<User>
-  getOne(id: string): Promise<User>
+  getOne({ id, userName }: { id?: string; userName?: string }): Promise<User>
   update(id: string, updateUserDto: UpdateUserDto): Promise<User>
 }
 
@@ -25,8 +25,22 @@ export class MongoUserRepository implements UserRepositoryAbstract {
     return MongooseHelper.map<User>(user.toJSON())
   }
 
-  async getOne(id: string): Promise<User> {
-    const user = await this.userModel.findOne({ _id: id })
+  async getOne({
+    id,
+    userName
+  }: {
+    id?: string
+    userName?: string
+  }): Promise<User> {
+    let user: any
+
+    if (id) {
+      user = await this.userModel.findOne({ _id: id })
+    }
+
+    if (userName) {
+      user = await this.userModel.findOne({ userName })
+    }
 
     return MongooseHelper.map<User>(user.toJSON())
   }

@@ -54,15 +54,18 @@ export class UserController implements UserControllerAbstract {
 
   async getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      if (!httpRequest.params) {
-        return badRequest(new MissingParamError('params'))
+      if (!httpRequest.query) {
+        return badRequest(new MissingParamError('query'))
       }
 
-      if (!httpRequest.params?.id) {
-        return badRequest(new MissingParamError('id'))
+      if (!httpRequest.query?.id && !httpRequest.query?.userName) {
+        return badRequest(new MissingParamError('id/userName'))
       }
 
-      const users = await this.userService.getOne(httpRequest!.params!.id)
+      const users = await this.userService.getOne({
+        id: httpRequest.query.id,
+        userName: httpRequest.query.userName
+      })
 
       return ok(users)
     } catch (_) {
