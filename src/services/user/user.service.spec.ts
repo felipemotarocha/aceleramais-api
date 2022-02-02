@@ -1,5 +1,6 @@
 import { CreateUserDto, UpdateUserDto } from '../../dtos/user.dtos'
 import User from '../../entities/user.entity'
+import { S3RepositoryAbstract } from '../../repositories/s3/s3.service'
 import { UserRepositoryAbstract } from '../../repositories/user/user.repository'
 import { UserServiceAbstract, UserService } from './user.service'
 
@@ -15,6 +16,7 @@ describe('User Service', () => {
 
   interface SutTypes {
     userRepositoryStub: UserRepositoryAbstract
+    s3RepositoryStub: S3RepositoryAbstract
     sut: UserServiceAbstract
   }
 
@@ -33,10 +35,17 @@ describe('User Service', () => {
       }
     }
 
-    const userRepositoryStub = new UserRepositoryStub()
-    const sut = new UserService(userRepositoryStub)
+    class S3RepositoryStub implements S3RepositoryAbstract {
+      async uploadImage(): Promise<string> {
+        return 'valid_url'
+      }
+    }
 
-    return { userRepositoryStub, sut }
+    const userRepositoryStub = new UserRepositoryStub()
+    const s3RepositoryStub = new S3RepositoryStub()
+    const sut = new UserService(userRepositoryStub, s3RepositoryStub)
+
+    return { userRepositoryStub, sut, s3RepositoryStub }
   }
 
   it('should create an User', async () => {
@@ -54,6 +63,50 @@ describe('User Service', () => {
     const result = await sut.create(dto)
 
     expect(result).toStrictEqual(validUser)
+  })
+
+  it('should call S3 Repository if a profile image is provided', async () => {
+    const { sut, s3RepositoryStub } = makeSut()
+
+    const uploadImageSpy = jest.spyOn(s3RepositoryStub, 'uploadImage')
+
+    const dto = {
+      id: 'valid_id',
+      email: 'valid_email',
+      firstName: 'valid_first_name',
+      lastName: 'valid_last_name',
+      provider: 'valid_provider',
+      userName: 'valid_user_name',
+      profileImage: 'profile_image'
+    }
+
+    await sut.create(dto as any)
+
+    expect(uploadImageSpy).toHaveBeenCalledWith({
+      file: 'profile_image',
+      fileName: 'valid_id',
+      folderName: 'profile-images'
+    })
+  })
+
+  it('should not call S3 Repository if a profile image url is provided', async () => {
+    const { sut, s3RepositoryStub } = makeSut()
+
+    const uploadImageSpy = jest.spyOn(s3RepositoryStub, 'uploadImage')
+
+    const dto = {
+      id: 'valid_id',
+      email: 'valid_email',
+      firstName: 'valid_first_name',
+      lastName: 'valid_last_name',
+      provider: 'valid_provider',
+      userName: 'valid_user_name',
+      profileImageUrl: 'profile_image_url'
+    }
+
+    await sut.create(dto as any)
+
+    expect(uploadImageSpy).not.toHaveBeenCalled()
   })
 
   it('should call UserRepository create method with correct values', async () => {
