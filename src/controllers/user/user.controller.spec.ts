@@ -169,6 +169,26 @@ describe('User Controller', () => {
     expect(result.body).toStrictEqual(new MissingParamError('provider'))
   })
 
+  it('should return 400 if profileImage and profileImageUrl are provided', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      id: 'valid_id',
+      email: 'valid_email',
+      firstName: 'valid_first_name',
+      lastName: 'valid_last_name',
+      provider: 'valid_provider',
+      userName: 'valid_user_name',
+      profileImage: 'profile_image',
+      profileImageUrl: 'profile_image_url'
+    }
+
+    const result = await sut.create({ body: dto })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new NotAllowedFieldsError())
+  })
+
   it('should return 400 if UserService create method throws', async () => {
     const { sut, userServiceStub } = makeSut()
 
