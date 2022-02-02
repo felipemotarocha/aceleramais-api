@@ -1,5 +1,6 @@
 import { CreateUserDto, UpdateUserDto } from '../../dtos/user.dtos'
 import User from '../../entities/user.entity'
+import { S3RepositoryAbstract } from '../../repositories/s3/s3.service'
 import { UserRepositoryAbstract } from '../../repositories/user/user.repository'
 
 export interface UserServiceAbstract {
@@ -16,13 +17,31 @@ export interface UserServiceAbstract {
 
 export class UserService implements UserServiceAbstract {
   private userRepository: UserRepositoryAbstract
+  private s3Repository: S3RepositoryAbstract
 
-  constructor(userRepository: UserRepositoryAbstract) {
+  constructor(
+    userRepository: UserRepositoryAbstract,
+    s3Repository: S3RepositoryAbstract
+  ) {
     this.userRepository = userRepository
+    this.s3Repository = s3Repository
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    return await this.userRepository.create(createUserDto)
+    if (!createUserDto.profileImage || createUserDto.profileImageUrl) {
+      return await this.userRepository.create(createUserDto)
+    }
+
+    const profileImageUrl = await this.s3Repository.uploadImage({
+      folderName: 'profile-images',
+      fileName: createUserDto.id,
+      file: createUserDto.profileImage
+    })
+
+    return await this.userRepository.create({
+      ...createUserDto,
+      profileImageUrl: profileImageUrl
+    })
   }
 
   async getOne({
