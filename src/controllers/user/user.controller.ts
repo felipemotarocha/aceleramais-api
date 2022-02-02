@@ -45,10 +45,17 @@ export class UserController implements UserControllerAbstract {
         }
       }
 
-      const user = await this.userService.create(httpRequest.body)
+      if (httpRequest.body?.profileImage && httpRequest.body?.profileImageUrl) {
+        return badRequest(new NotAllowedFieldsError())
+      }
+
+      const user = await this.userService.create({
+        ...httpRequest.body,
+        profileImage: httpRequest.file
+      })
 
       return created(user)
-    } catch (_) {
+    } catch (err) {
       return serverError()
     }
   }

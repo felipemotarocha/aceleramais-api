@@ -1,10 +1,18 @@
 import { Router } from 'express'
+import multer from 'multer'
 
 import adaptRoute from '../../adapters/express-routes.adapter'
 import makeUserController from '../../factories/user.factory'
 
+const storage = multer.memoryStorage()
+const upload = multer({ storage })
+
 const userRoutes = (router: Router): void => {
-  router.post('/user', adaptRoute(makeUserController(), 'create'))
+  router.post(
+    '/user',
+    upload.single('profileImage'),
+    adaptRoute(makeUserController(), 'create')
+  )
   router.get('/user', adaptRoute(makeUserController(), 'getOne'))
   router.patch('/user/:id', adaptRoute(makeUserController(), 'update'))
 }

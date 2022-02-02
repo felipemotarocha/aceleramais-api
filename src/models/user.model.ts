@@ -22,6 +22,10 @@ const userSchema = new Schema(
       type: String,
       required: true
     },
+    profileImageUrl: {
+      type: String,
+      required: false
+    },
     provider: {
       type: String,
       required: true
