@@ -9,7 +9,8 @@ const adaptRoute = (controller: any, method: ControllerMethods) => {
     const httpRequest = {
       body: req.body,
       params: req.params,
-      query: req.query
+      query: req.query,
+      file: req.file
     }
 
     const httpResponse: HttpResponse = await controller[method](httpRequest)
