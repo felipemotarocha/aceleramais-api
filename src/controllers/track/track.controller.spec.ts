@@ -9,7 +9,8 @@ describe('Track Controller', () => {
   const validTrack = {
     id: new Types.ObjectId() as any,
     countryCode: 'BR',
-    name: 'Autódromo José Carlos Pace'
+    name: 'Autódromo José Carlos Pace',
+    countryName: 'Brasil'
   }
 
   interface SutTypes {

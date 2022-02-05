@@ -8,6 +8,10 @@ const trackSchema = new Schema({
   countryCode: {
     type: String,
     required: true
+  },
+  countryName: {
+    type: String,
+    required: true
   }
 })
 

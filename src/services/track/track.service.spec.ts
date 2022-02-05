@@ -8,7 +8,8 @@ describe('Track Service', () => {
   const validTrack = {
     id: new Types.ObjectId() as any,
     countryCode: 'BR',
-    name: 'Autódromo José Carlos Pace'
+    name: 'Autódromo José Carlos Pace',
+    countryName: 'Brasil'
   }
 
   const makeSut = (): TrackServiceAbstract => {

@@ -24,7 +24,8 @@ describe('Mongo Race Repository', () => {
     await TrackModel.create({
       _id: validTrack.id,
       name: validTrack.name,
-      countryCode: validTrack.countryCode
+      countryCode: validTrack.countryCode,
+      countryName: 'Brasil'
     })
   })
 
