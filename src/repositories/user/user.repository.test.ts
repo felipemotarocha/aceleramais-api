@@ -128,6 +128,36 @@ describe('User Repository', () => {
     expect(getOneUserSpy).toHaveBeenCalledWith({ _id: dto.id })
   })
 
+  it('should get all Users by user name', async () => {
+    const sut = makeSut()
+
+    const dto = [
+      {
+        _id: 'valid_id',
+        email: 'valid_email',
+        firstName: 'valid_first_name',
+        lastName: 'valid_last_name',
+        provider: 'valid_provider',
+        userName: 'valid_user_name'
+      },
+      {
+        _id: 'valid_id_2',
+        email: 'valid_email',
+        firstName: 'valid_first_name',
+        lastName: 'valid_last_name',
+        provider: 'valid_provider',
+        userName: 'valid_user_name_2'
+      }
+    ]
+
+    await UserModel.create(dto)
+
+    const result = await sut.getAll({ userName: 'valid_' })
+
+    expect(result[0].userName).toBe('valid_user_name')
+    expect(result[1].userName).toBe('valid_user_name_2')
+  })
+
   it('should update an User', async () => {
     const sut = makeSut()
 

@@ -33,6 +33,10 @@ describe('User Service', () => {
       async update(): Promise<User> {
         return validUser
       }
+
+      async getAll(): Promise<User[]> {
+        return [validUser]
+      }
     }
 
     class S3RepositoryStub implements S3RepositoryAbstract {
