@@ -184,6 +184,14 @@ describe('User Service', () => {
     })
   })
 
+  it('should get all Users by user name', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ userName: 'valid_user_name' })
+
+    expect(result).toStrictEqual([validUser])
+  })
+
   it('should throws if UserRepository getOne method throws', async () => {
     const { sut, userRepositoryStub } = makeSut()
 

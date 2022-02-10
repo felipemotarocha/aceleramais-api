@@ -37,6 +37,10 @@ describe('User Controller', () => {
       async update(): Promise<User> {
         return validUser
       }
+
+      async getAll(): Promise<User[]> {
+        return [validUser]
+      }
     }
 
     const userServiceStub = new UserServiceStub()
