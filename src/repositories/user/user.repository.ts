@@ -13,6 +13,7 @@ export interface UserRepositoryAbstract {
     userName?: string
   }): Promise<User | null>
   update(id: string, updateUserDto: UpdateUserDto): Promise<User>
+  getAll({ userName }: { userName?: string }): Promise<User[]>
 }
 
 export class MongoUserRepository implements UserRepositoryAbstract {
@@ -61,5 +62,19 @@ export class MongoUserRepository implements UserRepositoryAbstract {
     )
 
     return MongooseHelper.map<User>(user.toJSON())
+  }
+
+  async getAll({
+    userName
+  }: {
+    userName?: string | undefined
+  }): Promise<User[]> {
+    const users = await this.userModel
+      .find({
+        userName: { $regex: `^${userName}` }
+      })
+      .sort({ userName: 1 })
+
+    return users.map((user) => MongooseHelper.map<User>(user.toJSON()))
   }
 }
