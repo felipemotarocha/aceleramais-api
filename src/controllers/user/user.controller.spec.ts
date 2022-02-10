@@ -230,7 +230,7 @@ describe('User Controller', () => {
     expect(result.body).toStrictEqual(validUser)
   })
 
-  it('should return 200 when not finding an User', async () => {
+  it('should return 404 when not finding an User', async () => {
     const { sut, userServiceStub } = makeSut()
 
     jest
@@ -258,7 +258,7 @@ describe('User Controller', () => {
     })
   })
 
-  it('should return 400 when getting all Users without providing a query', async () => {
+  it('should return 400 when getting an User without providing a query', async () => {
     const { sut } = makeSut()
 
     const result = await sut.getOne({ query: undefined })
@@ -267,7 +267,7 @@ describe('User Controller', () => {
     expect(result.body).toStrictEqual(new MissingParamError('query'))
   })
 
-  it('should return 400 when getting all Users without providing an ID or an userName', async () => {
+  it('should return 400 when getting an User without providing an ID or an userName', async () => {
     const { sut } = makeSut()
 
     const result = await sut.getOne({
@@ -289,6 +289,34 @@ describe('User Controller', () => {
 
     const result = await sut.getOne({
       query: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
+
+  it('should return 200 when getting all Users by user name', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({
+      query: { userName: 'valid_user' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual([validUser])
+  })
+
+  it('should return 400 if UserService getAll method throws', async () => {
+    const { sut, userServiceStub } = makeSut()
+
+    jest
+      .spyOn(userServiceStub, 'getAll')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.getAll({
+      query: { userName: 'valid_user_name' }
     })
 
     expect(result.statusCode).toBe(500)
