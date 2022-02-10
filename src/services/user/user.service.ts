@@ -13,6 +13,7 @@ export interface UserServiceAbstract {
     userName?: string
   }): Promise<User | null>
   update(id: string, updateUserDto: UpdateUserDto): Promise<User>
+  getAll({ userName }: { userName?: string }): Promise<User[]>
 }
 
 export class UserService implements UserServiceAbstract {
@@ -56,5 +57,13 @@ export class UserService implements UserServiceAbstract {
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     return await this.userRepository.update(id, updateUserDto)
+  }
+
+  async getAll({
+    userName
+  }: {
+    userName?: string | undefined
+  }): Promise<User[]> {
+    return await this.userRepository.getAll({ userName })
   }
 }
