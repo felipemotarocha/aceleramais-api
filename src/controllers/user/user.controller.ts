@@ -18,6 +18,7 @@ import { UserServiceAbstract } from '../../services/user/user.service'
 export interface UserControllerAbstract {
   create(httpRequest: HttpRequest): Promise<HttpResponse>
   getOne(httpRequest: HttpRequest): Promise<HttpResponse>
+  getAll(httpRequest: HttpRequest): Promise<HttpResponse>
   update(httpRequest: HttpRequest): Promise<HttpResponse>
 }
 
@@ -107,6 +108,26 @@ export class UserController implements UserControllerAbstract {
         httpRequest.params.id,
         httpRequest.body
       )
+
+      return ok(user)
+    } catch (_) {
+      return serverError()
+    }
+  }
+
+  async getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      if (!httpRequest.query) {
+        return badRequest(new MissingParamError('query'))
+      }
+
+      if (!httpRequest.query?.userName) {
+        return badRequest(new MissingParamError('id/userName'))
+      }
+
+      const user = await this.userService.getAll({
+        userName: httpRequest.query.userName
+      })
 
       return ok(user)
     } catch (_) {
