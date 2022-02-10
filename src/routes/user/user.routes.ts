@@ -14,6 +14,7 @@ const userRoutes = (router: Router): void => {
     adaptRoute(makeUserController(), 'create')
   )
   router.get('/user', adaptRoute(makeUserController(), 'getOne'))
+  router.get('/user/all', adaptRoute(makeUserController(), 'getAll'))
   router.patch('/user/:id', adaptRoute(makeUserController(), 'update'))
 }
 
