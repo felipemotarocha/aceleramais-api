@@ -1,0 +1,49 @@
+import {
+  CreateBonificationDto,
+  UpdateBonificationDto
+} from '../../dtos/bonification.dtos'
+import Bonification from '../../entities/bonification.entity'
+import { BonificationRepositoryAbstract } from '../../repositories/bonification/bonification.repository'
+
+export interface BonificationServiceAbstract {
+  getAll({ championship }: { championship: string }): Promise<Bonification[]>
+  create(createBonificationDto: CreateBonificationDto): Promise<Bonification>
+  update(
+    id: string,
+    updateBonificationDto: UpdateBonificationDto
+  ): Promise<Bonification>
+  delete(id: string): Promise<Bonification>
+}
+
+export class BonificationService implements BonificationServiceAbstract {
+  private readonly bonificationRepository: BonificationRepositoryAbstract
+
+  constructor(bonificationRepository: BonificationRepositoryAbstract) {
+    this.bonificationRepository = bonificationRepository
+  }
+
+  async getAll({
+    championship
+  }: {
+    championship: string
+  }): Promise<Bonification[]> {
+    throw new Error('Method not implemented.')
+  }
+
+  async create(
+    createBonificationDto: CreateBonificationDto
+  ): Promise<Bonification> {
+    return await this.bonificationRepository.create(createBonificationDto)
+  }
+
+  async update(
+    id: string,
+    updateBonificationDto: UpdateBonificationDto
+  ): Promise<Bonification> {
+    throw new Error('Method not implemented.')
+  }
+
+  async delete(id: string): Promise<Bonification> {
+    throw new Error('Method not implemented.')
+  }
+}
