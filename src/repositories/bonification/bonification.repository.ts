@@ -9,7 +9,10 @@ import BonificationModel from '../../models/bonification.model'
 export interface BonificationRepositoryAbstract {
   getAll({ championship }: { championship: string }): Promise<Bonification[]>
   create(createBonificationDto: CreateBonificationDto): Promise<Bonification>
-  update(updateBonificationDto: UpdateBonificationDto): Promise<Bonification>
+  update(
+    id: string,
+    updateBonificationDto: UpdateBonificationDto
+  ): Promise<Bonification>
   delete(id: string): Promise<Bonification>
 }
 
@@ -43,8 +46,17 @@ implements BonificationRepositoryAbstract {
     return MongooseHelper.map<Bonification>(bonification.toJSON())
   }
 
-  update(updateBonificationDto: UpdateBonificationDto): Promise<Bonification> {
-    throw new Error('Method not implemented.')
+  async update(
+    id: string,
+    updateBonificationDto: UpdateBonificationDto
+  ): Promise<Bonification> {
+    const bonification = await this.bonificationModel.findByIdAndUpdate(
+      id,
+      updateBonificationDto,
+      { new: true }
+    )
+
+    return MongooseHelper.map<Bonification>(bonification.toJSON())
   }
 
   delete(id: string): Promise<Bonification> {
