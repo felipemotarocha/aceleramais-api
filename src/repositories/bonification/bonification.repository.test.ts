@@ -141,4 +141,41 @@ describe('Mongo Bonification Repository', () => {
       { new: true }
     )
   })
+
+  it('should delete a Bonification', async () => {
+    const sut = makeSut()
+
+    await BonificationModel.create({
+      _id: validBonification.id,
+      ...validBonification
+    })
+
+    const result = await sut.delete(validBonification.id.toHexString())
+
+    expect(result.id).toBeTruthy()
+    expect(result.championship).toStrictEqual(validBonification.championship)
+  })
+
+  it('should call BonificationModel findByIdAndDelete method with correct values', async () => {
+    const sut = makeSut()
+
+    const deleteBonificationSpy = jest.spyOn(
+      BonificationModel,
+      'findByIdAndDelete'
+    )
+
+    await BonificationModel.create({
+      _id: validBonification.id,
+      ...validBonification
+    })
+
+    await sut.delete(validBonification.id.toHexString())
+
+    expect(deleteBonificationSpy).toHaveBeenCalledWith(
+      validBonification.id.toHexString(),
+      {
+        new: true
+      }
+    )
+  })
 })
