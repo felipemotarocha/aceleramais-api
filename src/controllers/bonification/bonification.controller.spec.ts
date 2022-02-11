@@ -245,4 +245,65 @@ describe('Bonification Controller', () => {
     expect(result.statusCode).toBe(500)
     expect(result.body).toStrictEqual(new ServerError())
   })
+
+  it('should return 200 on delete success', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.delete({
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validBonification)
+  })
+
+  it('should return 400 when not providing an id on delete', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.delete({ params: { id: null as any } })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('id'))
+  })
+
+  it('should call BonificationService delete method with correct values', async () => {
+    const { sut, bonificationServiceStub } = makeSut()
+
+    const deleteBonificationSpy = jest.spyOn(bonificationServiceStub, 'delete')
+
+    await sut.delete({
+      params: { id: 'valid_id' }
+    })
+
+    expect(deleteBonificationSpy).toHaveBeenCalledWith('valid_id')
+  })
+
+  it('should call BonificationService delete method with correct values', async () => {
+    const { sut, bonificationServiceStub } = makeSut()
+
+    const deleteBonificationSpy = jest.spyOn(bonificationServiceStub, 'delete')
+
+    await sut.delete({
+      params: { id: 'valid_id' }
+    })
+
+    expect(deleteBonificationSpy).toHaveBeenCalledWith('valid_id')
+  })
+
+  it('should return 500 if BonificationService delete method throws', async () => {
+    const { sut, bonificationServiceStub } = makeSut()
+
+    jest
+      .spyOn(bonificationServiceStub, 'delete')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.delete({
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
 })
