@@ -59,7 +59,11 @@ implements BonificationRepositoryAbstract {
     return MongooseHelper.map<Bonification>(bonification.toJSON())
   }
 
-  delete(id: string): Promise<Bonification> {
-    throw new Error('Method not implemented.')
+  async delete(id: string): Promise<Bonification> {
+    const bonification = await this.bonificationModel.findByIdAndDelete(id, {
+      new: true
+    })
+
+    return MongooseHelper.map<Bonification>(bonification.toJSON())
   }
 }
