@@ -124,4 +124,27 @@ describe('Bonification Controller', () => {
 
     expect(createBonificationSpy).toHaveBeenCalledWith(dto)
   })
+
+  it('should return 200 when getting all Bonifications by Championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({
+      query: { championship: 'valid_championship_id' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual([validBonification])
+  })
+
+  it('should call BonificationService getAll method with correct values', async () => {
+    const { sut, bonificationServiceStub } = makeSut()
+
+    const getAllBonificationsSpy = jest.spyOn(bonificationServiceStub, 'getAll')
+
+    await sut.getAll({ query: { championship: 'valid_championship_id' } })
+
+    expect(getAllBonificationsSpy).toHaveBeenCalledWith({
+      championship: 'valid_championship_id'
+    })
+  })
 })
