@@ -1,5 +1,10 @@
 import { MissingParamError } from '../../errors/controllers.errors'
-import { badRequest, created } from '../../helpers/controllers.helpers'
+import {
+  badRequest,
+  created,
+  ok,
+  serverError
+} from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
   HttpResponse
@@ -34,8 +39,20 @@ export class BonificationController implements BonificationControllerAbstract {
     return created(bonification)
   }
 
-  getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      if (!httpRequest.query?.championship) {
+        return badRequest(new MissingParamError('championship'))
+      }
+
+      const bonifications = await this.bonificationService.getAll({
+        championship: httpRequest.query.championship
+      })
+
+      return ok(bonifications)
+    } catch (_e) {
+      return serverError()
+    }
   }
 
   update(httpRequest: HttpRequest): Promise<HttpResponse> {
