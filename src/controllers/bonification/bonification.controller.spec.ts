@@ -136,6 +136,17 @@ describe('Bonification Controller', () => {
     expect(result.body).toStrictEqual([validBonification])
   })
 
+  it('should return 400 when getting all Bonifications without providing a championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({
+      query: { championship: null as any }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('championship'))
+  })
+
   it('should call BonificationService getAll method with correct values', async () => {
     const { sut, bonificationServiceStub } = makeSut()
 
