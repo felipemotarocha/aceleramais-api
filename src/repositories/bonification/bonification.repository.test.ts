@@ -59,4 +59,41 @@ describe('Mongo Bonification Repository', () => {
 
     expect(createBonificationSpy).toHaveBeenCalledWith(dto)
   })
+
+  it('should get all Bonifications by Championship', async () => {
+    const sut = makeSut()
+
+    await BonificationModel.create({
+      _id: validBonification.id,
+      ...validBonification
+    })
+
+    const result = await sut.getAll({
+      championship: validBonification.championship.toHexString()
+    })
+
+    expect(result[0].id).toStrictEqual(validBonification.id)
+    expect(result[0].championship).toStrictEqual(validBonification.championship)
+    expect(result[0].name).toBe(validBonification.name)
+    expect(result[0].points).toBe(validBonification.points)
+  })
+
+  it('should call BonificationModel find method with correct values', async () => {
+    const sut = makeSut()
+
+    const createBonificationSpy = jest.spyOn(BonificationModel, 'find')
+
+    await BonificationModel.create({
+      _id: validBonification.id,
+      ...validBonification
+    })
+
+    await sut.getAll({
+      championship: validBonification.championship as any
+    })
+
+    expect(createBonificationSpy).toHaveBeenCalledWith({
+      championship: validBonification.championship
+    })
+  })
 })
