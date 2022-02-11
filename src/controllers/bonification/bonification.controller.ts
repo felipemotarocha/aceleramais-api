@@ -85,7 +85,23 @@ export class BonificationController implements BonificationControllerAbstract {
     }
   }
 
-  delete(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async delete(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      if (!httpRequest.params) {
+        return badRequest(new MissingParamError('params'))
+      }
+
+      if (!httpRequest.params?.id) {
+        return badRequest(new MissingParamError('id'))
+      }
+
+      const bonification = await this.bonificationService.delete(
+        httpRequest.params.id
+      )
+
+      return ok(bonification)
+    } catch (_) {
+      return serverError()
+    }
   }
 }
