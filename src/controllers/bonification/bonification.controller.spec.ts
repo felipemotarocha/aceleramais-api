@@ -1,4 +1,5 @@
 import Bonification from '../../entities/bonification.entity'
+import { MissingParamError } from '../../errors/controllers.errors'
 import { BonificationServiceAbstract } from '../../services/bonification/bonification.service'
 import {
   BonificationControllerAbstract,
@@ -58,6 +59,54 @@ describe('Bonification Controller', () => {
 
     expect(result.statusCode).toBe(201)
     expect(result.body).toStrictEqual(validBonification)
+  })
+
+  it('should return 400 when not providing a name', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      championship: 'valid_championship',
+      points: 1
+    }
+
+    const result = await sut.create({
+      body: dto
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('name'))
+  })
+
+  it('should return 400 when not providing a championship', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      name: 'valid_name',
+      points: 1
+    }
+
+    const result = await sut.create({
+      body: dto
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('championship'))
+  })
+
+  it('should return 400 when not providing points', async () => {
+    const { sut } = makeSut()
+
+    const dto = {
+      name: 'valid_name',
+      championship: 'valid_championship'
+    }
+
+    const result = await sut.create({
+      body: dto
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('points'))
   })
 
   it('should call BonificationService create method with correct values', async () => {
