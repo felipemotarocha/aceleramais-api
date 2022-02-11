@@ -95,4 +95,41 @@ describe('Bonification Service', () => {
 
     expect(promise).rejects.toThrow()
   })
+
+  it('should get all Bonification by Championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ championship: 'valid_championship_id' })
+
+    expect(result).toStrictEqual([validBonification])
+  })
+
+  it('should call BonificationRepository getAll method with correct values', async () => {
+    const { sut, bonificationRepositoryStub } = makeSut()
+
+    const getAllBonificationsSpy = jest.spyOn(
+      bonificationRepositoryStub,
+      'getAll'
+    )
+
+    await sut.getAll({ championship: 'valid_championship_id' })
+
+    expect(getAllBonificationsSpy).toHaveBeenCalledWith({
+      championship: 'valid_championship_id'
+    })
+  })
+
+  it('should throws if BonificationRepository getAll method throws', async () => {
+    const { sut, bonificationRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(bonificationRepositoryStub, 'getAll')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.getAll({ championship: 'invalid_championship_id' })
+
+    expect(promise).rejects.toThrow()
+  })
 })
