@@ -1,5 +1,9 @@
 import Bonification from '../../entities/bonification.entity'
-import { MissingParamError, ServerError } from '../../errors/controllers.errors'
+import {
+  MissingParamError,
+  NotAllowedFieldsError,
+  ServerError
+} from '../../errors/controllers.errors'
 import { BonificationServiceAbstract } from '../../services/bonification/bonification.service'
 import {
   BonificationControllerAbstract,
@@ -170,6 +174,72 @@ describe('Bonification Controller', () => {
 
     const result = await sut.getAll({
       query: { championship: 'valid_championship_id' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
+
+  it('should return 200 on update success', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({
+      body: { points: 2 },
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual(validBonification)
+  })
+
+  it('should call BonificationService update method with correct values', async () => {
+    const { sut, bonificationServiceStub } = makeSut()
+
+    const updateBonificationSpy = jest.spyOn(bonificationServiceStub, 'update')
+
+    await sut.update({
+      body: { points: 2 },
+      params: { id: 'valid_id' }
+    })
+
+    expect(updateBonificationSpy).toHaveBeenCalledWith('valid_id', {
+      points: 2
+    })
+  })
+
+  it('should return 400 when not providing an id on update', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({ body: {}, params: { id: null as any } })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('id'))
+  })
+
+  it('should return 400 when providing an unallowed update', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update({
+      body: { id: 'valid_id', championship: 'valid_championship' },
+      params: { id: 'valid_id' }
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new NotAllowedFieldsError())
+  })
+
+  it('should return 500 if BonificationService update method throws', async () => {
+    const { sut, bonificationServiceStub } = makeSut()
+
+    jest
+      .spyOn(bonificationServiceStub, 'update')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.update({
+      body: { points: 2 },
+      params: { id: 'valid_id' }
     })
 
     expect(result.statusCode).toBe(500)
