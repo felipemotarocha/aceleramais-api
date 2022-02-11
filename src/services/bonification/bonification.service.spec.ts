@@ -175,4 +175,39 @@ describe('Bonification Service', () => {
 
     expect(promise).rejects.toThrow()
   })
+
+  it('should delete a Bonification', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.delete('valid_id')
+
+    expect(result).toStrictEqual(validBonification)
+  })
+
+  it('should call BonificationRepository delete method with correct values', async () => {
+    const { sut, bonificationRepositoryStub } = makeSut()
+
+    const deleteBonificationSpy = jest.spyOn(
+      bonificationRepositoryStub,
+      'delete'
+    )
+
+    await sut.delete('valid_id')
+
+    expect(deleteBonificationSpy).toHaveBeenCalledWith('valid_id')
+  })
+
+  it('should throws if BonificationRepository delete method throws', async () => {
+    const { sut, bonificationRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(bonificationRepositoryStub, 'delete')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.delete('invalid_id')
+
+    expect(promise).rejects.toThrow()
+  })
 })
