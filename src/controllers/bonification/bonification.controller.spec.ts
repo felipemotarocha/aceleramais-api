@@ -1,5 +1,5 @@
 import Bonification from '../../entities/bonification.entity'
-import { MissingParamError } from '../../errors/controllers.errors'
+import { MissingParamError, ServerError } from '../../errors/controllers.errors'
 import { BonificationServiceAbstract } from '../../services/bonification/bonification.service'
 import {
   BonificationControllerAbstract,
@@ -157,5 +157,22 @@ describe('Bonification Controller', () => {
     expect(getAllBonificationsSpy).toHaveBeenCalledWith({
       championship: 'valid_championship_id'
     })
+  })
+
+  it('should return 500 if BonificationService getOne method throws', async () => {
+    const { sut, bonificationServiceStub } = makeSut()
+
+    jest
+      .spyOn(bonificationServiceStub, 'getAll')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.getAll({
+      query: { championship: 'valid_championship_id' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
   })
 })
