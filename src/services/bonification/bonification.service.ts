@@ -40,7 +40,7 @@ export class BonificationService implements BonificationServiceAbstract {
     id: string,
     updateBonificationDto: UpdateBonificationDto
   ): Promise<Bonification> {
-    throw new Error('Method not implemented.')
+    return await this.bonificationRepository.update(id, updateBonificationDto)
   }
 
   async delete(id: string): Promise<Bonification> {
