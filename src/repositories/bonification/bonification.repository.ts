@@ -7,7 +7,7 @@ import MongooseHelper from '../../helpers/mongoose.helpers'
 import BonificationModel from '../../models/bonification.model'
 
 export interface BonificationRepositoryAbstract {
-  getAll({ championship }: { championship: string }): Promise<Bonification>
+  getAll({ championship }: { championship: string }): Promise<Bonification[]>
   create(createBonificationDto: CreateBonificationDto): Promise<Bonification>
   update(updateBonificationDto: UpdateBonificationDto): Promise<Bonification>
   delete(id: string): Promise<Bonification>
@@ -21,8 +21,16 @@ implements BonificationRepositoryAbstract {
     this.bonificationModel = bonificationModel
   }
 
-  getAll({ championship }: { championship: string }): Promise<Bonification> {
-    throw new Error('Method not implemented.')
+  async getAll({
+    championship
+  }: {
+    championship: string
+  }): Promise<Bonification[]> {
+    const bonifications = await this.bonificationModel.find({ championship })
+
+    return bonifications.map((bonification) =>
+      MongooseHelper.map<Bonification>(bonification.toJSON())
+    )
   }
 
   async create(
