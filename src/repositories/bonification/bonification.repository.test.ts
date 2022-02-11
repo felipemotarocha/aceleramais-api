@@ -1,6 +1,9 @@
 import { Types } from 'mongoose'
 import { env } from '../../config/env.config'
-import { CreateBonificationDto } from '../../dtos/bonification.dtos'
+import {
+  CreateBonificationDto,
+  UpdateBonificationDto
+} from '../../dtos/bonification.dtos'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import BonificationModel from '../../models/bonification.model'
 import { MongoBonificationRepository } from './bonification.repository'
@@ -95,5 +98,47 @@ describe('Mongo Bonification Repository', () => {
     expect(createBonificationSpy).toHaveBeenCalledWith({
       championship: validBonification.championship
     })
+  })
+
+  it('should update a Bonification', async () => {
+    const sut = makeSut()
+
+    await BonificationModel.create([
+      { _id: validBonification.id, ...validBonification }
+    ])
+
+    const dto: UpdateBonificationDto = {
+      points: 2
+    }
+
+    const result = await sut.update(validBonification.id.toHexString(), dto)
+
+    expect(result.id).toBeTruthy()
+    expect(result.points).toStrictEqual(dto.points)
+  })
+
+  it('should call BonificationModel findByIdAndUpdate method with correct values', async () => {
+    const sut = makeSut()
+
+    const updateCollectionSpy = jest.spyOn(
+      BonificationModel,
+      'findByIdAndUpdate'
+    )
+
+    await BonificationModel.create([
+      { _id: validBonification.id, ...validBonification }
+    ])
+
+    const dto: UpdateBonificationDto = {
+      points: 2
+    }
+
+    await sut.update(validBonification.id.toHexString(), dto)
+
+    expect(updateCollectionSpy).toHaveBeenCalledWith(
+      validBonification.id.toHexString(),
+      dto,
+      { new: true }
+    )
   })
 })
