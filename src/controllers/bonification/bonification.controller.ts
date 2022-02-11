@@ -1,4 +1,7 @@
-import { MissingParamError } from '../../errors/controllers.errors'
+import {
+  MissingParamError,
+  NotAllowedFieldsError
+} from '../../errors/controllers.errors'
 import {
   badRequest,
   created,
@@ -55,8 +58,31 @@ export class BonificationController implements BonificationControllerAbstract {
     }
   }
 
-  update(httpRequest: HttpRequest): Promise<HttpResponse> {
-    throw new Error('Method not implemented.')
+  async update(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      if (!httpRequest.params?.id) {
+        return badRequest(new MissingParamError('id'))
+      }
+
+      const allowedUpdates = ['name', 'points']
+
+      const someReceivedUpdateIsNotAllowed = Object.keys(httpRequest.body).some(
+        (update) => !allowedUpdates.includes(update)
+      )
+
+      if (someReceivedUpdateIsNotAllowed) {
+        return badRequest(new NotAllowedFieldsError())
+      }
+
+      const bonification = await this.bonificationService.update(
+        httpRequest.params.id,
+        httpRequest.body
+      )
+
+      return ok(bonification)
+    } catch (_) {
+      return serverError()
+    }
   }
 
   delete(httpRequest: HttpRequest): Promise<HttpResponse> {
