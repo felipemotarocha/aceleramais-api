@@ -132,4 +132,47 @@ describe('Bonification Service', () => {
 
     expect(promise).rejects.toThrow()
   })
+
+  it('should update a Bonification', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.update('valid_id', {
+      points: 2
+    })
+
+    expect(result).toStrictEqual(validBonification)
+  })
+
+  it('should call BonificationRepository update method with correct values', async () => {
+    const { sut, bonificationRepositoryStub } = makeSut()
+
+    const updateBonificationSpy = jest.spyOn(
+      bonificationRepositoryStub,
+      'update'
+    )
+
+    await sut.update('valid_id', {
+      points: 2
+    })
+
+    expect(updateBonificationSpy).toHaveBeenCalledWith('valid_id', {
+      points: 2
+    })
+  })
+
+  it('should throws if BonificationRepository update method throws', async () => {
+    const { sut, bonificationRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(bonificationRepositoryStub, 'update')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const promise = sut.update('invalid_id', {
+      points: 2
+    })
+
+    expect(promise).rejects.toThrow()
+  })
 })
