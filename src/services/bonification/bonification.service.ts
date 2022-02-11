@@ -27,7 +27,7 @@ export class BonificationService implements BonificationServiceAbstract {
   }: {
     championship: string
   }): Promise<Bonification[]> {
-    throw new Error('Method not implemented.')
+    return await this.bonificationRepository.getAll({ championship })
   }
 
   async create(
