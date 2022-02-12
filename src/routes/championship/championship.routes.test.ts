@@ -29,6 +29,8 @@ describe('Championship Routes', () => {
         races: [{ startDate: 'valid_start_date', track: new Types.ObjectId() }],
         teams: [{ name: 'valid_name', color: 'valid_color' }],
         drivers: [{ user: new Types.ObjectId(), isRegistered: true }],
+        bonifications: [{ name: 'valid_bonifcation', points: 1 }],
+        penalties: [{ name: 'valid_penalty', points: 1 }],
         scoringSystem: { 1: 25, 2: 20 }
       })
       .expect(201)
@@ -45,6 +47,8 @@ describe('Championship Routes', () => {
         races: [{ startDate: 'valid_start_date', track: new Types.ObjectId() }],
         teams: [{ name: 'valid_name', color: 'valid_color' }],
         drivers: [{ user: new Types.ObjectId(), isRegistered: true }],
+        bonifications: [{ name: 'valid_bonifcation', points: 1 }],
+        penalties: [{ name: 'valid_penalty', points: 1 }],
         scoringSystem: { 1: 25, 2: 20 }
       })
 
