@@ -8,6 +8,7 @@ import {
   ok,
   serverError
 } from '../../helpers/controllers.helpers'
+import DriverHelpers from '../../helpers/driver.helpers'
 import {
   HttpRequest,
   HttpResponse
@@ -74,14 +75,8 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       }
 
       if (httpRequest.body.drivers) {
-        const someDriverIsInvalid = httpRequest.body.drivers.some(
-          (item) =>
-            (!item.user && item.isRegistered) ||
-            (item.user && item.userName) ||
-            (item.user && !item.isRegistered) ||
-            (item.userName && item.isRegistered) ||
-            item.isRegistered === undefined ||
-            item.isRegistered === null
+        const someDriverIsInvalid = DriverHelpers.verifyIfAreInvalid(
+          httpRequest.body.drivers
         )
 
         if (someDriverIsInvalid) {

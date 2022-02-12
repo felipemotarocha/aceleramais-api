@@ -9,6 +9,9 @@ import BonificationModel from '../../models/bonification.model'
 export interface BonificationRepositoryAbstract {
   getAll({ championship }: { championship: string }): Promise<Bonification[]>
   create(createBonificationDto: CreateBonificationDto): Promise<Bonification>
+  bulkCreate(
+    bulkCreateBonificationDto: CreateBonificationDto[]
+  ): Promise<Bonification[]>
   update(
     id: string,
     updateBonificationDto: UpdateBonificationDto
@@ -44,6 +47,14 @@ implements BonificationRepositoryAbstract {
     )
 
     return MongooseHelper.map<Bonification>(bonification.toJSON())
+  }
+
+  async bulkCreate(
+    bulkCreateBonificationDto: CreateBonificationDto[]
+  ): Promise<Bonification[]> {
+    const teams = await this.bonificationModel.create(bulkCreateBonificationDto)
+
+    return teams.map((team) => MongooseHelper.map(team.toJSON()))
   }
 
   async update(

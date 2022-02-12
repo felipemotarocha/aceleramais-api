@@ -47,6 +47,23 @@ describe('Mongo Bonification Repository', () => {
     expect(result.points).toBe(dto.points)
   })
 
+  it('should create Bonifications', async () => {
+    const sut = makeSut()
+
+    const dto: CreateBonificationDto = {
+      championship: new Types.ObjectId() as any,
+      name: 'Volta mais rápida',
+      points: 1
+    }
+
+    const result = await sut.bulkCreate([dto])
+
+    expect(result[0].id).toBeTruthy()
+    expect(result[0].championship).toStrictEqual(dto.championship)
+    expect(result[0].name).toBe(dto.name)
+    expect(result[0].points).toBe(dto.points)
+  })
+
   it('should call BonificationModel create method with correct values', async () => {
     const sut = makeSut()
 

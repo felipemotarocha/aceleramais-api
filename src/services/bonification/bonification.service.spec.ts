@@ -24,6 +24,10 @@ describe('Bonification Service', () => {
         return validBonification
       }
 
+      async bulkCreate(): Promise<Bonification[]> {
+        return [validBonification]
+      }
+
       async getAll(): Promise<Bonification[]> {
         return [validBonification]
       }
