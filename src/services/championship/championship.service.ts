@@ -1,8 +1,10 @@
 import { Types } from 'mongoose'
 import { CreateChampionshipDto } from '../../dtos/championship.dtos'
 import Championship from '../../entities/championship.entity'
+import { BonificationRepositoryAbstract } from '../../repositories/bonification/bonification.repository'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
+import { PenaltyRepositoryAbstract } from '../../repositories/penalty/penalty.repository'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
 import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
 import { ScoringSystemRepositoryAbstract } from '../../repositories/scoring-system/scoring-system.repository'
@@ -28,6 +30,8 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
   private readonly scoringSystemRepository: ScoringSystemRepositoryAbstract
   private readonly raceRepository: RaceRepositoryAbstract
   private readonly raceClassificationRepository: RaceClassificationRepositoryAbstract
+  private readonly bonificationRepository: BonificationRepositoryAbstract
+  private readonly penaltyRepository: PenaltyRepositoryAbstract
 
   constructor(
     championshipRepository: ChampionshipRepositoryAbstract,
@@ -36,7 +40,9 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     teamStandingsRepository: TeamStandingsRepositoryAbstract,
     scoringSystemRepository: ScoringSystemRepositoryAbstract,
     raceRepository: RaceRepositoryAbstract,
-    raceClassificationRepository: RaceClassificationRepositoryAbstract
+    raceClassificationRepository: RaceClassificationRepositoryAbstract,
+    bonificationRepository: BonificationRepositoryAbstract,
+    penaltyRepository: PenaltyRepositoryAbstract
   ) {
     this.championshipRepository = championshipRepository
     this.teamRepository = teamRepository
@@ -45,6 +51,8 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     this.scoringSystemRepository = scoringSystemRepository
     this.raceRepository = raceRepository
     this.raceClassificationRepository = raceClassificationRepository
+    this.bonificationRepository = bonificationRepository
+    this.penaltyRepository = penaltyRepository
   }
 
   async create({
@@ -69,6 +77,32 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       )
 
       teamIds = teams.map((team) => team.id)
+    }
+
+    let bonificationIds: string[] = []
+
+    if (createChampionshipDto.bonifications) {
+      const bonifications = await this.bonificationRepository.bulkCreate(
+        createChampionshipDto.bonifications.map((item) => ({
+          ...item,
+          championship: championshipId as any
+        }))
+      )
+
+      bonificationIds = bonifications.map((item) => item.id)
+    }
+
+    let penaltyIds: string[] = []
+
+    if (createChampionshipDto.penalties) {
+      const penalties = await this.bonificationRepository.bulkCreate(
+        createChampionshipDto.penalties.map((item) => ({
+          ...item,
+          championship: championshipId as any
+        }))
+      )
+
+      penaltyIds = penalties.map((item) => item.id)
     }
 
     const driverStandings = await this.driverStandingsRepository.create({
@@ -114,6 +148,8 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       driverStandings: driverStandings.id,
       teamStandings: teamStandings.id,
       teams: teamIds,
+      bonifications: bonificationIds,
+      penalties: penaltyIds,
       races,
       drivers
     })

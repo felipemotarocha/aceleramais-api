@@ -2,14 +2,14 @@ import Penalty from '../../entities/penalty.entity'
 import { PenaltyRepositoryAbstract } from '../../repositories/penalty/penalty.repository'
 import { PenaltyService, PenaltyServiceAbstract } from './penalty.service'
 
-describe('Penalty Service', () => {
-  const validPenalty = {
-    id: 'valid_id',
-    championship: 'valid_championship',
-    name: 'Volta mais rápida',
-    points: 1
-  }
+export const validPenalty = {
+  id: 'valid_id',
+  championship: 'valid_championship',
+  name: 'Volta mais rápida',
+  points: 1
+}
 
+describe('Penalty Service', () => {
   interface SutTypes {
     penaltyRepositoryStub: PenaltyRepositoryAbstract
     sut: PenaltyServiceAbstract

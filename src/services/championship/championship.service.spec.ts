@@ -1,18 +1,24 @@
 import { Types } from 'mongoose'
+import Bonification from '../../entities/bonification.entity'
 import Championship from '../../entities/championship.entity'
 import DriverStandings from '../../entities/driver-standings'
+import Penalty from '../../entities/penalty.entity'
 import RaceClassification from '../../entities/race-classification.entity'
 import Race from '../../entities/race.entity'
 import ScoringSystem from '../../entities/scoring-system.entity'
 import TeamStandings from '../../entities/team-standings.entity'
 import Team from '../../entities/team.entity'
+import { BonificationRepositoryAbstract } from '../../repositories/bonification/bonification.repository'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
+import { PenaltyRepositoryAbstract } from '../../repositories/penalty/penalty.repository'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
 import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
 import { ScoringSystemRepositoryAbstract } from '../../repositories/scoring-system/scoring-system.repository'
 import { TeamStandingsRepositoryAbstract } from '../../repositories/team-standings/team-standings.repository'
 import { TeamRepositoryAbstract } from '../../repositories/team/team.repository'
+import { validBonification } from '../bonification/bonification.service.spec'
+import { validPenalty } from '../penalty/penalty.service.spec'
 import { TeamStandingsServiceAbstract } from '../team-standings/team-standings.service'
 import {
   ChampionshipServiceAbstract,
@@ -31,7 +37,9 @@ describe('Championship Service', () => {
     drivers: [{ user: 'valid_user', isRegistered: true }],
     scoringSystem: 'valid_scoring_system',
     teamStandings: 'valid_team_standings',
-    driverStandings: 'valid_driver_standings'
+    driverStandings: 'valid_driver_standings',
+    bonifications: ['valid_bonification'],
+    penalties: ['valid_penalty']
   }
 
   const validTeam: Team = {
@@ -227,6 +235,46 @@ describe('Championship Service', () => {
       }
     }
 
+    class BonificationRepositoryStub implements BonificationRepositoryAbstract {
+      async create(): Promise<Bonification> {
+        return validBonification
+      }
+
+      async bulkCreate(): Promise<Bonification[]> {
+        return [validBonification]
+      }
+
+      async getAll(): Promise<Bonification[]> {
+        return [validBonification]
+      }
+
+      async update(): Promise<Bonification> {
+        return validBonification
+      }
+
+      async delete(): Promise<Bonification> {
+        return validBonification
+      }
+    }
+
+    class PenaltyRepositoryStub implements PenaltyRepositoryAbstract {
+      async create(): Promise<Penalty> {
+        return validPenalty
+      }
+
+      async getAll(): Promise<Penalty[]> {
+        return [validPenalty]
+      }
+
+      async update(): Promise<Penalty> {
+        return validPenalty
+      }
+
+      async delete(): Promise<Penalty> {
+        return validPenalty
+      }
+    }
+
     const teamRepositoryStub = new TeamRepositoryStub()
     const driverStandingsRepositoryStub = new DriverStandingsRepositoryStub()
     const championshipStandingsRepositoryStub = new ChampionshipRepositoryStub()
@@ -235,6 +283,8 @@ describe('Championship Service', () => {
     const raceRepositoryStub = new RaceRepositoryStub()
     const raceClassificationRepositoryStub =
       new RaceClassificationRepositoryStub()
+    const bonificationRepositoryStub = new BonificationRepositoryStub()
+    const penaltyRepositoryStub = new PenaltyRepositoryStub()
 
     const sut = new ChampionshipService(
       championshipStandingsRepositoryStub,
@@ -243,7 +293,9 @@ describe('Championship Service', () => {
       teamStandingsRepositoryStub,
       scoringSystemRepositoryStub,
       raceRepositoryStub,
-      raceClassificationRepositoryStub
+      raceClassificationRepositoryStub,
+      bonificationRepositoryStub,
+      penaltyRepositoryStub
     )
 
     return {

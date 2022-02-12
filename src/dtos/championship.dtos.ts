@@ -20,6 +20,14 @@ export interface CreateChampionshipDto {
   scoringSystem: {
     [key: string]: number
   }
+  bonifications?: {
+    name: string
+    points: number
+  }[]
+  penalties?: {
+    name: string
+    points: number
+  }[]
 }
 
 export interface CreateChampionshipMongoDto {
@@ -38,4 +46,6 @@ export interface CreateChampionshipMongoDto {
   scoringSystem: string
   driverStandings: string
   teamStandings: string
+  bonifications?: string[]
+  penalties?: string[]
 }

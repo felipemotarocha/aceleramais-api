@@ -1,8 +1,10 @@
 import { ChampionshipController } from '../controllers/championship/championship.controller'
+import BonificationModel from '../models/bonification.model'
 
 // Models
 import ChampionshipModel from '../models/championship.model'
 import DriverStandingsModel from '../models/driver-standings.model'
+import PenaltyModel from '../models/penalty.model'
 import RaceClassificationModel from '../models/race-classification.model'
 import RaceModel from '../models/race.model'
 import ScoringSystemModel from '../models/scoring-system.model'
@@ -12,11 +14,13 @@ import TeamModel from '../models/team.model'
 // Repositories
 import { MongoChampionshipRepository } from '../repositories/championship/championship.repository'
 import { MongoDriverStandingsRepository } from '../repositories/driver-standings/driver-standings.repository'
+import { MongoPenaltyRepository } from '../repositories/penalty/penalty.repository'
 import { MongoRaceClassificationRepository } from '../repositories/race-classification/race-classification.repository'
 import MongoRaceRepository from '../repositories/race/race.repository'
 import { MongoScoringSystemRepository } from '../repositories/scoring-system/scoring-system.repository'
 import { MongoTeamStandingsRepository } from '../repositories/team-standings/team-standings.repository'
 import { MongoTeamRepository } from '../repositories/team/team.repository'
+import { MongoBonificationRepository } from '../repositories/bonification/bonification.repository'
 
 // Services
 import { ChampionshipService } from '../services/championship/championship.service'
@@ -39,6 +43,10 @@ const makeChampionshipController = (): ChampionshipController => {
   const raceClassificationRepository = new MongoRaceClassificationRepository(
     RaceClassificationModel
   )
+  const bonificationRepository = new MongoBonificationRepository(
+    BonificationModel
+  )
+  const penaltyRepository = new MongoPenaltyRepository(PenaltyModel)
 
   const championshipService = new ChampionshipService(
     championshipRepository,
@@ -47,7 +55,9 @@ const makeChampionshipController = (): ChampionshipController => {
     teamStandingsRepository,
     scoringSystemRepository,
     raceRepository,
-    raceClassificationRepository
+    raceClassificationRepository,
+    bonificationRepository,
+    penaltyRepository
   )
 
   return new ChampionshipController(championshipService)

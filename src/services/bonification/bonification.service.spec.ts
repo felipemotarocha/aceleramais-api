@@ -5,14 +5,14 @@ import {
   BonificationServiceAbstract
 } from './bonification.service'
 
-describe('Bonification Service', () => {
-  const validBonification = {
-    id: 'valid_id',
-    championship: 'valid_championship',
-    name: 'Volta mais rápida',
-    points: 1
-  }
+export const validBonification = {
+  id: 'valid_id',
+  championship: 'valid_championship',
+  name: 'Volta mais rápida',
+  points: 1
+}
 
+describe('Bonification Service', () => {
   interface SutTypes {
     bonificationRepositoryStub: BonificationRepositoryAbstract
     sut: BonificationServiceAbstract
