@@ -89,6 +89,16 @@ const championshipSchema = new Schema({
     type: Types.ObjectId,
     ref: 'ScoringSystem',
     required: true
+  },
+  bonifications: {
+    type: [Types.ObjectId],
+    ref: 'Bonification',
+    required: false
+  },
+  penalties: {
+    type: [Types.ObjectId],
+    ref: 'Bonification',
+    required: false
   }
 })
 

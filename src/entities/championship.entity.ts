@@ -21,6 +21,8 @@ interface Championship {
   driverStandings: string
   teamStandings: string
   scoringSystem: string
+  bonifications: string[]
+  penalties: string[]
 }
 
 export default Championship
