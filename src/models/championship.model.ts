@@ -1,5 +1,21 @@
 import { model, Schema, Types } from 'mongoose'
 
+const driverBonificationSchema = new Schema(
+  {
+    bonification: {
+      type: Types.ObjectId,
+      ref: 'Bonification',
+      required: true
+    },
+    race: {
+      type: Types.ObjectId,
+      ref: 'Race',
+      required: false
+    }
+  },
+  { _id: false }
+)
+
 const driversSchema = new Schema(
   {
     user: {
@@ -19,6 +35,10 @@ const driversSchema = new Schema(
     isRegistered: {
       type: Boolean,
       required: true
+    },
+    bonifications: {
+      type: [driverBonificationSchema],
+      required: false
     }
   },
   { _id: false }

@@ -93,7 +93,7 @@ describe('Scoring System Service', () => {
     expect(promise).rejects.toThrow()
   })
 
-  it('should get all ScoringSystems by Championship', async () => {
+  it('should get a ScoringSystem by Championship', async () => {
     const { sut } = makeSut()
 
     const result = await sut.getOne({ championship: 'valid_championship_id' })

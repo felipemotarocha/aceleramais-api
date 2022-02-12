@@ -3,6 +3,10 @@ export interface ChampionshipDriver {
   userName?: string
   team?: string
   isRegistered: boolean
+  bonifications?: {
+    bonification: string
+    race: string
+  }[]
 }
 
 interface Championship {

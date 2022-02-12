@@ -30,7 +30,13 @@ describe('Mongo Driver Standings Repository', () => {
       avatarImageUrl: 'valid_url',
       races: [new Types.ObjectId() as any],
       teams: [new Types.ObjectId() as any],
-      drivers: [{ user: new Types.ObjectId() as any, isRegistered: true }],
+      drivers: [
+        {
+          user: new Types.ObjectId() as any,
+          isRegistered: true,
+          bonifications: []
+        }
+      ],
       scoringSystem: new Types.ObjectId() as any,
       teamStandings: new Types.ObjectId() as any,
       driverStandings: new Types.ObjectId() as any
@@ -83,7 +89,13 @@ describe('Mongo Driver Standings Repository', () => {
       avatarImageUrl: 'valid_url',
       races: [new Types.ObjectId() as any],
       teams: [new Types.ObjectId() as any],
-      drivers: [{ user: new Types.ObjectId() as any, isRegistered: true }],
+      drivers: [
+        {
+          user: new Types.ObjectId() as any,
+          isRegistered: true,
+          bonifications: []
+        }
+      ],
       scoringSystem: new Types.ObjectId() as any,
       teamStandings: new Types.ObjectId() as any,
       driverStandings: new Types.ObjectId() as any
