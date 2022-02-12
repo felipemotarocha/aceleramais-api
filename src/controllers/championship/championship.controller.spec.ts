@@ -22,7 +22,9 @@ describe('Championship Controller', () => {
     drivers: [{ user: 'valid_user', isRegistered: true }],
     scoringSystem: 'valid_scoring_system',
     teamStandings: 'valid_team_standings',
-    driverStandings: 'valid_driver_standings'
+    driverStandings: 'valid_driver_standings',
+    bonifications: ['valid_bonification'],
+    penalties: ['valid_penalty']
   }
 
   interface SutTypes {
