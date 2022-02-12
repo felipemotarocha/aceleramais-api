@@ -18,9 +18,9 @@ export class MongoPenaltyRepository implements PenaltyRepositoryAbstract {
   }
 
   async getAll({ championship }: { championship: string }): Promise<Penalty[]> {
-    const penaltys = await this.penaltyModel.find({ championship })
+    const penalties = await this.penaltyModel.find({ championship })
 
-    return penaltys.map((penalty) =>
+    return penalties.map((penalty) =>
       MongooseHelper.map<Penalty>(penalty.toJSON())
     )
   }
