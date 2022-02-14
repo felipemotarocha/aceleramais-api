@@ -1,5 +1,20 @@
 import { model, Schema, Types } from 'mongoose'
 
+const adminSchema = new Schema(
+  {
+    user: {
+      type: Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    isCreator: {
+      type: Boolean,
+      required: true
+    }
+  },
+  { _id: false }
+)
+
 const driverBonificationSchema = new Schema(
   {
     bonification: {
@@ -71,8 +86,7 @@ const championshipSchema = new Schema({
     required: true
   },
   admins: {
-    type: [Types.ObjectId],
-    ref: 'User',
+    type: [adminSchema],
     required: true
   },
   drivers: {

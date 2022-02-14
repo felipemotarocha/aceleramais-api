@@ -23,7 +23,7 @@ describe('Championship Controller', () => {
     scoringSystem: 'valid_scoring_system',
     teamStandings: 'valid_team_standings',
     driverStandings: 'valid_driver_standings',
-    admins: ['valid_admin'],
+    admins: [{ user: 'valid_user', isCreator: true }],
     bonifications: ['valid_bonification'],
     penalties: ['valid_penalty']
   }
@@ -72,7 +72,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -97,7 +97,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -120,7 +120,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -142,7 +142,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -164,7 +164,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -186,7 +186,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -208,7 +208,7 @@ describe('Championship Controller', () => {
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -230,7 +230,7 @@ describe('Championship Controller', () => {
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -253,7 +253,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -276,7 +276,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -299,7 +299,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 'a' },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -322,7 +322,7 @@ describe('Championship Controller', () => {
       scoringSystem: { a: 1 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -345,7 +345,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -374,7 +374,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -397,7 +397,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -420,7 +420,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -443,7 +443,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })
@@ -472,7 +472,7 @@ describe('Championship Controller', () => {
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
-      admins: ['valid_admin']
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     const result = await sut.create({ body: { data: JSON.stringify(dto) } })

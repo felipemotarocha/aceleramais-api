@@ -10,13 +10,18 @@ export interface ChampionshipDriver {
   }[]
 }
 
+export interface ChampionshipAdmin {
+  user: string
+  isCreator: boolean
+}
+
 interface Championship {
   id: string
   avatarImageUrl: string
   name: string
   description: string
   platform: string
-  admins: string[]
+  admins: ChampionshipAdmin[]
   races: string[]
   teams: string[]
   drivers: ChampionshipDriver[]

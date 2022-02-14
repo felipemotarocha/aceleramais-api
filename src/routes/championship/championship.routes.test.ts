@@ -31,7 +31,7 @@ describe('Championship Routes', () => {
       bonifications: [{ name: 'valid_bonifcation', points: 1 }],
       penalties: [{ name: 'valid_penalty', points: 1 }],
       scoringSystem: { 1: 25, 2: 20 },
-      admins: [new Types.ObjectId()]
+      admins: [{ user: new Types.ObjectId(), isCreator: true }]
     }
 
     await request(app)
@@ -53,7 +53,7 @@ describe('Championship Routes', () => {
       bonifications: [{ name: 'valid_bonifcation', points: 1 }],
       penalties: [{ name: 'valid_penalty', points: 1 }],
       scoringSystem: { 1: 25, 2: 20 },
-      admins: [new Types.ObjectId()]
+      admins: [{ user: new Types.ObjectId(), isCreator: true }]
     }
 
     const { body } = await request(app)
