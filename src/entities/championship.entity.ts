@@ -8,6 +8,10 @@ export interface ChampionshipDriver {
     bonification: string
     race: string
   }[]
+  penalties?: {
+    bonification: string
+    race: string
+  }[]
 }
 
 export interface ChampionshipAdmin {
