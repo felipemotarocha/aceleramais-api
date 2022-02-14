@@ -32,13 +32,13 @@ describe('Mongo Driver Standings Repository', () => {
       teams: [new Types.ObjectId() as any],
       drivers: [
         {
-          user: new Types.ObjectId() as any,
+          user: 'valid_user',
           isRegistered: true,
           bonifications: []
         }
       ],
       scoringSystem: new Types.ObjectId() as any,
-      admins: [{ user: new Types.ObjectId() as any, isCreator: true }],
+      admins: [{ user: 'valid_user', isCreator: true }],
       teamStandings: new Types.ObjectId() as any,
       driverStandings: new Types.ObjectId() as any
     }
@@ -68,11 +68,11 @@ describe('Mongo Driver Standings Repository', () => {
       avatarImageUrl: 'valid_url',
       races: [new Types.ObjectId() as any],
       teams: [new Types.ObjectId() as any],
-      drivers: [{ user: new Types.ObjectId() as any, isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
       teamStandings: new Types.ObjectId() as any,
       driverStandings: new Types.ObjectId() as any,
       scoringSystem: new Types.ObjectId() as any,
-      admins: [{ user: new Types.ObjectId() as any, isCreator: true }]
+      admins: [{ user: 'valid_user', isCreator: true }]
     }
 
     await sut.create(dto)
@@ -93,13 +93,13 @@ describe('Mongo Driver Standings Repository', () => {
       teams: [new Types.ObjectId() as any],
       drivers: [
         {
-          user: new Types.ObjectId() as any,
+          user: 'valid_user',
           isRegistered: true,
           bonifications: []
         }
       ],
       scoringSystem: new Types.ObjectId() as any,
-      admins: [{ user: new Types.ObjectId() as any, isCreator: true }],
+      admins: [{ user: 'valid_user', isCreator: true }],
       teamStandings: new Types.ObjectId() as any,
       driverStandings: new Types.ObjectId() as any
     }
@@ -132,9 +132,9 @@ describe('Mongo Driver Standings Repository', () => {
       avatarImageUrl: 'valid_url',
       races: [new Types.ObjectId() as any],
       teams: [new Types.ObjectId() as any],
-      drivers: [{ user: new Types.ObjectId() as any, isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
       scoringSystem: new Types.ObjectId() as any,
-      admins: [{ user: new Types.ObjectId() as any, isCreator: true }],
+      admins: [{ user: 'valid_user', isCreator: true }],
       teamStandings: new Types.ObjectId() as any,
       driverStandings: new Types.ObjectId() as any
     }

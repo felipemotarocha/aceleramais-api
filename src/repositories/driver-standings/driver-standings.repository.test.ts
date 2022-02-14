@@ -14,7 +14,7 @@ describe('Mongo Driver Standings Repository', () => {
     championship: new Types.ObjectId() as any,
     standings: [
       {
-        user: new Types.ObjectId() as any,
+        user: 'valid_user',
         isRegistered: true,
         position: 1
       }
@@ -42,7 +42,7 @@ describe('Mongo Driver Standings Repository', () => {
       championship: new Types.ObjectId() as any,
       standings: [
         {
-          user: new Types.ObjectId() as any,
+          user: 'valid_user',
           isRegistered: true,
           position: 1
         }
@@ -67,7 +67,7 @@ describe('Mongo Driver Standings Repository', () => {
       championship: new Types.ObjectId() as any,
       standings: [
         {
-          user: new Types.ObjectId() as any,
+          user: 'valid_user',
           isRegistered: true,
           position: 1
         }

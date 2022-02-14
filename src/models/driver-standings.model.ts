@@ -3,7 +3,7 @@ import { model, Schema, Types } from 'mongoose'
 const standingsSchema = new Schema(
   {
     user: {
-      type: Types.ObjectId,
+      type: String,
       ref: 'User',
       required: false
     },
