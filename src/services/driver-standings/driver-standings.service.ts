@@ -2,7 +2,7 @@ import {
   CreateDriverStandingsDto,
   UpdateDriverStandingsDto
 } from '../../dtos/driver-standings.dto'
-import DriverStandings from '../../entities/driver-standings'
+import DriverStandings from '../../entities/driver-standings.entity'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
 
 export interface DriverStandingsServiceAbstract {

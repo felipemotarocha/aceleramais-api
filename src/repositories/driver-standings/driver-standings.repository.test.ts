@@ -16,7 +16,8 @@ describe('Mongo Driver Standings Repository', () => {
       {
         user: 'valid_user',
         isRegistered: true,
-        position: 1
+        position: 1,
+        points: 10
       }
     ]
   }
@@ -44,7 +45,8 @@ describe('Mongo Driver Standings Repository', () => {
         {
           user: 'valid_user',
           isRegistered: true,
-          position: 1
+          position: 1,
+          points: 10
         }
       ]
     }
@@ -69,7 +71,8 @@ describe('Mongo Driver Standings Repository', () => {
         {
           user: 'valid_user',
           isRegistered: true,
-          position: 1
+          position: 1,
+          points: 10
         }
       ]
     }
@@ -134,9 +137,11 @@ describe('Mongo Driver Standings Repository', () => {
       standings: [
         {
           user: undefined,
-          userName: 'Max Verstappen',
+          firstName: 'Max',
+          lastName: 'Verstappen',
           isRegistered: false,
-          position: 1
+          position: 1,
+          points: 10
         }
       ]
     }
@@ -146,9 +151,11 @@ describe('Mongo Driver Standings Repository', () => {
     expect(result.id).toBeTruthy()
     expect(result.standings).toStrictEqual([
       {
-        userName: 'Max Verstappen',
+        firstName: 'Max',
+        lastName: 'Verstappen',
         isRegistered: false,
-        position: 1
+        position: 1,
+        points: 10
       }
     ])
   })
@@ -169,9 +176,11 @@ describe('Mongo Driver Standings Repository', () => {
       standings: [
         {
           user: undefined,
-          userName: 'Max Verstappen',
+          firstName: 'Max',
+          lastName: 'Verstappen',
           isRegistered: false,
-          position: 1
+          position: 1,
+          points: 10
         }
       ]
     }

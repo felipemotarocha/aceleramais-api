@@ -1,4 +1,4 @@
-import DriverStandings from '../../entities/driver-standings'
+import DriverStandings from '../../entities/driver-standings.entity'
 import { MissingParamError, ServerError } from '../../errors/controllers.errors'
 import { DriverStandingsServiceAbstract } from '../../services/driver-standings/driver-standings.service'
 import {
@@ -14,7 +14,8 @@ describe('Driver Standings Controller', () => {
       {
         user: 'valid_user',
         isRegistered: true,
-        position: 1
+        position: 1,
+        points: 10
       }
     ]
   }

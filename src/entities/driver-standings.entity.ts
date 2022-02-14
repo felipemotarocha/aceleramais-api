@@ -3,8 +3,11 @@ interface DriverStandings {
   championship: string
   standings: {
     user?: string
-    userName?: string
+    firstName?: string
+    lastName?: string
+    team?: string
     position: number
+    points: number
     isRegistered: boolean
   }[]
 }

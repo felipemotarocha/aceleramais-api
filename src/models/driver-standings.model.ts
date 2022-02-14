@@ -7,11 +7,24 @@ const standingsSchema = new Schema(
       ref: 'User',
       required: false
     },
-    userName: {
+    firstName: {
       type: String,
       required: false
     },
+    lastName: {
+      type: String,
+      required: false
+    },
+    team: {
+      type: Types.ObjectId,
+      ref: 'Team',
+      required: false
+    },
     position: {
+      type: Number,
+      required: true
+    },
+    points: {
       type: Number,
       required: true
     },

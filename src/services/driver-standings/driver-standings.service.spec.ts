@@ -1,5 +1,5 @@
 import { CreateDriverStandingsDto } from '../../dtos/driver-standings.dto'
-import DriverStandings from '../../entities/driver-standings'
+import DriverStandings from '../../entities/driver-standings.entity'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
 import {
   DriverStandingsService,
@@ -14,7 +14,8 @@ describe('Driver Standings Service', () => {
       {
         user: 'valid_user',
         isRegistered: true,
-        position: 1
+        position: 1,
+        points: 10
       }
     ]
   }
@@ -59,7 +60,8 @@ describe('Driver Standings Service', () => {
         {
           user: 'valid_user',
           isRegistered: true,
-          position: 1
+          position: 1,
+          points: 10
         }
       ]
     }
@@ -83,7 +85,8 @@ describe('Driver Standings Service', () => {
         {
           user: 'valid_user',
           isRegistered: true,
-          position: 1
+          position: 1,
+          points: 10
         }
       ]
     }
@@ -108,7 +111,8 @@ describe('Driver Standings Service', () => {
         {
           user: 'valid_user',
           isRegistered: true,
-          position: 1
+          position: 1,
+          points: 10
         }
       ]
     }
@@ -166,9 +170,11 @@ describe('Driver Standings Service', () => {
       standings: [
         {
           user: undefined,
-          userName: 'Max Verstappen',
+          firstName: 'Max',
+          lastName: 'Verstappen',
           isRegistered: false,
-          position: 1
+          position: 1,
+          points: 10
         }
       ]
     })
@@ -177,9 +183,11 @@ describe('Driver Standings Service', () => {
       standings: [
         {
           user: undefined,
-          userName: 'Max Verstappen',
+          firstName: 'Max',
+          lastName: 'Verstappen',
           isRegistered: false,
-          position: 1
+          position: 1,
+          points: 10
         }
       ]
     })
@@ -198,9 +206,11 @@ describe('Driver Standings Service', () => {
       standings: [
         {
           user: undefined,
-          userName: 'Max Verstappen',
+          firstName: 'Max',
+          lastName: 'Verstappen',
           isRegistered: false,
-          position: 1
+          position: 1,
+          points: 10
         }
       ]
     })

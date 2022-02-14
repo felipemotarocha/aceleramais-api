@@ -2,7 +2,7 @@ import {
   CreateDriverStandingsDto,
   UpdateDriverStandingsDto
 } from '../../dtos/driver-standings.dto'
-import DriverStandings from '../../entities/driver-standings'
+import DriverStandings from '../../entities/driver-standings.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import DriverStandingsModel from '../../models/driver-standings.model'
 

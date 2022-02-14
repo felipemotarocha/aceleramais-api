@@ -1,7 +1,7 @@
 import { Types } from 'mongoose'
 import Bonification from '../../entities/bonification.entity'
 import Championship from '../../entities/championship.entity'
-import DriverStandings from '../../entities/driver-standings'
+import DriverStandings from '../../entities/driver-standings.entity'
 import Penalty from '../../entities/penalty.entity'
 import RaceClassification from '../../entities/race-classification.entity'
 import Race from '../../entities/race.entity'
@@ -58,7 +58,8 @@ describe('Championship Service', () => {
       {
         user: 'valid_user',
         isRegistered: true,
-        position: 1
+        position: 1,
+        points: 25
       }
     ]
   }
