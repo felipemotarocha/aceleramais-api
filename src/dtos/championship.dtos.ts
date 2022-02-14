@@ -6,6 +6,7 @@ export interface CreateChampionshipDto {
   platform: string
   avatarImage?: Express.Multer.File
   avatarImageUrl?: string
+  admins: string[]
   races: {
     startDate: string
     track: string
@@ -40,6 +41,7 @@ export interface CreateChampionshipMongoDto {
   description: string
   platform: string
   avatarImageUrl?: string
+  admins: string[]
   races: string[]
   teams?: string[]
   drivers?: {

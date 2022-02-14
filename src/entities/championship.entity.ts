@@ -16,6 +16,7 @@ interface Championship {
   name: string
   description: string
   platform: string
+  admins: string[]
   races: string[]
   teams: string[]
   drivers: ChampionshipDriver[]

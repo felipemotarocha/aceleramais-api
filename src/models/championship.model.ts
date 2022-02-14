@@ -70,6 +70,11 @@ const championshipSchema = new Schema({
     ref: 'Race',
     required: true
   },
+  admins: {
+    type: [Types.ObjectId],
+    ref: 'User',
+    required: true
+  },
   drivers: {
     type: [driversSchema],
     required: false

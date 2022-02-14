@@ -38,6 +38,7 @@ describe('Mongo Driver Standings Repository', () => {
         }
       ],
       scoringSystem: new Types.ObjectId() as any,
+      admins: [new Types.ObjectId() as any],
       teamStandings: new Types.ObjectId() as any,
       driverStandings: new Types.ObjectId() as any
     }
@@ -70,7 +71,8 @@ describe('Mongo Driver Standings Repository', () => {
       drivers: [{ user: new Types.ObjectId() as any, isRegistered: true }],
       teamStandings: new Types.ObjectId() as any,
       driverStandings: new Types.ObjectId() as any,
-      scoringSystem: new Types.ObjectId() as any
+      scoringSystem: new Types.ObjectId() as any,
+      admins: [new Types.ObjectId() as any]
     }
 
     await sut.create(dto)
@@ -97,6 +99,7 @@ describe('Mongo Driver Standings Repository', () => {
         }
       ],
       scoringSystem: new Types.ObjectId() as any,
+      admins: [new Types.ObjectId() as any],
       teamStandings: new Types.ObjectId() as any,
       driverStandings: new Types.ObjectId() as any
     }
@@ -131,6 +134,7 @@ describe('Mongo Driver Standings Repository', () => {
       teams: [new Types.ObjectId() as any],
       drivers: [{ user: new Types.ObjectId() as any, isRegistered: true }],
       scoringSystem: new Types.ObjectId() as any,
+      admins: [new Types.ObjectId() as any],
       teamStandings: new Types.ObjectId() as any,
       driverStandings: new Types.ObjectId() as any
     }
