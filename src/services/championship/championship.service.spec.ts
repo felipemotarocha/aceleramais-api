@@ -112,6 +112,8 @@ describe('Championship Service', () => {
     scoringSystemRepositoryStub: ScoringSystemRepositoryAbstract
     raceRepositoryStub: RaceRepositoryAbstract
     raceClassificationRepositoryStub: RaceClassificationRepositoryAbstract
+    bonificationRepositoryStub: BonificationRepositoryAbstract
+    penaltyRepositoryStub: PenaltyRepositoryAbstract
     s3RepositoryStub: S3RepositoryAbstract
     sut: ChampionshipServiceAbstract
   }
@@ -321,6 +323,8 @@ describe('Championship Service', () => {
       raceRepositoryStub,
       raceClassificationRepositoryStub,
       s3RepositoryStub,
+      bonificationRepositoryStub,
+      penaltyRepositoryStub,
       sut
     }
   }
@@ -471,6 +475,70 @@ describe('Championship Service', () => {
     expect(createScoringSystemSpy).toHaveBeenCalledTimes(3)
     expect(createScoringSystemSpy).toHaveReturnedTimes(3)
     expect(result.races).toStrictEqual(['valid_race'])
+  })
+
+  it('should create the Championship Bonifications', async () => {
+    const { sut, bonificationRepositoryStub } = makeSut()
+
+    const createBonificationsSpy = jest.spyOn(
+      bonificationRepositoryStub,
+      'bulkCreate'
+    )
+
+    const result = await sut.create({
+      id: validChampionship.id,
+      createChampionshipDto: {
+        description: 'valid_description',
+        name: 'valid_name',
+        platform: 'valid_platform',
+        avatarImageUrl: 'valid_url',
+        races: [
+          { track: 'valid_track', startDate: 'valid_start_date' },
+          { track: 'valid_track', startDate: 'valid_start_date' },
+          { track: 'valid_track', startDate: 'valid_start_date' }
+        ],
+        teams: [{ name: 'valid_name', color: 'valid_color' }],
+        drivers: [{ user: 'valid_user', isRegistered: true }],
+        scoringSystem: { 1: 25 },
+        bonifications: [
+          { name: 'Volta mais rápida', points: 1 },
+          { name: 'Pole Position', points: 1 }
+        ]
+      }
+    })
+
+    expect(createBonificationsSpy).toHaveBeenCalledTimes(1)
+    expect(createBonificationsSpy).toHaveReturnedTimes(1)
+    expect(result.bonifications).toStrictEqual(['valid_bonification'])
+  })
+
+  it('should create the Championship Penalties', async () => {
+    const { sut, penaltyRepositoryStub } = makeSut()
+
+    const createPenaltiesSpy = jest.spyOn(penaltyRepositoryStub, 'bulkCreate')
+
+    const result = await sut.create({
+      id: validChampionship.id,
+      createChampionshipDto: {
+        description: 'valid_description',
+        name: 'valid_name',
+        platform: 'valid_platform',
+        avatarImageUrl: 'valid_url',
+        races: [
+          { track: 'valid_track', startDate: 'valid_start_date' },
+          { track: 'valid_track', startDate: 'valid_start_date' },
+          { track: 'valid_track', startDate: 'valid_start_date' }
+        ],
+        teams: [{ name: 'valid_name', color: 'valid_color' }],
+        drivers: [{ user: 'valid_user', isRegistered: true }],
+        scoringSystem: { 1: 25 },
+        penalties: [{ name: 'Colisão', points: 1 }]
+      }
+    })
+
+    expect(createPenaltiesSpy).toHaveBeenCalledTimes(1)
+    expect(createPenaltiesSpy).toHaveReturnedTimes(1)
+    expect(result.penalties).toStrictEqual(['valid_penalty'])
   })
 
   it('should call S3 Repository if a avatar image is provided on creation', async () => {
