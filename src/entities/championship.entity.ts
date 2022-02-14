@@ -1,6 +1,7 @@
 export interface ChampionshipDriver {
   user?: string
-  userName?: string
+  firstName?: string
+  lastName?: string
   team?: string
   isRegistered: boolean
   bonifications?: {

@@ -23,7 +23,11 @@ const driversSchema = new Schema(
       ref: 'User',
       required: false
     },
-    userName: {
+    firstName: {
+      type: String,
+      required: false
+    },
+    lastName: {
       type: String,
       required: false
     },

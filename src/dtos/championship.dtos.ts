@@ -13,7 +13,8 @@ export interface CreateChampionshipDto {
   }[]
   drivers?: {
     user?: string
-    userName?: string
+    firstName?: string
+    lastName?: string
     team?: string
     isRegistered: boolean
   }[]

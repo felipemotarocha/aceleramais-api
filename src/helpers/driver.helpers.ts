@@ -5,9 +5,9 @@ const DriverHelpers = {
     return drivers.some(
       (item) =>
         (!item.user && item.isRegistered) ||
-        (item.user && item.userName) ||
+        (item.user && (item.firstName || item.lastName)) ||
         (item.user && !item.isRegistered) ||
-        (item.userName && item.isRegistered) ||
+        ((item.firstName || item.lastName) && item.isRegistered) ||
         item.isRegistered === undefined ||
         item.isRegistered === null
     )

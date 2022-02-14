@@ -350,7 +350,13 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: [{ name: 'valid_team', color: 'valid_color' }],
-      drivers: [{ userName: 'valid_user_name', isRegistered: true }],
+      drivers: [
+        {
+          firstName: 'valid_first_name',
+          lastName: 'valid_last_name',
+          isRegistered: true
+        }
+      ],
       scoringSystem: { 1: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings'
@@ -416,7 +422,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: [{ name: 'valid_team', color: 'valid_color' }],
-      drivers: [{ userName: 'valid_user' }],
+      drivers: [{ firstName: 'valid_first_name', lastName: 'valid_last_name' }],
       scoringSystem: { 1: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings'
