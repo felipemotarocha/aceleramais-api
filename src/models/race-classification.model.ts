@@ -10,7 +10,15 @@ const classificationSchema = new Schema({
     ref: 'User',
     required: false
   },
-  userName: {
+  id: {
+    type: String,
+    required: false
+  },
+  firstName: {
+    type: String,
+    required: false
+  },
+  lastName: {
     type: String,
     required: false
   },

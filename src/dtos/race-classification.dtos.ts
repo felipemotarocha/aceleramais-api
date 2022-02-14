@@ -3,7 +3,9 @@ export interface CreateRaceClassificationDto {
   classification: {
     position: number
     user?: string
-    userName?: string
+    id?: string
+    firstName?: string
+    lastName?: string
     team: string
     isRegistered: boolean
     hasFastestLap: boolean
@@ -15,7 +17,9 @@ export interface UpdateRaceClassificationDto {
   classification: {
     position: number
     user?: string
-    userName?: string
+    id?: string
+    firstName?: string
+    lastName?: string
     team: string
     isRegistered: boolean
     hasFastestLap: boolean

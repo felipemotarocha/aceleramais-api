@@ -4,7 +4,9 @@ interface RaceClassification {
   classification: {
     position: number
     user?: string
-    userName?: string
+    id?: string
+    firstName?: string
+    lastName?: string
     team: string
     isRegistered: boolean
     hasFastestLap: boolean
