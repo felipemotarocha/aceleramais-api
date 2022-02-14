@@ -31,6 +31,22 @@ const driverBonificationSchema = new Schema(
   { _id: false }
 )
 
+const driverPenaltySchema = new Schema(
+  {
+    penalty: {
+      type: Types.ObjectId,
+      ref: 'Bonification',
+      required: true
+    },
+    race: {
+      type: Types.ObjectId,
+      ref: 'Race',
+      required: false
+    }
+  },
+  { _id: false }
+)
+
 const driversSchema = new Schema(
   {
     user: {
@@ -57,6 +73,10 @@ const driversSchema = new Schema(
     },
     bonifications: {
       type: [driverBonificationSchema],
+      required: false
+    },
+    penalties: {
+      type: [driverPenaltySchema],
       required: false
     }
   },

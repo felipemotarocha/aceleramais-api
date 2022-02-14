@@ -34,7 +34,8 @@ describe('Mongo Driver Standings Repository', () => {
         {
           user: 'valid_user',
           isRegistered: true,
-          bonifications: []
+          bonifications: [],
+          penalties: []
         }
       ],
       scoringSystem: new Types.ObjectId() as any,
@@ -95,7 +96,8 @@ describe('Mongo Driver Standings Repository', () => {
         {
           user: 'valid_user',
           isRegistered: true,
-          bonifications: []
+          bonifications: [],
+          penalties: []
         }
       ],
       scoringSystem: new Types.ObjectId() as any,
