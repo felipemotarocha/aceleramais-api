@@ -2,6 +2,7 @@ export interface CreateDriverStandingsDto {
   championship: string
   standings: {
     user?: string
+    id?: string
     firstName?: string
     lastName?: string
     position: number
@@ -13,6 +14,7 @@ export interface CreateDriverStandingsDto {
 export interface UpdateDriverStandingsDto {
   standings: {
     user?: string
+    id?: string
     firstName?: string
     lastName?: string
     position: number

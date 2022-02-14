@@ -1,5 +1,6 @@
 export interface ChampionshipDriver {
   user?: string
+  id?: string
   firstName?: string
   lastName?: string
   team?: string

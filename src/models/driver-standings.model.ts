@@ -7,6 +7,10 @@ const standingsSchema = new Schema(
       ref: 'User',
       required: false
     },
+    id: {
+      type: String,
+      required: false
+    },
     firstName: {
       type: String,
       required: false
