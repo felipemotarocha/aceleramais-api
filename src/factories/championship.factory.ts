@@ -24,6 +24,7 @@ import { MongoBonificationRepository } from '../repositories/bonification/bonifi
 
 // Services
 import { ChampionshipService } from '../services/championship/championship.service'
+import { S3Repository } from '../repositories/s3/s3.service'
 
 const makeChampionshipController = (): ChampionshipController => {
   const championshipRepository = new MongoChampionshipRepository(
@@ -48,6 +49,8 @@ const makeChampionshipController = (): ChampionshipController => {
   )
   const penaltyRepository = new MongoPenaltyRepository(PenaltyModel)
 
+  const s3Repository = new S3Repository()
+
   const championshipService = new ChampionshipService(
     championshipRepository,
     teamRepository,
@@ -57,7 +60,8 @@ const makeChampionshipController = (): ChampionshipController => {
     raceRepository,
     raceClassificationRepository,
     bonificationRepository,
-    penaltyRepository
+    penaltyRepository,
+    s3Repository
   )
 
   return new ChampionshipController(championshipService)

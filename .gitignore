@@ -4,3 +4,5 @@ coverage
 globalConfig.json
 
 .env
+
+dist

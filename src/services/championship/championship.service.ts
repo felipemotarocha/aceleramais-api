@@ -7,6 +7,7 @@ import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-sta
 import { PenaltyRepositoryAbstract } from '../../repositories/penalty/penalty.repository'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
 import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
+import { S3RepositoryAbstract } from '../../repositories/s3/s3.service'
 import { ScoringSystemRepositoryAbstract } from '../../repositories/scoring-system/scoring-system.repository'
 import { TeamStandingsRepositoryAbstract } from '../../repositories/team-standings/team-standings.repository'
 import { TeamRepositoryAbstract } from '../../repositories/team/team.repository'
@@ -32,6 +33,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
   private readonly raceClassificationRepository: RaceClassificationRepositoryAbstract
   private readonly bonificationRepository: BonificationRepositoryAbstract
   private readonly penaltyRepository: PenaltyRepositoryAbstract
+  private readonly s3Repository: S3RepositoryAbstract
 
   constructor(
     championshipRepository: ChampionshipRepositoryAbstract,
@@ -42,7 +44,8 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     raceRepository: RaceRepositoryAbstract,
     raceClassificationRepository: RaceClassificationRepositoryAbstract,
     bonificationRepository: BonificationRepositoryAbstract,
-    penaltyRepository: PenaltyRepositoryAbstract
+    penaltyRepository: PenaltyRepositoryAbstract,
+    s3Repository: S3RepositoryAbstract
   ) {
     this.championshipRepository = championshipRepository
     this.teamRepository = teamRepository
@@ -53,6 +56,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     this.raceClassificationRepository = raceClassificationRepository
     this.bonificationRepository = bonificationRepository
     this.penaltyRepository = penaltyRepository
+    this.s3Repository = s3Repository
   }
 
   async create({
@@ -63,8 +67,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     createChampionshipDto: CreateChampionshipDto
   }): Promise<Championship> {
     const championshipId = id
-    const { name, description, platform, avatarImageUrl, drivers } =
-      createChampionshipDto
+    const { name, description, platform, drivers } = createChampionshipDto
 
     let teamIds: string[] = []
 
@@ -95,7 +98,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     let penaltyIds: string[] = []
 
     if (createChampionshipDto.penalties) {
-      const penalties = await this.bonificationRepository.bulkCreate(
+      const penalties = await this.penaltyRepository.bulkCreate(
         createChampionshipDto.penalties.map((item) => ({
           ...item,
           championship: championshipId as any
@@ -139,7 +142,19 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       races.push(result.id)
     }
 
+    // eslint-disable-next-line no-undef-init
+    let avatarImageUrl: string | undefined = undefined
+
+    if (createChampionshipDto.avatarImage) {
+      avatarImageUrl = await this.s3Repository.uploadImage({
+        folderName: 'championship-images',
+        fileName: championshipId,
+        file: createChampionshipDto.avatarImage
+      })
+    }
+
     const championship = await this.championshipRepository.create({
+      _id: championshipId,
       name,
       description,
       platform,

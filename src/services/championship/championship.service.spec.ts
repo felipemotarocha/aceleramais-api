@@ -14,6 +14,7 @@ import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-sta
 import { PenaltyRepositoryAbstract } from '../../repositories/penalty/penalty.repository'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
 import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
+import { S3RepositoryAbstract } from '../../repositories/s3/s3.service'
 import { ScoringSystemRepositoryAbstract } from '../../repositories/scoring-system/scoring-system.repository'
 import { TeamStandingsRepositoryAbstract } from '../../repositories/team-standings/team-standings.repository'
 import { TeamRepositoryAbstract } from '../../repositories/team/team.repository'
@@ -111,6 +112,7 @@ describe('Championship Service', () => {
     scoringSystemRepositoryStub: ScoringSystemRepositoryAbstract
     raceRepositoryStub: RaceRepositoryAbstract
     raceClassificationRepositoryStub: RaceClassificationRepositoryAbstract
+    s3RepositoryStub: S3RepositoryAbstract
     sut: ChampionshipServiceAbstract
   }
   const makeSut = (): SutTypes => {
@@ -262,6 +264,10 @@ describe('Championship Service', () => {
         return validPenalty
       }
 
+      async bulkCreate(): Promise<Penalty[]> {
+        return [validPenalty]
+      }
+
       async getAll(): Promise<Penalty[]> {
         return [validPenalty]
       }
@@ -275,6 +281,12 @@ describe('Championship Service', () => {
       }
     }
 
+    class S3RepositoryStub implements S3RepositoryAbstract {
+      async uploadImage(): Promise<string> {
+        return 'valid_url'
+      }
+    }
+
     const teamRepositoryStub = new TeamRepositoryStub()
     const driverStandingsRepositoryStub = new DriverStandingsRepositoryStub()
     const championshipStandingsRepositoryStub = new ChampionshipRepositoryStub()
@@ -285,6 +297,7 @@ describe('Championship Service', () => {
       new RaceClassificationRepositoryStub()
     const bonificationRepositoryStub = new BonificationRepositoryStub()
     const penaltyRepositoryStub = new PenaltyRepositoryStub()
+    const s3RepositoryStub = new S3RepositoryStub()
 
     const sut = new ChampionshipService(
       championshipStandingsRepositoryStub,
@@ -295,7 +308,8 @@ describe('Championship Service', () => {
       raceRepositoryStub,
       raceClassificationRepositoryStub,
       bonificationRepositoryStub,
-      penaltyRepositoryStub
+      penaltyRepositoryStub,
+      s3RepositoryStub
     )
 
     return {
@@ -306,6 +320,7 @@ describe('Championship Service', () => {
       scoringSystemRepositoryStub,
       raceRepositoryStub,
       raceClassificationRepositoryStub,
+      s3RepositoryStub,
       sut
     }
   }
@@ -456,6 +471,35 @@ describe('Championship Service', () => {
     expect(createScoringSystemSpy).toHaveBeenCalledTimes(3)
     expect(createScoringSystemSpy).toHaveReturnedTimes(3)
     expect(result.races).toStrictEqual(['valid_race'])
+  })
+
+  it('should call S3 Repository if a avatar image is provided on creation', async () => {
+    const { sut, s3RepositoryStub } = makeSut()
+
+    const uploadImageSpy = jest.spyOn(s3RepositoryStub, 'uploadImage')
+
+    const dto = {
+      id: validChampionship.id,
+      createChampionshipDto: {
+        description: 'valid_description',
+        name: 'valid_name',
+        platform: 'valid_platform',
+        avatarImageUrl: 'valid_url',
+        races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
+        teams: [{ name: 'valid_name', color: 'valid_color' }],
+        drivers: [{ user: 'valid_user', isRegistered: true }],
+        scoringSystem: { 1: 25 },
+        avatarImage: 'avatar_image'
+      }
+    }
+
+    await sut.create(dto as any)
+
+    expect(uploadImageSpy).toHaveBeenCalledWith({
+      file: 'avatar_image',
+      fileName: validChampionship.id,
+      folderName: 'championship-images'
+    })
   })
 
   it('should create the Championship', async () => {

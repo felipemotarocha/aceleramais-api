@@ -29,6 +29,8 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
 
   async create(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
+      const body = JSON.parse(httpRequest.body.data)
+
       const requiredFields = [
         'name',
         'description',
@@ -38,12 +40,12 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       ]
 
       for (const field of requiredFields) {
-        if (!httpRequest.body[field]) {
+        if (!body[field]) {
           return badRequest(new MissingParamError(field))
         }
       }
 
-      const someRaceIsInvalid = httpRequest.body.races.some(
+      const someRaceIsInvalid = body.races.some(
         (race) => !race.track || !race.startDate
       )
 
@@ -51,32 +53,30 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
         return badRequest(new InvalidFieldError('races'))
       }
 
-      const someScoringSystemIsInvalid = Object.keys(
-        httpRequest.body.scoringSystem
-      ).some((key) => {
-        return (
-          ![...Array(50).keys()].includes(parseInt(key)) ||
-          typeof httpRequest.body.scoringSystem[key] !== 'number'
-        )
-      })
+      const someScoringSystemIsInvalid = Object.keys(body.scoringSystem).some(
+        (key) => {
+          return (
+            ![...Array(50).keys()].includes(parseInt(key)) ||
+            typeof body.scoringSystem[key] !== 'number'
+          )
+        }
+      )
 
       if (someScoringSystemIsInvalid) {
         return badRequest(new InvalidFieldError('scoringSystem'))
       }
 
-      if (httpRequest.body.teams) {
-        const someTeamIsInvalid = httpRequest.body.teams.some(
-          (team) => !team.name
-        )
+      if (body.teams) {
+        const someTeamIsInvalid = body.teams.some((team) => !team.name)
 
         if (someTeamIsInvalid) {
           return badRequest(new InvalidFieldError('teams'))
         }
       }
 
-      if (httpRequest.body.drivers) {
+      if (body.drivers) {
         const someDriverIsInvalid = DriverHelpers.verifyIfAreInvalid(
-          httpRequest.body.drivers
+          body.drivers
         )
 
         if (someDriverIsInvalid) {
@@ -85,7 +85,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       }
 
       const championship = await this.championshipService.create({
-        createChampionshipDto: httpRequest.body
+        createChampionshipDto: { ...body, avatarImage: httpRequest.file }
       })
 
       return created(championship)

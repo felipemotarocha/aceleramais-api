@@ -21,6 +21,10 @@ describe('Penalty Service', () => {
         return validPenalty
       }
 
+      async bulkCreate(): Promise<Penalty[]> {
+        return [validPenalty]
+      }
+
       async getAll(): Promise<Penalty[]> {
         return [validPenalty]
       }

@@ -73,7 +73,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(201)
     expect(result.body).toStrictEqual(validChampionship)
@@ -97,7 +97,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    await sut.create({ body: dto })
+    await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(createChampionshipSpy).toHaveBeenCalledWith({
       createChampionshipDto: dto
@@ -119,7 +119,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('name'))
@@ -140,7 +140,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('description'))
@@ -161,7 +161,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('platform'))
@@ -182,7 +182,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('races'))
@@ -203,7 +203,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('scoringSystem'))
@@ -224,7 +224,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('scoringSystem'))
@@ -246,7 +246,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('races'))
@@ -268,7 +268,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('races'))
@@ -290,7 +290,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('scoringSystem'))
@@ -312,7 +312,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('scoringSystem'))
@@ -334,7 +334,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('teams'))
@@ -362,7 +362,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('drivers'))
@@ -384,7 +384,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('drivers'))
@@ -406,7 +406,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('drivers'))
@@ -428,7 +428,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new InvalidFieldError('drivers'))
@@ -456,7 +456,7 @@ describe('Championship Controller', () => {
       driverStandings: 'valid_driver_standings'
     }
 
-    const result = await sut.create({ body: dto })
+    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(result.statusCode).toBe(500)
     expect(result.body).toStrictEqual(new ServerError())

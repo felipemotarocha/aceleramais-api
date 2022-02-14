@@ -52,9 +52,11 @@ implements BonificationRepositoryAbstract {
   async bulkCreate(
     bulkCreateBonificationDto: CreateBonificationDto[]
   ): Promise<Bonification[]> {
-    const teams = await this.bonificationModel.create(bulkCreateBonificationDto)
+    const bonifications = await this.bonificationModel.create(
+      bulkCreateBonificationDto
+    )
 
-    return teams.map((team) => MongooseHelper.map(team.toJSON()))
+    return bonifications.map((team) => MongooseHelper.map(team.toJSON()))
   }
 
   async update(

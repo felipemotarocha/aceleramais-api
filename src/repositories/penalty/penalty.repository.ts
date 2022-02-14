@@ -6,6 +6,7 @@ import PenaltyModel from '../../models/penalty.model'
 export interface PenaltyRepositoryAbstract {
   getAll({ championship }: { championship: string }): Promise<Penalty[]>
   create(createPenaltyDto: CreatePenaltyDto): Promise<Penalty>
+  bulkCreate(bulkCreatePenaltyDto: CreatePenaltyDto[]): Promise<Penalty[]>
   update(id: string, updatePenaltyDto: UpdatePenaltyDto): Promise<Penalty>
   delete(id: string): Promise<Penalty>
 }
@@ -29,6 +30,14 @@ export class MongoPenaltyRepository implements PenaltyRepositoryAbstract {
     const penalty = await this.penaltyModel.create(createPenaltyDto)
 
     return MongooseHelper.map<Penalty>(penalty.toJSON())
+  }
+
+  async bulkCreate(
+    bulkCreatePenaltyDto: CreatePenaltyDto[]
+  ): Promise<Penalty[]> {
+    const penalties = await this.penaltyModel.create(bulkCreatePenaltyDto)
+
+    return penalties.map((team) => MongooseHelper.map(team.toJSON()))
   }
 
   async update(
