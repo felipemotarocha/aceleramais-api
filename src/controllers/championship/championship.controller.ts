@@ -18,6 +18,7 @@ import { ChampionshipServiceAbstract } from '../../services/championship/champio
 export interface ChampionshipControllerAbstract {
   create(httpRequest: HttpRequest): Promise<HttpResponse>
   getOne(httpRequest: HttpRequest): Promise<HttpResponse>
+  getAll(httpRequest: HttpRequest): Promise<HttpResponse>
 }
 
 export class ChampionshipController implements ChampionshipControllerAbstract {
@@ -104,11 +105,27 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
         return badRequest(new MissingParamError('id'))
       }
 
-      const scoringSystem = await this.championshipService.getOne({
+      const championship = await this.championshipService.getOne({
         id: httpRequest.params.id
       })
 
-      return ok(scoringSystem)
+      return ok(championship)
+    } catch (_) {
+      return serverError()
+    }
+  }
+
+  async getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      if (!httpRequest.query?.driver) {
+        return badRequest(new MissingParamError('driver'))
+      }
+
+      const championships = await this.championshipService.getAll({
+        driver: httpRequest.query.driver
+      })
+
+      return ok(championships)
     } catch (_) {
       return serverError()
     }
