@@ -87,66 +87,92 @@ const driversSchema = new Schema(
   { _id: false }
 )
 
-const championshipSchema = new Schema({
-  name: {
-    type: String,
-    required: true
+const championshipSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true
+    },
+    avatarImageUrl: {
+      type: String,
+      required: false
+    },
+    description: {
+      type: String,
+      required: true
+    },
+    platform: {
+      type: String,
+      required: true
+    },
+    races: {
+      type: [Types.ObjectId],
+      ref: 'Race',
+      required: true
+    },
+    admins: {
+      type: [adminSchema],
+      required: true
+    },
+    drivers: {
+      type: [driversSchema],
+      required: false
+    },
+    teams: {
+      type: [Types.ObjectId],
+      ref: 'Team',
+      required: true
+    },
+    driverStandings: {
+      type: Types.ObjectId,
+      ref: 'DriverStandings',
+      required: true
+    },
+    teamStandings: {
+      type: Types.ObjectId,
+      required: true,
+      ref: 'TeamStandings'
+    },
+    scoringSystem: {
+      type: Types.ObjectId,
+      ref: 'ScoringSystem',
+      required: true
+    },
+    bonifications: {
+      type: [Types.ObjectId],
+      ref: 'Bonification',
+      required: false
+    },
+    penalties: {
+      type: [Types.ObjectId],
+      ref: 'Bonification',
+      required: false
+    }
   },
-  avatarImageUrl: {
-    type: String,
-    required: false
+  { toJSON: { virtuals: true }, toObject: { virtuals: true } }
+)
+
+championshipSchema.virtual('nextRace', {
+  ref: 'Race',
+  localField: '_id',
+  foreignField: 'championship',
+
+  match: {
+    isCompleted: false
   },
-  description: {
-    type: String,
-    required: true
+  options: {
+    sort: { startDate: 'asc' }
   },
-  platform: {
-    type: String,
-    required: true
-  },
-  races: {
-    type: [Types.ObjectId],
-    ref: 'Race',
-    required: true
-  },
-  admins: {
-    type: [adminSchema],
-    required: true
-  },
-  drivers: {
-    type: [driversSchema],
-    required: false
-  },
-  teams: {
-    type: [Types.ObjectId],
-    ref: 'Team',
-    required: true
-  },
-  driverStandings: {
-    type: Types.ObjectId,
-    ref: 'DriverStandings',
-    required: true
-  },
-  teamStandings: {
-    type: Types.ObjectId,
-    required: true,
-    ref: 'TeamStandings'
-  },
-  scoringSystem: {
-    type: Types.ObjectId,
-    ref: 'ScoringSystem',
-    required: true
-  },
-  bonifications: {
-    type: [Types.ObjectId],
-    ref: 'Bonification',
-    required: false
-  },
-  penalties: {
-    type: [Types.ObjectId],
-    ref: 'Bonification',
-    required: false
-  }
+  justOne: true
+})
+
+championshipSchema.pre('find', function (next) {
+  this.populate({
+    path: 'nextRace',
+    select: ['_id', 'track', 'startDate', '-championship']
+  })
+
+  next()
 })
 
 const ChampionshipModel = model('Championship', championshipSchema)

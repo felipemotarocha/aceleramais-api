@@ -3,6 +3,7 @@ import { env } from '../../config/env.config'
 
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import ChampionshipModel from '../../models/championship.model'
+import RaceModel from '../../models/race.model'
 import { MongoChampionshipRepository } from './championship.repository'
 
 describe('Mongo Driver Standings Repository', () => {
@@ -12,6 +13,7 @@ describe('Mongo Driver Standings Repository', () => {
 
   beforeEach(async () => {
     await ChampionshipModel.deleteMany({})
+    await RaceModel.deleteMany({})
   })
 
   afterAll(async () => {
