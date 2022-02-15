@@ -528,4 +528,39 @@ describe('Championship Controller', () => {
     expect(result.statusCode).toBe(500)
     expect(result.body).toStrictEqual(new ServerError())
   })
+
+  it('should return 200 on getting Championships by Driver', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ query: { driver: 'valid_user' } })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual([validChampionship])
+  })
+
+  it('should return 400 when getting Championships without providing a Driver', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ query: { driver: null as any } })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new MissingParamError('driver'))
+  })
+
+  it('should return 500 if DriverStandingsService getAll method throws', async () => {
+    const { sut, championshipServicestub } = makeSut()
+
+    jest
+      .spyOn(championshipServicestub, 'getAll')
+      .mockReturnValueOnce(
+        new Promise((_resolve, reject) => reject(new Error()))
+      )
+
+    const result = await sut.getAll({
+      query: { driver: 'valid_user' }
+    })
+
+    expect(result.statusCode).toBe(500)
+    expect(result.body).toStrictEqual(new ServerError())
+  })
 })
