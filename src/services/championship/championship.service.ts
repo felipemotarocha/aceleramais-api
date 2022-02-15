@@ -21,6 +21,13 @@ export interface ChampionshipServiceAbstract {
     createChampionshipDto: CreateChampionshipDto
   }): Promise<Championship>
   getOne({ id }: { id: string }): Promise<Championship>
+  getAll({
+    driver,
+    admin
+  }: {
+    driver?: string
+    admin?: string
+  }): Promise<Championship[]>
 }
 
 export class ChampionshipService implements ChampionshipServiceAbstract {
@@ -178,5 +185,20 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     const championship = await this.championshipRepository.getOne({ id })
 
     return championship
+  }
+
+  async getAll({
+    driver,
+    admin
+  }: {
+    driver?: string | undefined
+    admin?: string | undefined
+  }): Promise<Championship[]> {
+    const championships = await this.championshipRepository.getAll({
+      driver,
+      admin
+    })
+
+    return championships
   }
 }

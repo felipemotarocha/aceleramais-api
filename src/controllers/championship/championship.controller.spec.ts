@@ -43,6 +43,10 @@ describe('Championship Controller', () => {
         return validChampionship
       }
 
+      async getAll(): Promise<Championship[]> {
+        return [validChampionship]
+      }
+
       async update(): Promise<Championship> {
         return validChampionship
       }
