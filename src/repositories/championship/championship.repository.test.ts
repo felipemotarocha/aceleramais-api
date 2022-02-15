@@ -147,4 +147,84 @@ describe('Mongo Driver Standings Repository', () => {
 
     expect(getOneChampionshipSpy).toHaveBeenCalledWith(dto.id)
   })
+
+  it('should get a Championship by Drivers', async () => {
+    const sut = makeSut()
+
+    const dto = {
+      id: new Types.ObjectId(),
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [new Types.ObjectId() as any],
+      teams: [new Types.ObjectId() as any],
+      drivers: [
+        {
+          user: 'valid_user',
+          isRegistered: true,
+          bonifications: [],
+          penalties: []
+        }
+      ],
+      scoringSystem: new Types.ObjectId() as any,
+      admins: [{ user: 'valid_user', isCreator: true }],
+      teamStandings: new Types.ObjectId() as any,
+      driverStandings: new Types.ObjectId() as any
+    }
+
+    await ChampionshipModel.create({ _id: dto.id, ...dto })
+
+    const result = await sut.getAll({ driver: dto.drivers[0].user })
+
+    expect(result[0].id).toBeTruthy()
+    expect(result[0].description).toStrictEqual(dto.description)
+    expect(result[0].name).toStrictEqual(dto.name)
+    expect(result[0].platform).toStrictEqual(dto.platform)
+    expect(result[0].avatarImageUrl).toStrictEqual(dto.avatarImageUrl)
+    expect(result[0].races).toStrictEqual(dto.races)
+    expect(result[0].teams).toStrictEqual(dto.teams)
+    expect(result[0].drivers).toStrictEqual(dto.drivers)
+    expect(result[0].scoringSystem).toStrictEqual(dto.scoringSystem)
+  })
+
+  it('should get a Championship by Admin', async () => {
+    const sut = makeSut()
+
+    const dto = {
+      id: new Types.ObjectId(),
+      description: 'valid_description',
+      name: 'valid_name',
+      platform: 'valid_platform',
+      avatarImageUrl: 'valid_url',
+      races: [new Types.ObjectId() as any],
+      teams: [new Types.ObjectId() as any],
+      drivers: [
+        {
+          user: 'valid_user',
+          isRegistered: true,
+          bonifications: [],
+          penalties: []
+        }
+      ],
+      scoringSystem: new Types.ObjectId() as any,
+      admins: [{ user: 'valid_user', isCreator: true }],
+      teamStandings: new Types.ObjectId() as any,
+      driverStandings: new Types.ObjectId() as any
+    }
+
+    await ChampionshipModel.create({ _id: dto.id, ...dto })
+
+    const result = await sut.getAll({ admin: dto.admins[0].user })
+
+    expect(result[0].id).toBeTruthy()
+    expect(result[0].description).toStrictEqual(dto.description)
+    expect(result[0].name).toStrictEqual(dto.name)
+    expect(result[0].platform).toStrictEqual(dto.platform)
+    expect(result[0].avatarImageUrl).toStrictEqual(dto.avatarImageUrl)
+    expect(result[0].races).toStrictEqual(dto.races)
+    expect(result[0].teams).toStrictEqual(dto.teams)
+    expect(result[0].drivers).toStrictEqual(dto.drivers)
+    expect(result[0].scoringSystem).toStrictEqual(dto.scoringSystem)
+  })
 })

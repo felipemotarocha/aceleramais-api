@@ -63,6 +63,10 @@ describe('Championship Service', () => {
       async getOne(): Promise<Championship> {
         return validChampionship
       }
+
+      async getAll(): Promise<Championship[]> {
+        return [validChampionship]
+      }
     }
 
     const teamRepositoryStub = new TeamRepositoryStub()
