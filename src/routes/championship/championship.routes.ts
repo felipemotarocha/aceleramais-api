@@ -15,6 +15,11 @@ const championshipRoutes = (router: Router): void => {
   )
 
   router.get(
+    '/championship',
+    adaptRoute(makeChampionshipController(), 'getAll')
+  )
+
+  router.get(
     '/championship/:id',
     adaptRoute(makeChampionshipController(), 'getOne')
   )
