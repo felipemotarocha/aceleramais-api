@@ -1,26 +1,23 @@
-import { Types } from 'mongoose'
-import Bonification from '../../entities/bonification.entity'
 import Championship from '../../entities/championship.entity'
-import DriverStandings from '../../entities/driver-standings.entity'
-import Penalty from '../../entities/penalty.entity'
-import RaceClassification from '../../entities/race-classification.entity'
-import Race from '../../entities/race.entity'
-import ScoringSystem from '../../entities/scoring-system.entity'
-import TeamStandings from '../../entities/team-standings.entity'
-import Team from '../../entities/team.entity'
 import { BonificationRepositoryAbstract } from '../../repositories/bonification/bonification.repository'
+import { BonificationRepositoryStub } from '../../repositories/bonification/bonification.repository.stub'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
+import { DriverStandingsRepositoryStub } from '../../repositories/driver-standings/driver-standings.repository.stub'
 import { PenaltyRepositoryAbstract } from '../../repositories/penalty/penalty.repository'
+import { PenaltyRepositoryStub } from '../../repositories/penalty/penalty.repository.stub'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
+import { RaceClassificationRepositoryStub } from '../../repositories/race-classification/race-classification.repository.stub'
 import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
-import { S3RepositoryAbstract } from '../../repositories/s3/s3.service'
+import { RaceRepositoryStub } from '../../repositories/race/race.repository.stub'
+import { S3RepositoryStub } from '../../repositories/s3/s3.repository.stub'
+import { S3RepositoryAbstract } from '../../repositories/s3/s3.repository'
 import { ScoringSystemRepositoryAbstract } from '../../repositories/scoring-system/scoring-system.repository'
+import { ScoringSystemRepositoryStub } from '../../repositories/scoring-system/scoring-system.repository.stub'
 import { TeamStandingsRepositoryAbstract } from '../../repositories/team-standings/team-standings.repository'
+import { TeamStandingsRepositoryStub } from '../../repositories/team-standings/team-standings.repository.stub'
 import { TeamRepositoryAbstract } from '../../repositories/team/team.repository'
-import { validBonification } from '../bonification/bonification.service.spec'
-import { validPenalty } from '../penalty/penalty.service.spec'
-import { TeamStandingsServiceAbstract } from '../team-standings/team-standings.service'
+import { TeamRepositoryStub } from '../../repositories/team/team.repository.stub'
 import {
   ChampionshipServiceAbstract,
   ChampionshipService
@@ -42,68 +39,6 @@ describe('Championship Service', () => {
     driverStandings: 'valid_driver_standings',
     bonifications: ['valid_bonification'],
     penalties: ['valid_penalty']
-  }
-
-  const validTeam: Team = {
-    id: new Types.ObjectId() as any,
-    championship: new Types.ObjectId() as any,
-    name: 'Mercedes',
-    color: '#fff'
-  }
-
-  const validDriverStandings = {
-    id: 'valid_id',
-    championship: 'valid_championship',
-    standings: [
-      {
-        user: 'valid_user',
-        isRegistered: true,
-        position: 1,
-        points: 25
-      }
-    ]
-  }
-
-  const validTeamStandings = {
-    id: 'valid_id',
-    championship: 'valid_championship',
-    standings: [
-      {
-        team: 'valid_team',
-        position: 1,
-        points: 10
-      }
-    ]
-  }
-
-  const validScoringSystem = {
-    id: 'valid_id',
-    championship: 'valid_championship',
-    scoringSystem: { 1: 25, 2: 20 }
-  }
-
-  const validRace = {
-    id: 'valid_id',
-    track: 'valid_track_id',
-    championship: 'valid_championship_id',
-    startDate: 'valid_start_date',
-    isCompleted: true,
-    classification: 'valid_classification_id'
-  }
-
-  const validRaceClassification = {
-    id: 'valid_id',
-    race: 'valid_id',
-    classification: [
-      {
-        position: 1,
-        user: 'valid_id',
-        team: 'valid_id',
-        isRegistered: true,
-        hasFastestLap: true,
-        hasPolePosition: true
-      }
-    ]
   }
 
   interface SutTypes {
@@ -130,171 +65,10 @@ describe('Championship Service', () => {
       }
     }
 
-    class TeamRepositoryStub implements TeamRepositoryAbstract {
-      async create(): Promise<Team> {
-        return validTeam
-      }
-
-      async bulkCreate(): Promise<Team[]> {
-        return [validTeam]
-      }
-
-      async getAll(): Promise<Team[]> {
-        return [validTeam]
-      }
-
-      async update(): Promise<Team> {
-        return validTeam
-      }
-
-      async delete(): Promise<Team> {
-        return validTeam
-      }
-    }
-
-    class DriverStandingsRepositoryStub
-    implements DriverStandingsRepositoryAbstract {
-      async create(): Promise<DriverStandings> {
-        return validDriverStandings
-      }
-
-      async getOne(): Promise<DriverStandings> {
-        return validDriverStandings
-      }
-
-      async update(): Promise<DriverStandings> {
-        return validDriverStandings
-      }
-
-      async delete(): Promise<DriverStandings> {
-        return validDriverStandings
-      }
-    }
-
-    class TeamStandingsServiceStub implements TeamStandingsServiceAbstract {
-      async create(): Promise<TeamStandings> {
-        return validTeamStandings
-      }
-
-      async getOne(): Promise<TeamStandings> {
-        return validTeamStandings
-      }
-
-      async update(): Promise<TeamStandings> {
-        return validTeamStandings
-      }
-
-      async delete(): Promise<TeamStandings> {
-        return validTeamStandings
-      }
-    }
-
-    class ScoringSystemRepositoryStub
-    implements ScoringSystemRepositoryAbstract {
-      async create(): Promise<ScoringSystem> {
-        return validScoringSystem
-      }
-
-      async getOne(): Promise<ScoringSystem> {
-        return validScoringSystem
-      }
-
-      async update(): Promise<ScoringSystem> {
-        return validScoringSystem
-      }
-
-      async delete(): Promise<ScoringSystem> {
-        return validScoringSystem
-      }
-    }
-
-    class RaceRepositoryStub implements RaceRepositoryAbstract {
-      async create(): Promise<Race> {
-        return validRace
-      }
-
-      async getOne(): Promise<Race> {
-        return validRace
-      }
-
-      async getAll(): Promise<Race[]> {
-        return [validRace]
-      }
-
-      async update(): Promise<Race> {
-        return validRace
-      }
-    }
-
-    class RaceClassificationRepositoryStub
-    implements RaceClassificationRepositoryAbstract {
-      async create(): Promise<RaceClassification> {
-        return validRaceClassification
-      }
-
-      async getOne(): Promise<RaceClassification> {
-        return validRaceClassification
-      }
-
-      async update(): Promise<RaceClassification> {
-        return validRaceClassification
-      }
-    }
-
-    class BonificationRepositoryStub implements BonificationRepositoryAbstract {
-      async create(): Promise<Bonification> {
-        return validBonification
-      }
-
-      async bulkCreate(): Promise<Bonification[]> {
-        return [validBonification]
-      }
-
-      async getAll(): Promise<Bonification[]> {
-        return [validBonification]
-      }
-
-      async update(): Promise<Bonification> {
-        return validBonification
-      }
-
-      async delete(): Promise<Bonification> {
-        return validBonification
-      }
-    }
-
-    class PenaltyRepositoryStub implements PenaltyRepositoryAbstract {
-      async create(): Promise<Penalty> {
-        return validPenalty
-      }
-
-      async bulkCreate(): Promise<Penalty[]> {
-        return [validPenalty]
-      }
-
-      async getAll(): Promise<Penalty[]> {
-        return [validPenalty]
-      }
-
-      async update(): Promise<Penalty> {
-        return validPenalty
-      }
-
-      async delete(): Promise<Penalty> {
-        return validPenalty
-      }
-    }
-
-    class S3RepositoryStub implements S3RepositoryAbstract {
-      async uploadImage(): Promise<string> {
-        return 'valid_url'
-      }
-    }
-
     const teamRepositoryStub = new TeamRepositoryStub()
     const driverStandingsRepositoryStub = new DriverStandingsRepositoryStub()
     const championshipStandingsRepositoryStub = new ChampionshipRepositoryStub()
-    const teamStandingsRepositoryStub = new TeamStandingsServiceStub()
+    const teamStandingsRepositoryStub = new TeamStandingsRepositoryStub()
     const scoringSystemRepositoryStub = new ScoringSystemRepositoryStub()
     const raceRepositoryStub = new RaceRepositoryStub()
     const raceClassificationRepositoryStub =

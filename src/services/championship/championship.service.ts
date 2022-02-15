@@ -7,7 +7,7 @@ import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-sta
 import { PenaltyRepositoryAbstract } from '../../repositories/penalty/penalty.repository'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
 import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
-import { S3RepositoryAbstract } from '../../repositories/s3/s3.service'
+import { S3RepositoryAbstract } from '../../repositories/s3/s3.repository'
 import { ScoringSystemRepositoryAbstract } from '../../repositories/scoring-system/scoring-system.repository'
 import { TeamStandingsRepositoryAbstract } from '../../repositories/team-standings/team-standings.repository'
 import { TeamRepositoryAbstract } from '../../repositories/team/team.repository'

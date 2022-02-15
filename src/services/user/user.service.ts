@@ -1,6 +1,6 @@
 import { CreateUserDto, UpdateUserDto } from '../../dtos/user.dtos'
 import User from '../../entities/user.entity'
-import { S3RepositoryAbstract } from '../../repositories/s3/s3.service'
+import { S3RepositoryAbstract } from '../../repositories/s3/s3.repository'
 import { UserRepositoryAbstract } from '../../repositories/user/user.repository'
 
 export interface UserServiceAbstract {

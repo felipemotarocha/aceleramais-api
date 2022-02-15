@@ -1,6 +1,6 @@
 import { UserController } from '../controllers/user/user.controller'
 import UserModel from '../models/user.model'
-import { S3Repository } from '../repositories/s3/s3.service'
+import { S3Repository } from '../repositories/s3/s3.repository'
 import { MongoUserRepository } from '../repositories/user/user.repository'
 import { UserService } from '../services/user/user.service'
 

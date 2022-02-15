@@ -24,7 +24,7 @@ import { MongoBonificationRepository } from '../repositories/bonification/bonifi
 
 // Services
 import { ChampionshipService } from '../services/championship/championship.service'
-import { S3Repository } from '../repositories/s3/s3.service'
+import { S3Repository } from '../repositories/s3/s3.repository'
 
 const makeChampionshipController = (): ChampionshipController => {
   const championshipRepository = new MongoChampionshipRepository(
