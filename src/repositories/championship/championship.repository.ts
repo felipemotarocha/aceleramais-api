@@ -8,6 +8,13 @@ export interface ChampionshipRepositoryAbstract {
     createChampionshipDto: CreateChampionshipMongoDto
   ): Promise<Championship>
   getOne({ id }: { id: string }): Promise<Championship>
+  getAll({
+    driver,
+    admin
+  }: {
+    driver?: string
+    admin?: string
+  }): Promise<Championship[]>
 }
 
 export class MongoChampionshipRepository
@@ -32,5 +39,35 @@ implements ChampionshipRepositoryAbstract {
     const championship = await this.championshipModel.findById(id)
 
     return MongooseHelper.map<Championship>(championship.toJSON())
+  }
+
+  async getAll({
+    driver,
+    admin
+  }: {
+    driver?: string | undefined
+    admin?: string | undefined
+  }): Promise<Championship[]> {
+    if (driver) {
+      const championships = await this.championshipModel.find({
+        'drivers.user': driver
+      })
+
+      return championships.map((championship) =>
+        MongooseHelper.map<Championship>(championship.toJSON())
+      )
+    }
+
+    if (admin) {
+      const championships = await this.championshipModel.find({
+        'admins.user': admin
+      })
+
+      return championships.map((championship) =>
+        MongooseHelper.map<Championship>(championship.toJSON())
+      )
+    }
+
+    return []
   }
 }
