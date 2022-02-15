@@ -388,4 +388,20 @@ describe('Championship Service', () => {
 
     expect(result).toStrictEqual(validChampionship)
   })
+
+  it('should get Championships by Driver', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ driver: 'valid_user' })
+
+    expect(result).toStrictEqual([validChampionship])
+  })
+
+  it('should get Championships by Admin', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ admin: 'valid_user' })
+
+    expect(result).toStrictEqual([validChampionship])
+  })
 })
