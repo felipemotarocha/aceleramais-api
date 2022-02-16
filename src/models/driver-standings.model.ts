@@ -40,18 +40,32 @@ const standingsSchema = new Schema(
   { _id: false }
 )
 
-const driverStandingsSchema = new Schema({
-  championship: {
-    type: Types.ObjectId,
-    ref: 'Championship',
-    required: true
+const driverStandingsSchema = new Schema(
+  {
+    championship: {
+      type: Types.ObjectId,
+      ref: 'Championship',
+      required: true
+    },
+    standings: {
+      type: [standingsSchema],
+      required: false,
+      default: []
+    }
   },
-  standings: {
-    type: [standingsSchema],
-    required: false,
-    default: []
+  {
+    toJSON: {
+      virtuals: true,
+      versionKey: false,
+      transform: (_doc, { _id, ...rest }) => rest
+    },
+    toObject: {
+      virtuals: true,
+      versionKey: false,
+      transform: (_doc, { _id, ...rest }) => rest
+    }
   }
-})
+)
 
 const DriverStandingsModel = model('DriverStandings', driverStandingsSchema)
 

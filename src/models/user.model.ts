@@ -31,7 +31,19 @@ const userSchema = new Schema(
       required: true
     }
   },
-  { _id: false }
+  {
+    _id: false,
+    toJSON: {
+      virtuals: true,
+      versionKey: false,
+      transform: (_doc, { _id, ...rest }) => rest
+    },
+    toObject: {
+      virtuals: true,
+      versionKey: false,
+      transform: (_doc, { _id, ...rest }) => rest
+    }
+  }
 )
 
 const UserModel = model('User', userSchema)

@@ -149,7 +149,18 @@ const championshipSchema = new Schema(
       required: false
     }
   },
-  { toJSON: { virtuals: true }, toObject: { virtuals: true } }
+  {
+    toJSON: {
+      virtuals: true,
+      versionKey: false,
+      transform: (_doc, { _id, ...rest }) => rest
+    },
+    toObject: {
+      virtuals: true,
+      versionKey: false,
+      transform: (_doc, { _id, ...rest }) => rest
+    }
+  }
 )
 
 championshipSchema.virtual('nextRace', {
