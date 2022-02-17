@@ -4,17 +4,26 @@ import {
   CreateTeamStandingsDto,
   UpdateTeamStandingsDto
 } from '../../dtos/team-standings.dto'
+import Team from '../../entities/team.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import TeamStandingsModel from '../../models/team-standings.model'
+import TeamModel from '../../models/team.model'
 import { MongoTeamStandingsRepository } from './team-standings.repository'
 
 describe('Mongo Team Standings Repository', () => {
+  const validTeam: Team = {
+    id: new Types.ObjectId() as any,
+    championship: new Types.ObjectId() as any,
+    name: 'Mercedes',
+    color: '#fff'
+  }
+
   const validTeamStandings = {
     id: new Types.ObjectId() as any,
     championship: new Types.ObjectId() as any,
     standings: [
       {
-        team: new Types.ObjectId() as any,
+        team: validTeam.id,
         position: 1,
         points: 10
       }
@@ -27,6 +36,9 @@ describe('Mongo Team Standings Repository', () => {
 
   beforeEach(async () => {
     await TeamStandingsModel.deleteMany({})
+    await TeamModel.deleteMany({})
+
+    await TeamModel.create({ _id: validTeam.id, ...validTeam })
   })
 
   afterAll(async () => {
@@ -35,14 +47,14 @@ describe('Mongo Team Standings Repository', () => {
 
   const makeSut = () => new MongoTeamStandingsRepository(TeamStandingsModel)
 
-  it('should create a Scoring System', async () => {
+  it('should create a Team Standings', async () => {
     const sut = makeSut()
 
     const dto: CreateTeamStandingsDto = {
       championship: new Types.ObjectId() as any,
       standings: [
         {
-          team: new Types.ObjectId() as any,
+          team: validTeam.id,
           position: 1,
           points: 10
         }
@@ -53,7 +65,7 @@ describe('Mongo Team Standings Repository', () => {
 
     expect(result.id).toBeTruthy()
     expect(result.championship).toStrictEqual(dto.championship)
-    expect(result.standings[0].team).toStrictEqual(dto.standings[0].team)
+    expect(result.standings[0].team).toStrictEqual(validTeam.id)
     expect(result.standings[0].position).toBe(dto.standings[0].position)
   })
 
@@ -66,7 +78,7 @@ describe('Mongo Team Standings Repository', () => {
       championship: new Types.ObjectId() as any,
       standings: [
         {
-          team: new Types.ObjectId() as any,
+          team: validTeam.id,
           position: 1,
           points: 10
         }
@@ -92,9 +104,11 @@ describe('Mongo Team Standings Repository', () => {
 
     expect(result.id).toBeTruthy()
     expect(result.championship).toStrictEqual(validTeamStandings.championship)
-    expect(result.standings[0].team).toStrictEqual(
-      validTeamStandings.standings[0].team
-    )
+    expect(result.standings[0].team).toStrictEqual({
+      id: (validTeam.id as any).toHexString(),
+      name: validTeam.name,
+      color: validTeam.color
+    })
     expect(result.standings[0].position).toBe(
       validTeamStandings.standings[0].position
     )
@@ -132,7 +146,7 @@ describe('Mongo Team Standings Repository', () => {
     const dto: UpdateTeamStandingsDto = {
       standings: [
         {
-          team: new Types.ObjectId() as any,
+          team: validTeam.id,
           position: 1,
           points: 10
         }
@@ -142,7 +156,17 @@ describe('Mongo Team Standings Repository', () => {
     const result = await sut.update(validTeamStandings.id.toHexString(), dto)
 
     expect(result.id).toBeTruthy()
-    expect(result.standings).toStrictEqual(dto.standings)
+    expect(result.standings).toStrictEqual([
+      {
+        team: {
+          id: (validTeam.id as any).toHexString(),
+          name: validTeam.name,
+          color: validTeam.color
+        },
+        position: 1,
+        points: 10
+      }
+    ])
   })
 
   it('should call TeamStandingsModel findByIdAndUpdate method with correct values', async () => {
@@ -160,7 +184,7 @@ describe('Mongo Team Standings Repository', () => {
     const dto: UpdateTeamStandingsDto = {
       standings: [
         {
-          team: new Types.ObjectId() as any,
+          team: validTeam.id,
           position: 1,
           points: 10
         }

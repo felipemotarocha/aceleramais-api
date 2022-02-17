@@ -6,15 +6,26 @@ import {
 } from '../../dtos/driver-standings.dto'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import DriverStandingsModel from '../../models/driver-standings.model'
+import TeamModel from '../../models/team.model'
+import UserModel from '../../models/user.model'
 import { MongoDriverStandingsRepository } from './driver-standings.repository'
 
 describe('Mongo Driver Standings Repository', () => {
+  const validUser = {
+    id: 'valid_id',
+    email: 'valid_email',
+    firstName: 'valid_first_name',
+    lastName: 'valid_last_name',
+    provider: 'valid_provider',
+    userName: 'valid_user_name'
+  }
+
   const validDriverStandings = {
     id: new Types.ObjectId() as any,
     championship: new Types.ObjectId() as any,
     standings: [
       {
-        user: 'valid_user',
+        user: validUser.id,
         isRegistered: true,
         position: 1,
         points: 10
@@ -28,6 +39,10 @@ describe('Mongo Driver Standings Repository', () => {
 
   beforeEach(async () => {
     await DriverStandingsModel.deleteMany({})
+    await UserModel.deleteMany({})
+    await TeamModel.deleteMany({})
+
+    await UserModel.create({ _id: validUser.id, ...validUser })
   })
 
   afterAll(async () => {
@@ -43,7 +58,7 @@ describe('Mongo Driver Standings Repository', () => {
       championship: new Types.ObjectId() as any,
       standings: [
         {
-          user: 'valid_user',
+          user: validUser.id,
           isRegistered: true,
           position: 1,
           points: 10
@@ -69,7 +84,7 @@ describe('Mongo Driver Standings Repository', () => {
       championship: new Types.ObjectId() as any,
       standings: [
         {
-          user: 'valid_user',
+          user: validUser.id,
           isRegistered: true,
           position: 1,
           points: 10
@@ -96,9 +111,12 @@ describe('Mongo Driver Standings Repository', () => {
 
     expect(result.id).toBeTruthy()
     expect(result.championship).toStrictEqual(validDriverStandings.championship)
-    expect(result.standings[0].user).toStrictEqual(
-      validDriverStandings.standings[0].user
-    )
+    expect(result.standings[0].user).toStrictEqual({
+      id: validUser.id,
+      firstName: validUser.firstName,
+      lastName: validUser.lastName,
+      userName: validUser.userName
+    })
     expect(result.standings[0].isRegistered).toBe(
       validDriverStandings.standings[0].isRegistered
     )
