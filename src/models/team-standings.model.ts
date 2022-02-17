@@ -5,7 +5,8 @@ const standingsSchema = new Schema(
     team: {
       type: Types.ObjectId,
       ref: 'Team',
-      required: true
+      required: true,
+      autopopulate: { select: ['id', 'name', 'color'] }
     },
     position: {
       type: Number,
@@ -46,11 +47,7 @@ const teamStandingsSchema = new Schema(
   }
 )
 
-teamStandingsSchema.method('toJSON', function () {
-  const { __v, _id, ...object } = this.toObject()
-  object.id = _id
-  return object
-})
+teamStandingsSchema.plugin(require('mongoose-autopopulate'))
 
 const TeamStandingsModel = model('TeamStandings', teamStandingsSchema)
 

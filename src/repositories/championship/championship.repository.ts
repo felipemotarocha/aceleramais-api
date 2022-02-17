@@ -36,7 +36,20 @@ implements ChampionshipRepositoryAbstract {
   }
 
   async getOne({ id }: { id: string }): Promise<Championship> {
-    const championship = await this.championshipModel.findById(id)
+    const championship = await this.championshipModel.findById(id).populate([
+      {
+        path: 'driverStandings',
+        select: 'standings'
+      },
+      {
+        path: 'teamStandings',
+        select: 'standings'
+      },
+      {
+        path: 'nextRace',
+        select: ['_id', 'track', 'startDate', '-championship']
+      }
+    ])
 
     return MongooseHelper.map<Championship>(championship.toJSON())
   }

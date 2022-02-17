@@ -91,7 +91,6 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
 
       return created(championship)
     } catch (error) {
-      console.log(error)
       return serverError()
     }
   }

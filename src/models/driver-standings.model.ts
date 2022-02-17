@@ -5,7 +5,10 @@ const standingsSchema = new Schema(
     user: {
       type: String,
       ref: 'User',
-      required: false
+      required: false,
+      autopopulate: {
+        select: ['id', 'firstName', 'lastName', 'profileImageUrl', 'userName']
+      }
     },
     id: {
       type: String,
@@ -22,7 +25,8 @@ const standingsSchema = new Schema(
     team: {
       type: Types.ObjectId,
       ref: 'Team',
-      required: false
+      required: false,
+      autopopulate: { select: ['id', 'name', 'color'] }
     },
     position: {
       type: Number,
@@ -66,6 +70,8 @@ const driverStandingsSchema = new Schema(
     }
   }
 )
+
+driverStandingsSchema.plugin(require('mongoose-autopopulate'))
 
 const DriverStandingsModel = model('DriverStandings', driverStandingsSchema)
 
