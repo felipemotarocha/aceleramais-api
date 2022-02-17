@@ -39,7 +39,8 @@ implements ChampionshipRepositoryAbstract {
     const championship = await this.championshipModel.findById(id).populate([
       {
         path: 'driverStandings',
-        select: 'standings'
+        select: 'standings',
+        perDocumentLimit: 2
       },
       {
         path: 'teamStandings',
@@ -51,7 +52,19 @@ implements ChampionshipRepositoryAbstract {
       }
     ])
 
-    return MongooseHelper.map<Championship>(championship.toJSON())
+    const _championship = championship.toJSON()
+
+    return MongooseHelper.map<Championship>({
+      ..._championship,
+      driverStandings: {
+        ..._championship?.driverStandings,
+        standings: _championship?.driverStandings?.standings.slice(0, 4)
+      },
+      teamStandings: {
+        ..._championship?.teamStandings,
+        standings: _championship?.teamStandings?.standings.slice(0, 4)
+      }
+    })
   }
 
   async getAll({
