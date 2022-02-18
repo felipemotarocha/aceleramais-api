@@ -47,7 +47,7 @@ implements ChampionshipRepositoryAbstract {
         select: 'standings'
       },
       {
-        path: 'nextRace',
+        path: 'nextRaces',
         select: ['_id', 'track', 'startDate', '-championship']
       }
     ])

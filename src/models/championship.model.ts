@@ -163,7 +163,7 @@ const championshipSchema = new Schema(
   }
 )
 
-championshipSchema.virtual('nextRace', {
+championshipSchema.virtual('nextRaces', {
   ref: 'Race',
   localField: '_id',
   foreignField: 'championship',
@@ -172,14 +172,15 @@ championshipSchema.virtual('nextRace', {
     isCompleted: false
   },
   options: {
-    sort: { startDate: 'asc' }
+    sort: { startDate: 'asc' },
+    limit: 3
   },
-  justOne: true
+  limit: 3
 })
 
 championshipSchema.pre('find', function (next) {
   this.populate({
-    path: 'nextRace',
+    path: 'nextRaces',
     select: ['_id', 'track', 'startDate', '-championship']
   })
 
