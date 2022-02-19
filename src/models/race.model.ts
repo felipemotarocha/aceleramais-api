@@ -1,4 +1,3 @@
-import { isPast } from 'date-fns'
 import { model, Schema } from 'mongoose'
 
 const raceSchema = new Schema(
@@ -18,6 +17,10 @@ const raceSchema = new Schema(
       type: String,
       required: true
     },
+    isCompleted: {
+      type: Boolean,
+      default: false
+    },
     classification: {
       type: Schema.Types.ObjectId,
       ref: 'RaceClassification'
@@ -36,10 +39,6 @@ const raceSchema = new Schema(
     }
   }
 )
-
-raceSchema.virtual('isCompleted').get(function () {
-  return isPast(new Date(this.startDate))
-})
 
 raceSchema.plugin(require('mongoose-autopopulate'))
 

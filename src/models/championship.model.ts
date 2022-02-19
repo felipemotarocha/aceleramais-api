@@ -167,21 +167,21 @@ championshipSchema.virtual('nextRaces', {
   ref: 'Race',
   localField: '_id',
   foreignField: 'championship',
-
-  match: {
-    isCompleted: false
-  },
+  match: { isCompleted: false },
   options: {
     sort: { startDate: 'asc' },
-    limit: 3
-  },
-  limit: 3
+    limit: 3,
+    match: {
+      isCompleted: false
+    }
+  }
 })
 
 championshipSchema.pre('find', function (next) {
   this.populate({
     path: 'nextRaces',
-    select: ['_id', 'track', 'startDate', '-championship']
+    select: ['_id', 'track', 'startDate', 'isCompleted', '-championship'],
+    match: { isCompleted: false }
   })
 
   next()
