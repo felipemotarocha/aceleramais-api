@@ -133,28 +133,6 @@ describe('Championship Controller', () => {
     expect(result.body).toStrictEqual(new MissingParamError('name'))
   })
 
-  it('should return 400 if no description is provided', async () => {
-    const { sut } = makeSut()
-
-    const dto = {
-      name: 'valid_name',
-      platform: 'valid_platform',
-      avatarImageUrl: 'valid_url',
-      races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
-      teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
-      scoringSystem: { 1: 25, 2: 20 },
-      teamStandings: 'valid_team_standings',
-      driverStandings: 'valid_driver_standings',
-      admins: [{ user: 'valid_user', isCreator: true }]
-    }
-
-    const result = await sut.create({ body: { data: JSON.stringify(dto) } })
-
-    expect(result.statusCode).toBe(400)
-    expect(result.body).toStrictEqual(new MissingParamError('description'))
-  })
-
   it('should return 400 if no platform is provided', async () => {
     const { sut } = makeSut()
 

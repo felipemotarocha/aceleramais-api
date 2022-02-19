@@ -2,7 +2,7 @@ import { Express } from 'express'
 
 export interface CreateChampionshipDto {
   name: string
-  description: string
+  description?: string
   platform: string
   avatarImage?: Express.Multer.File
   avatarImageUrl?: string
@@ -42,7 +42,7 @@ export interface CreateChampionshipDto {
 export interface CreateChampionshipMongoDto {
   _id?: string
   name: string
-  description: string
+  description?: string
   platform: string
   avatarImageUrl?: string
   admins: {

@@ -32,13 +32,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
     try {
       const body = JSON.parse(httpRequest.body.data)
 
-      const requiredFields = [
-        'name',
-        'description',
-        'platform',
-        'races',
-        'scoringSystem'
-      ]
+      const requiredFields = ['name', 'platform', 'races', 'scoringSystem']
 
       for (const field of requiredFields) {
         if (!body[field]) {
