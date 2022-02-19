@@ -28,11 +28,11 @@ implements DriverStandingsControllerAbstract {
         return badRequest(new MissingParamError('championship'))
       }
 
-      const scoringSystem = await this.driverStandingsService.getOne({
+      const driverStandings = await this.driverStandingsService.getOne({
         championship: httpRequest.query.championship
       })
 
-      return ok(scoringSystem)
+      return ok(driverStandings)
     } catch (_) {
       return serverError()
     }
