@@ -45,6 +45,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.49.0",
     "aws-sdk": "^2.1066.0",
+    "date-fns": "^2.28.0",
     "dotenv": "^15.0.0",
     "express": "^4.17.2",
     "fast-glob": "^3.2.11",
