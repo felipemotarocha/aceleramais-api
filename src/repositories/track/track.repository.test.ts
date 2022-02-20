@@ -39,7 +39,7 @@ describe('Mongo Track Repository', () => {
 
     const result = await sut.getAll()
 
-    expect(result[0].id).toStrictEqual(validTrack.id)
+    expect(result[0].id).toStrictEqual(validTrack.id.toHexString())
     expect(result[0].name).toBe(validTrack.name)
     expect(result[0].countryCode).toBe(validTrack.countryCode)
     expect(result[0].countryName).toBe(validTrack.countryName)

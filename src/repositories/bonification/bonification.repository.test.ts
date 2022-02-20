@@ -92,7 +92,7 @@ describe('Mongo Bonification Repository', () => {
       championship: validBonification.championship.toHexString()
     })
 
-    expect(result[0].id).toStrictEqual(validBonification.id)
+    expect(result[0].id).toStrictEqual(validBonification.id.toHexString())
     expect(result[0].championship).toStrictEqual(validBonification.championship)
     expect(result[0].name).toBe(validBonification.name)
     expect(result[0].points).toBe(validBonification.points)

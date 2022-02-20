@@ -89,7 +89,7 @@ describe('Mongo Penalty Repository', () => {
       championship: validPenalty.championship.toHexString()
     })
 
-    expect(result[0].id).toStrictEqual(validPenalty.id)
+    expect(result[0].id).toStrictEqual(validPenalty.id.toHexString())
     expect(result[0].championship).toStrictEqual(validPenalty.championship)
     expect(result[0].name).toBe(validPenalty.name)
     expect(result[0].points).toBe(validPenalty.points)
