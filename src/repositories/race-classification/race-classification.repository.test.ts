@@ -7,6 +7,7 @@ import {
 } from '../../dtos/race-classification.dtos'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import RaceClassificationModel from '../../models/race-classification.model'
+import RaceModel from '../../models/race.model'
 import { MongoRaceClassificationRepository } from './race-classification.repository'
 
 describe('Mongo Race Classification Repository', () => {
@@ -29,6 +30,7 @@ describe('Mongo Race Classification Repository', () => {
   })
 
   beforeEach(async () => {
+    await RaceModel.deleteMany({})
     await RaceClassificationModel.deleteMany({})
   })
 
@@ -44,7 +46,6 @@ describe('Mongo Race Classification Repository', () => {
 
     const result = await sut.create(validRaceClassification as any)
 
-    expect(result.race).toStrictEqual(validRaceClassification.race)
     expect(result.classification[0].position).toBe(
       validRaceClassification.classification[0].position
     )
@@ -72,7 +73,6 @@ describe('Mongo Race Classification Repository', () => {
 
     const result = await sut.getOne(validRaceClassification.race)
 
-    expect(result.race).toStrictEqual(validRaceClassification.race)
     expect(result.classification[0].position).toBe(
       validRaceClassification.classification[0].position
     )
