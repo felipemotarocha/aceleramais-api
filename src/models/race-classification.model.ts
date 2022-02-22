@@ -49,7 +49,8 @@ const raceClassificationSchema = new Schema(
     race: {
       type: Types.ObjectId,
       ref: 'Race',
-      required: true
+      required: true,
+      autopopulate: { select: ['id', 'startDate', 'isCompleted', 'track'] }
     },
     classification: {
       type: [classificationSchema],
@@ -69,6 +70,8 @@ const raceClassificationSchema = new Schema(
     }
   }
 )
+
+raceClassificationSchema.plugin(require('mongoose-autopopulate'))
 
 const RaceClassificationModel = model(
   'RaceClassification',
