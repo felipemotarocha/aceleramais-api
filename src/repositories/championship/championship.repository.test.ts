@@ -2,10 +2,13 @@ import { Types } from 'mongoose'
 import { env } from '../../config/env.config'
 
 import MongooseHelper from '../../helpers/mongoose.helpers'
+import BonificationModel from '../../models/bonification.model'
 import ChampionshipModel from '../../models/championship.model'
 import DriverStandingsModel from '../../models/driver-standings.model'
+import PenaltyModel from '../../models/penalty.model'
 import RaceModel from '../../models/race.model'
 import TeamStandingsModel from '../../models/team-standings.model'
+import UserModel from '../../models/user.model'
 import { MongoChampionshipRepository } from './championship.repository'
 
 describe('Mongo Driver Standings Repository', () => {
@@ -18,6 +21,9 @@ describe('Mongo Driver Standings Repository', () => {
     await RaceModel.deleteMany({})
     await DriverStandingsModel.deleteMany({})
     await TeamStandingsModel.deleteMany({})
+    await UserModel.deleteMany({})
+    await BonificationModel.deleteMany({})
+    await PenaltyModel.deleteMany({})
   })
 
   afterAll(async () => {
@@ -123,7 +129,7 @@ describe('Mongo Driver Standings Repository', () => {
     expect(result.avatarImageUrl).toStrictEqual(dto.avatarImageUrl)
     expect(result.races).toStrictEqual(dto.races)
     expect(result.teams).toStrictEqual(dto.teams)
-    expect(result.drivers).toStrictEqual(dto.drivers)
+    expect(result.drivers).toStrictEqual([{ ...dto.drivers[0], user: null }])
     expect(result.scoringSystem).toStrictEqual(dto.scoringSystem)
   })
 
@@ -190,7 +196,7 @@ describe('Mongo Driver Standings Repository', () => {
     expect(result[0].avatarImageUrl).toStrictEqual(dto.avatarImageUrl)
     expect(result[0].races).toStrictEqual(dto.races)
     expect(result[0].teams).toStrictEqual(dto.teams)
-    expect(result[0].drivers).toStrictEqual(dto.drivers)
+    expect(result[0].drivers).toStrictEqual([{ ...dto.drivers[0], user: null }])
     expect(result[0].scoringSystem).toStrictEqual(dto.scoringSystem)
   })
 
@@ -230,7 +236,7 @@ describe('Mongo Driver Standings Repository', () => {
     expect(result[0].avatarImageUrl).toStrictEqual(dto.avatarImageUrl)
     expect(result[0].races).toStrictEqual(dto.races)
     expect(result[0].teams).toStrictEqual(dto.teams)
-    expect(result[0].drivers).toStrictEqual(dto.drivers)
+    expect(result[0].drivers).toStrictEqual([{ ...dto.drivers[0], user: null }])
     expect(result[0].scoringSystem).toStrictEqual(dto.scoringSystem)
   })
 })

@@ -5,7 +5,10 @@ const adminSchema = new Schema(
     user: {
       type: String,
       ref: 'User',
-      required: true
+      required: true,
+      autopopulate: {
+        select: ['id', 'firstName', 'lastName', 'profileImageUrl', 'userName']
+      }
     },
     isCreator: {
       type: Boolean,
@@ -20,7 +23,10 @@ const driverBonificationSchema = new Schema(
     bonification: {
       type: Types.ObjectId,
       ref: 'Bonification',
-      required: true
+      required: true,
+      autopopulate: {
+        select: ['id', 'firstName', 'lastName', 'profileImageUrl', 'userName']
+      }
     },
     race: {
       type: Types.ObjectId,
@@ -35,8 +41,11 @@ const driverPenaltySchema = new Schema(
   {
     penalty: {
       type: Types.ObjectId,
-      ref: 'Bonification',
-      required: true
+      ref: 'Penalty',
+      required: true,
+      autopopulate: {
+        select: ['id', 'firstName', 'lastName', 'profileImageUrl', 'userName']
+      }
     },
     race: {
       type: Types.ObjectId,
@@ -52,7 +61,10 @@ const driversSchema = new Schema(
     user: {
       type: String,
       ref: 'User',
-      required: false
+      required: false,
+      autopopulate: {
+        select: ['id', 'firstName', 'lastName', 'profileImageUrl', 'userName']
+      }
     },
     id: {
       type: String,
@@ -186,6 +198,8 @@ championshipSchema.pre('find', function (next) {
 
   next()
 })
+
+championshipSchema.plugin(require('mongoose-autopopulate'))
 
 const ChampionshipModel = model('Championship', championshipSchema)
 
