@@ -81,7 +81,8 @@ const driversSchema = new Schema(
     team: {
       type: Types.ObjectId,
       ref: 'Team',
-      required: false
+      required: false,
+      autopopulate: { select: ['id', 'name', 'color'] }
     },
     isRegistered: {
       type: Boolean,

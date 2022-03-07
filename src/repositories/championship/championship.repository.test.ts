@@ -8,6 +8,7 @@ import DriverStandingsModel from '../../models/driver-standings.model'
 import PenaltyModel from '../../models/penalty.model'
 import RaceModel from '../../models/race.model'
 import TeamStandingsModel from '../../models/team-standings.model'
+import TeamModel from '../../models/team.model'
 import UserModel from '../../models/user.model'
 import { MongoChampionshipRepository } from './championship.repository'
 
@@ -24,6 +25,7 @@ describe('Mongo Driver Standings Repository', () => {
     await UserModel.deleteMany({})
     await BonificationModel.deleteMany({})
     await PenaltyModel.deleteMany({})
+    await TeamModel.deleteMany({})
   })
 
   afterAll(async () => {

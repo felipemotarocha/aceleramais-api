@@ -8,6 +8,7 @@ import {
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import RaceClassificationModel from '../../models/race-classification.model'
 import RaceModel from '../../models/race.model'
+import TeamModel from '../../models/team.model'
 import { MongoRaceClassificationRepository } from './race-classification.repository'
 
 describe('Mongo Race Classification Repository', () => {
@@ -32,6 +33,7 @@ describe('Mongo Race Classification Repository', () => {
   beforeEach(async () => {
     await RaceModel.deleteMany({})
     await RaceClassificationModel.deleteMany({})
+    await TeamModel.deleteMany({})
   })
 
   afterAll(async () => {
@@ -79,9 +81,7 @@ describe('Mongo Race Classification Repository', () => {
     expect(result.classification[0].user).toStrictEqual(
       validRaceClassification.classification[0].user
     )
-    expect(result.classification[0].team).toStrictEqual(
-      validRaceClassification.classification[0].team
-    )
+    expect(result.classification[0].team).toStrictEqual(null)
     expect(result.classification[0].isRegistered).toBe(
       validRaceClassification.classification[0].isRegistered
     )

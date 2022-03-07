@@ -26,7 +26,8 @@ const classificationSchema = new Schema(
     team: {
       type: Types.ObjectId,
       ref: 'Team',
-      required: false
+      required: false,
+      autopopulate: true
     },
     isRegistered: {
       type: Boolean,
@@ -50,7 +51,9 @@ const raceClassificationSchema = new Schema(
       type: Types.ObjectId,
       ref: 'Race',
       required: true,
-      autopopulate: { select: ['id', 'startDate', 'isCompleted', 'track'] }
+      autopopulate: {
+        select: ['id', 'startDate', 'isCompleted', 'track', 'championship']
+      }
     },
     classification: {
       type: [classificationSchema],
