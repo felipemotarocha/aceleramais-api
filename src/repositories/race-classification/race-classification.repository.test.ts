@@ -93,6 +93,31 @@ describe('Mongo Race Classification Repository', () => {
     )
   })
 
+  it('should get all Race Classifications by Races', async () => {
+    const sut = makeSut()
+
+    await RaceClassificationModel.create(validRaceClassification)
+
+    const result = await sut.getAll([validRaceClassification.race])
+
+    expect(result[0].classification[0].position).toBe(
+      validRaceClassification.classification[0].position
+    )
+    expect(result[0].classification[0].user).toStrictEqual(
+      validRaceClassification.classification[0].user
+    )
+    expect(result[0].classification[0].team).toStrictEqual(null)
+    expect(result[0].classification[0].isRegistered).toBe(
+      validRaceClassification.classification[0].isRegistered
+    )
+    expect(result[0].classification[0].hasFastestLap).toBe(
+      validRaceClassification.classification[0].hasFastestLap
+    )
+    expect(result[0].classification[0].hasPolePosition).toBe(
+      validRaceClassification.classification[0].hasPolePosition
+    )
+  })
+
   it('should update a Race Classification', async () => {
     const sut = makeSut()
 
