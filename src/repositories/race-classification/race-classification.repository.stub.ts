@@ -26,6 +26,10 @@ implements RaceClassificationRepositoryAbstract {
     return validRaceClassification
   }
 
+  async getAll(): Promise<RaceClassification[]> {
+    return [validRaceClassification]
+  }
+
   async update(): Promise<RaceClassification> {
     return validRaceClassification
   }

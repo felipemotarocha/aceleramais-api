@@ -3,7 +3,7 @@ import {
   UpdateRaceClassificationDto
 } from '../../dtos/race-classification.dtos'
 import RaceClassification from '../../entities/race-classification.entity'
-import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
+import { RaceClassificationRepositoryStub } from '../../repositories/race-classification/race-classification.repository.stub'
 import RaceClassificationService, {
   RaceClassificationServiceAbstract
 } from './race-classification.service'
@@ -25,21 +25,6 @@ describe('Race Classification Service', () => {
   }
 
   const makeSut = (): RaceClassificationServiceAbstract => {
-    class RaceClassificationRepositoryStub
-    implements RaceClassificationRepositoryAbstract {
-      async create(): Promise<RaceClassification> {
-        return validRaceClassification
-      }
-
-      async getOne(): Promise<RaceClassification> {
-        return validRaceClassification
-      }
-
-      async update(): Promise<RaceClassification> {
-        return validRaceClassification
-      }
-    }
-
     return new RaceClassificationService(new RaceClassificationRepositoryStub())
   }
 

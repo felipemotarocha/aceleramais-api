@@ -1,6 +1,7 @@
 import RaceClassification from '../../entities/race-classification.entity'
 import Race from '../../entities/race.entity'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
+import { RaceClassificationRepositoryStub } from '../../repositories/race-classification/race-classification.repository.stub'
 import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
 import RaceService, { RaceServiceAbstract } from './race.service'
 
@@ -51,21 +52,6 @@ describe('Race Service', () => {
 
       async update(): Promise<Race> {
         return validRace
-      }
-    }
-
-    class RaceClassificationRepositoryStub
-    implements RaceClassificationRepositoryAbstract {
-      async create(): Promise<RaceClassification> {
-        return validRaceClassification
-      }
-
-      async getOne(): Promise<RaceClassification> {
-        return validRaceClassification
-      }
-
-      async update(): Promise<RaceClassification> {
-        return validRaceClassification
       }
     }
 

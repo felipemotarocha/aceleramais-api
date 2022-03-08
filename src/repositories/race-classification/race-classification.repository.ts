@@ -11,6 +11,7 @@ export interface RaceClassificationRepositoryAbstract {
     createRaceClassificationDto: CreateRaceClassificationDto
   ): Promise<RaceClassification>
   getOne(race: string): Promise<RaceClassification>
+  getAll(races: string[]): Promise<RaceClassification[]>
   update(
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
@@ -55,6 +56,14 @@ implements RaceClassificationRepositoryAbstract {
       ...MongooseHelper.map<RaceClassification>(raceClassification.toJSON()),
       classification
     }
+  }
+
+  async getAll(races: string[]): Promise<RaceClassification[]> {
+    const raceClassifications = await this.RaceClassificationModel.find({
+      race: races
+    })
+
+    return raceClassifications
   }
 
   async update(
