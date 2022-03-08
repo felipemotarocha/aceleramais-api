@@ -236,4 +236,12 @@ describe('Driver Standings Service', () => {
 
     expect(promise).rejects.toThrow()
   })
+
+  it('should refresh the Driver Standings', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.refresh('valid_championship_id')
+
+    console.log({ result })
+  })
 })
