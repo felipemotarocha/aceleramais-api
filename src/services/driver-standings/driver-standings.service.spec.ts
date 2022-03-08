@@ -1,6 +1,11 @@
 import { CreateDriverStandingsDto } from '../../dtos/driver-standings.dto'
 import DriverStandings from '../../entities/driver-standings.entity'
+import { BonificationRepositoryStub } from '../../repositories/bonification/bonification.repository.stub'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
+import { PenaltyRepositoryStub } from '../../repositories/penalty/penalty.repository.stub'
+import { RaceClassificationRepositoryStub } from '../../repositories/race-classification/race-classification.repository.stub'
+import { RaceRepositoryStub } from '../../repositories/race/race.repository.stub'
+import { ScoringSystemRepositoryStub } from '../../repositories/scoring-system/scoring-system.repository.stub'
 import {
   DriverStandingsService,
   DriverStandingsServiceAbstract
@@ -46,7 +51,21 @@ describe('Driver Standings Service', () => {
     }
 
     const driverStandingsRepositoryStub = new DriverStandingsRepositoryStub()
-    const sut = new DriverStandingsService(driverStandingsRepositoryStub)
+    const raceRepositoryStub = new RaceRepositoryStub()
+    const raceClassificationRepositoryStub =
+      new RaceClassificationRepositoryStub()
+    const scoringSystemRepositoryStub = new ScoringSystemRepositoryStub()
+    const bonificationRepositoryStub = new BonificationRepositoryStub()
+    const penaltyRepositoryStub = new PenaltyRepositoryStub()
+
+    const sut = new DriverStandingsService(
+      driverStandingsRepositoryStub,
+      raceRepositoryStub,
+      raceClassificationRepositoryStub,
+      scoringSystemRepositoryStub,
+      bonificationRepositoryStub,
+      penaltyRepositoryStub
+    )
 
     return { driverStandingsRepositoryStub, sut }
   }

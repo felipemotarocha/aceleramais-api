@@ -42,6 +42,10 @@ describe('Driver Standings Controller', () => {
       async delete(): Promise<DriverStandings> {
         return validDriverStandings
       }
+
+      async refresh(): Promise<DriverStandings> {
+        return validDriverStandings
+      }
     }
 
     const driverStandingsServiceStub = new DriverStandingsServiceStub()
