@@ -1,9 +1,15 @@
 import { CreateDriverStandingsDto } from '../../dtos/driver-standings.dto'
 import DriverStandings from '../../entities/driver-standings.entity'
-import { BonificationRepositoryStub } from '../../repositories/bonification/bonification.repository.stub'
+import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
+import ChampionshipRepositoryStub, {
+  validChampionship
+} from '../../repositories/championship/championship.repository.stub'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
-import { PenaltyRepositoryStub } from '../../repositories/penalty/penalty.repository.stub'
-import { RaceClassificationRepositoryStub } from '../../repositories/race-classification/race-classification.repository.stub'
+import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
+import {
+  RaceClassificationRepositoryStub,
+  validRaceClassification
+} from '../../repositories/race-classification/race-classification.repository.stub'
 import { RaceRepositoryStub } from '../../repositories/race/race.repository.stub'
 import { ScoringSystemRepositoryStub } from '../../repositories/scoring-system/scoring-system.repository.stub'
 import {
@@ -27,6 +33,8 @@ describe('Driver Standings Service', () => {
 
   interface SutTypes {
     driverStandingsRepositoryStub: DriverStandingsRepositoryAbstract
+    championshipRepositoryStub: ChampionshipRepositoryAbstract
+    raceClassificationRepositoryStub: RaceClassificationRepositoryAbstract
     sut: DriverStandingsServiceAbstract
   }
 
@@ -55,19 +63,22 @@ describe('Driver Standings Service', () => {
     const raceClassificationRepositoryStub =
       new RaceClassificationRepositoryStub()
     const scoringSystemRepositoryStub = new ScoringSystemRepositoryStub()
-    const bonificationRepositoryStub = new BonificationRepositoryStub()
-    const penaltyRepositoryStub = new PenaltyRepositoryStub()
+    const championshipRepositoryStub = new ChampionshipRepositoryStub()
 
     const sut = new DriverStandingsService(
       driverStandingsRepositoryStub,
       raceRepositoryStub,
       raceClassificationRepositoryStub,
       scoringSystemRepositoryStub,
-      bonificationRepositoryStub,
-      penaltyRepositoryStub
+      championshipRepositoryStub
     )
 
-    return { driverStandingsRepositoryStub, sut }
+    return {
+      driverStandingsRepositoryStub,
+      championshipRepositoryStub,
+      raceClassificationRepositoryStub,
+      sut
+    }
   }
 
   it('should create a Driver Standings', async () => {
@@ -238,10 +249,98 @@ describe('Driver Standings Service', () => {
   })
 
   it('should refresh the Driver Standings', async () => {
-    const { sut } = makeSut()
+    const {
+      sut,
+      driverStandingsRepositoryStub,
+      championshipRepositoryStub,
+      raceClassificationRepositoryStub
+    } = makeSut()
 
-    const result = await sut.refresh('valid_championship_id')
+    jest.spyOn(championshipRepositoryStub, 'getOne').mockReturnValueOnce(
+      Promise.resolve({
+        ...validChampionship,
+        drivers: [
+          {
+            user: {
+              id: 'valid_id'
+            } as any,
+            isRegistered: true,
+            bonifications: [
+              {
+                bonification: {
+                  id: 'valid_id',
+                  name: 'valid_name',
+                  points: 1,
+                  championship: 'valid_championship_id'
+                },
+                race: 'valid_race_id'
+              }
+            ],
+            penalties: [
+              {
+                penalty: {
+                  id: 'valid_id',
+                  name: 'valid_name',
+                  points: 10,
+                  championship: 'valid_championship_id'
+                },
+                race: 'valid_race_id'
+              }
+            ]
+          }
+        ]
+      })
+    )
 
-    console.log({ result })
+    jest.spyOn(raceClassificationRepositoryStub, 'getAll').mockReturnValueOnce(
+      Promise.resolve([
+        {
+          ...validRaceClassification,
+          classification: [
+            {
+              position: 1,
+              user: 'valid_id',
+              team: 'valid_id',
+              isRegistered: true,
+              hasFastestLap: true,
+              hasPolePosition: true
+            },
+            {
+              position: 2,
+              user: 'valid_id_2',
+              team: 'valid_id',
+              isRegistered: true,
+              hasFastestLap: true,
+              hasPolePosition: true
+            }
+          ]
+        }
+      ])
+    )
+
+    const updateSpy = jest.spyOn(driverStandingsRepositoryStub, 'update')
+
+    await sut.refresh('valid_championship_id')
+
+    expect(updateSpy).toHaveBeenCalledWith('valid_driver_standings', {
+      standings: [
+        {
+          user: 'valid_id_2',
+          position: 1,
+          firstName: undefined,
+          lastName: undefined,
+          isRegistered: true,
+          points: 20
+        },
+        {
+          user: 'valid_id',
+          position: 2,
+          firstName: undefined,
+          lastName: undefined,
+          isRegistered: true,
+          points: 16
+        }
+      ]
+    })
   })
 })
