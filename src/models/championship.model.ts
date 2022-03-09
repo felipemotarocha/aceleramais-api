@@ -25,7 +25,7 @@ const driverBonificationSchema = new Schema(
       ref: 'Bonification',
       required: true,
       autopopulate: {
-        select: ['id', 'firstName', 'lastName', 'profileImageUrl', 'userName']
+        select: ['points']
       }
     },
     race: {
@@ -44,7 +44,7 @@ const driverPenaltySchema = new Schema(
       ref: 'Penalty',
       required: true,
       autopopulate: {
-        select: ['id', 'firstName', 'lastName', 'profileImageUrl', 'userName']
+        select: ['points']
       }
     },
     race: {
@@ -158,7 +158,7 @@ const championshipSchema = new Schema(
     },
     penalties: {
       type: [Types.ObjectId],
-      ref: 'Bonification',
+      ref: 'Penalty',
       required: false
     }
   },
