@@ -1,22 +1,25 @@
+import Bonification from './bonification.entity'
 import DriverStandings from './driver-standings.entity'
+import Penalty from './penalty.entity'
 import Race from './race.entity'
 import ScoringSystem from './scoring-system.entity'
 import TeamStandings from './team-standings.entity'
 import Team from './team.entity'
+import User from './user.entity'
 
 export interface ChampionshipDriver {
-  user?: string
+  user?: string | User
   id?: string
   firstName?: string
   lastName?: string
   team?: string | Team
   isRegistered: boolean
-  bonifications?: {
-    bonification: string
+  bonifications: {
+    bonification: string | Bonification
     race: string
   }[]
-  penalties?: {
-    bonification: string
+  penalties: {
+    penalty: string | Penalty
     race: string
   }[]
 }
@@ -39,8 +42,8 @@ interface Championship {
   driverStandings: string | DriverStandings
   teamStandings: string | TeamStandings
   scoringSystem: string | ScoringSystem
-  bonifications: string[]
-  penalties: string[]
+  bonifications: string[] | Bonification[]
+  penalties: string[] | Penalty[]
 }
 
 export default Championship

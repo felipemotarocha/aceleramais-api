@@ -32,7 +32,14 @@ describe('Championship Service', () => {
     avatarImageUrl: 'valid_url',
     races: ['valid_race'],
     teams: ['valid_team'],
-    drivers: [{ user: 'valid_user', isRegistered: true }],
+    drivers: [
+      {
+        user: 'valid_user',
+        isRegistered: true,
+        bonifications: [],
+        penalties: []
+      }
+    ],
     admins: [],
     scoringSystem: 'valid_scoring_system',
     teamStandings: 'valid_team_standings',
