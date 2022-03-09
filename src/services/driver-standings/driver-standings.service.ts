@@ -2,11 +2,14 @@ import {
   CreateDriverStandingsDto,
   UpdateDriverStandingsDto
 } from '../../dtos/driver-standings.dto'
+import Bonification from '../../entities/bonification.entity'
 import DriverStandings from '../../entities/driver-standings.entity'
+import Penalty from '../../entities/penalty.entity'
 import RaceClassification from '../../entities/race-classification.entity'
-import { BonificationRepositoryAbstract } from '../../repositories/bonification/bonification.repository'
+import User from '../../entities/user.entity'
+
+import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
-import { PenaltyRepositoryAbstract } from '../../repositories/penalty/penalty.repository'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
 import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
 import { ScoringSystemRepositoryAbstract } from '../../repositories/scoring-system/scoring-system.repository'
@@ -30,8 +33,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
     private raceRepository: RaceRepositoryAbstract,
     private raceClassificationRepository: RaceClassificationRepositoryAbstract,
     private scoringSystemRepository: ScoringSystemRepositoryAbstract,
-    private bonificationRepository: BonificationRepositoryAbstract,
-    private penaltyRepository: PenaltyRepositoryAbstract
+    private championshipRepository: ChampionshipRepositoryAbstract
   ) {}
 
   async create(
@@ -58,22 +60,22 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
     return await this.driverStandingsRepository.getOne({ championship })
   }
 
-  async refresh(championship: string): Promise<DriverStandings> {
-    const races = await this.raceRepository.getAll({ championship })
+  async refresh(_championship: string): Promise<DriverStandings> {
+    const championship = await this.championshipRepository.getOne({
+      id: _championship
+    })
+
+    const races = await this.raceRepository.getAll({
+      championship: _championship
+    })
 
     const _raceClassifications = await this.raceClassificationRepository.getAll(
       races.map((race) => race.classification)
     )
 
     const scoringSystem = await this.scoringSystemRepository.getOne({
-      championship
+      championship: _championship
     })
-
-    // const _bonifications = await this.bonificationRepository.getAll({
-    //   championship
-    // })
-
-    // const _penalties = await this.penaltyRepository.getAll({ championship })
 
     // Normalize data
     const raceClassifications: { [id: string]: RaceClassification } = {}
@@ -81,13 +83,6 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
     for (const item of _raceClassifications) {
       raceClassifications[item.id] = item
     }
-
-    // const bonifications: {[driver: string]: Bonification[]} = {}
-    // const penalties: {[driver: string]: Penalty[]} = {}
-
-    // for (const driver of championship) {
-
-    // }
 
     // Calculate the standings
     const newDriverStandings: {
@@ -118,8 +113,57 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
       }
     }
 
-    console.log({ newDriverStandings })
+    for (const driver of championship.drivers) {
+      if (driver.bonifications.length > 0) {
+        const points = driver.bonifications.reduce((acc, currentValue) => {
+          return acc + (currentValue.bonification as Bonification).points
+        }, 0)
 
-    return await this.driverStandingsRepository.getOne({ championship })
+        const driverId = driver.isRegistered
+          ? (driver.user as User).id
+          : driver.id
+
+        newDriverStandings[driverId!].points =
+          newDriverStandings[driverId!].points + points
+      }
+
+      if (driver.penalties.length > 0) {
+        const points = driver.penalties.reduce((acc, currentValue) => {
+          return acc + (currentValue.penalty as Penalty).points
+        }, 0)
+
+        const driverId = driver.isRegistered
+          ? (driver.user as User).id
+          : driver.id
+
+        newDriverStandings[driverId!].points =
+          newDriverStandings[driverId!].points - points
+      }
+    }
+
+    const updateDto = Object.keys(newDriverStandings)
+      .sort(
+        (a, b) => newDriverStandings[b].points - newDriverStandings[a].points
+      )
+      .map((key, index) => {
+        if (newDriverStandings[key].isRegistered) {
+          return { user: key, position: index + 1, ...newDriverStandings[key] }
+        }
+
+        return {
+          user: undefined,
+          position: index + 1,
+          ...newDriverStandings[key]
+        }
+      })
+
+    const driverStandings = await this.driverStandingsRepository.update(
+      championship.driverStandings as string,
+      {
+        standings: updateDto
+      }
+    )
+
+    return driverStandings
   }
 }
