@@ -1,52 +1,20 @@
-import TeamStandings from '../../entities/team-standings.entity'
 import { MissingParamError, ServerError } from '../../errors/controllers.errors'
 import { TeamStandingsServiceAbstract } from '../../services/team-standings/team-standings.service'
+import TeamStandingsServiceStub, {
+  validTeamStandings
+} from '../../services/team-standings/team-standings.service.stub'
 import {
   TeamStandingsControllerAbstract,
   TeamStandingsController
 } from './team-standings.controller'
 
 describe('Team Standings Controller', () => {
-  const validTeamStandings = {
-    id: 'valid_id',
-    championship: 'valid_championship',
-    standings: [
-      {
-        team: 'valid_team',
-        position: 1,
-        points: 10
-      }
-    ]
-  }
-
   interface SutTypes {
     teamStandingsServiceStub: TeamStandingsServiceAbstract
     sut: TeamStandingsControllerAbstract
   }
 
   const makeSut = (): SutTypes => {
-    class TeamStandingsServiceStub implements TeamStandingsServiceAbstract {
-      async create(): Promise<TeamStandings> {
-        return validTeamStandings
-      }
-
-      async getOne(): Promise<TeamStandings> {
-        return validTeamStandings
-      }
-
-      async update(): Promise<TeamStandings> {
-        return validTeamStandings
-      }
-
-      async delete(): Promise<TeamStandings> {
-        return validTeamStandings
-      }
-
-      async refresh(): Promise<TeamStandings> {
-        return validTeamStandings
-      }
-    }
-
     const teamStandingsServiceStub = new TeamStandingsServiceStub()
     const sut = new TeamStandingsController(teamStandingsServiceStub)
 

@@ -1,53 +1,20 @@
-import DriverStandings from '../../entities/driver-standings.entity'
 import { MissingParamError, ServerError } from '../../errors/controllers.errors'
 import { DriverStandingsServiceAbstract } from '../../services/driver-standings/driver-standings.service'
+import DriverStandingsServiceStub, {
+  validDriverStandings
+} from '../../services/driver-standings/driver-standings.service.stub'
 import {
   DriverStandingsControllerAbstract,
   DriverStandingsController
 } from './driver-standings.controller'
 
 describe('Driver Standings Controller', () => {
-  const validDriverStandings = {
-    id: 'valid_id',
-    championship: 'valid_championship',
-    standings: [
-      {
-        user: 'valid_user',
-        isRegistered: true,
-        position: 1,
-        points: 10
-      }
-    ]
-  }
-
   interface SutTypes {
     driverStandingsServiceStub: DriverStandingsServiceAbstract
     sut: DriverStandingsControllerAbstract
   }
 
   const makeSut = (): SutTypes => {
-    class DriverStandingsServiceStub implements DriverStandingsServiceAbstract {
-      async create(): Promise<DriverStandings> {
-        return validDriverStandings
-      }
-
-      async getOne(): Promise<DriverStandings> {
-        return validDriverStandings
-      }
-
-      async update(): Promise<DriverStandings> {
-        return validDriverStandings
-      }
-
-      async delete(): Promise<DriverStandings> {
-        return validDriverStandings
-      }
-
-      async refresh(): Promise<DriverStandings> {
-        return validDriverStandings
-      }
-    }
-
     const driverStandingsServiceStub = new DriverStandingsServiceStub()
     const sut = new DriverStandingsController(driverStandingsServiceStub)
 

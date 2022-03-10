@@ -10,21 +10,13 @@ import {
   ServerError
 } from '../../errors/controllers.errors'
 import { RaceServiceAbstract } from '../../services/race/race.service'
+import { validRace } from '../../services/race/race.service.stub'
 import RaceController, { RaceControllerAbstract } from './race.controller'
 
 describe('Race Controller', () => {
   interface SutTypes {
     raceServiceStub: RaceServiceAbstract
     sut: RaceControllerAbstract
-  }
-
-  const validRace: Race = {
-    id: 'valid_id',
-    track: 'valid_track_id',
-    championship: 'valid_championship_id',
-    startDate: 'valid_start_date',
-    isCompleted: true,
-    classification: 'valid_classification_id'
   }
 
   const makeSut = (): SutTypes => {
