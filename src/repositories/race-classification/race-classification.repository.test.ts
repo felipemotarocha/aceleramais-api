@@ -17,7 +17,7 @@ describe('Mongo Race Classification Repository', () => {
     classification: [
       {
         position: 1,
-        user: new Types.ObjectId() as any,
+        user: 'valid_user',
         team: new Types.ObjectId() as any,
         isRegistered: true,
         hasFastestLap: true,
@@ -51,7 +51,7 @@ describe('Mongo Race Classification Repository', () => {
     expect(result.classification[0].position).toBe(
       validRaceClassification.classification[0].position
     )
-    expect(result.classification[0].user).toStrictEqual(
+    expect(result.classification[0].user).toBe(
       validRaceClassification.classification[0].user
     )
     expect(result.classification[0].team).toStrictEqual(
@@ -127,7 +127,7 @@ describe('Mongo Race Classification Repository', () => {
       classification: [
         {
           position: 2,
-          user: new Types.ObjectId() as any,
+          user: 'valid_user',
           team: new Types.ObjectId() as any,
           isRegistered: true,
           hasFastestLap: false,

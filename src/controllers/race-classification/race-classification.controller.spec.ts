@@ -84,7 +84,7 @@ describe('Race Classification Controller', () => {
 
     const result = await sut.getOne({
       query: {
-        race: validRaceClassification.race
+        race: validRaceClassification.race as string
       }
     })
 
@@ -116,7 +116,7 @@ describe('Race Classification Controller', () => {
 
     const result = await sut.getOne({
       query: {
-        race: validRaceClassification.race
+        race: validRaceClassification.race as string
       }
     })
 
