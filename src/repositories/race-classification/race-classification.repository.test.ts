@@ -9,6 +9,7 @@ import MongooseHelper from '../../helpers/mongoose.helpers'
 import RaceClassificationModel from '../../models/race-classification.model'
 import RaceModel from '../../models/race.model'
 import TeamModel from '../../models/team.model'
+import UserModel from '../../models/user.model'
 import { MongoRaceClassificationRepository } from './race-classification.repository'
 
 describe('Mongo Race Classification Repository', () => {
@@ -34,6 +35,7 @@ describe('Mongo Race Classification Repository', () => {
     await RaceModel.deleteMany({})
     await RaceClassificationModel.deleteMany({})
     await TeamModel.deleteMany({})
+    await UserModel.deleteMany({})
   })
 
   afterAll(async () => {
@@ -78,9 +80,7 @@ describe('Mongo Race Classification Repository', () => {
     expect(result.classification[0].position).toBe(
       validRaceClassification.classification[0].position
     )
-    expect(result.classification[0].user).toStrictEqual(
-      validRaceClassification.classification[0].user
-    )
+    expect(result.classification[0].user).toBe(null)
     expect(result.classification[0].team).toStrictEqual(null)
     expect(result.classification[0].isRegistered).toBe(
       validRaceClassification.classification[0].isRegistered
@@ -103,9 +103,7 @@ describe('Mongo Race Classification Repository', () => {
     expect(result[0].classification[0].position).toBe(
       validRaceClassification.classification[0].position
     )
-    expect(result[0].classification[0].user).toStrictEqual(
-      validRaceClassification.classification[0].user
-    )
+    expect(result[0].classification[0].user).toBe(null)
     expect(result[0].classification[0].team).toStrictEqual(null)
     expect(result[0].classification[0].isRegistered).toBe(
       validRaceClassification.classification[0].isRegistered
@@ -141,9 +139,7 @@ describe('Mongo Race Classification Repository', () => {
     expect(result.classification[0].position).toBe(
       dto.classification[0].position
     )
-    expect(result.classification[0].user).toStrictEqual(
-      dto.classification[0].user
-    )
+    expect(result.classification[0].user).toBe('valid_user')
     expect(result.classification[0].team).toStrictEqual(
       dto.classification[0].team
     )

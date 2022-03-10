@@ -292,6 +292,12 @@ describe('Driver Standings Service', () => {
                 race: 'valid_race_id'
               }
             ]
+          },
+          {
+            user: { id: 'valid_id_2' } as any,
+            isRegistered: true,
+            bonifications: [],
+            penalties: []
           }
         ]
       })
@@ -305,7 +311,7 @@ describe('Driver Standings Service', () => {
           classification: [
             {
               position: 1,
-              user: 'valid_id',
+              user: { id: 'valid_id' } as any,
               team: {
                 id: 'valid_id',
                 name: 'valid_name',
@@ -317,7 +323,7 @@ describe('Driver Standings Service', () => {
             },
             {
               position: 2,
-              user: 'valid_id_2',
+              user: { id: 'valid_id_2' } as any,
               team: {
                 id: 'valid_id',
                 name: 'valid_name',

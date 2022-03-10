@@ -9,7 +9,10 @@ const classificationSchema = new Schema(
     user: {
       type: String,
       ref: 'User',
-      required: false
+      required: false,
+      autopopulate: {
+        select: ['id', 'firstName', 'lastName', 'profileImageUrl', 'userName']
+      }
     },
     id: {
       type: String,

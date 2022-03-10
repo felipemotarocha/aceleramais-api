@@ -104,7 +104,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
         const points = scoringSystem.scoringSystem[classification.position]
 
         const driver = classification.isRegistered
-          ? classification.user!
+          ? (classification.user as User).id!
           : classification.id!
 
         newDriverStandings[driver] = {
