@@ -10,6 +10,7 @@ export interface UpdateRaceDto {
   track?: string
   startDate?: string
   classification?: string
+  isCompleted?: boolean
 }
 
 export interface GetAllRacesDto {
