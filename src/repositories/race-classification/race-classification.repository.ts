@@ -60,10 +60,12 @@ implements RaceClassificationRepositoryAbstract {
 
   async getAll(races: string[]): Promise<RaceClassification[]> {
     const raceClassifications = await this.RaceClassificationModel.find({
-      race: races
+      race: { $in: races }
     })
 
-    return raceClassifications
+    return raceClassifications.map((item) =>
+      MongooseHelper.map<RaceClassification>(item.toJSON())
+    )
   }
 
   async update(
