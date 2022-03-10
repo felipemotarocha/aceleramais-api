@@ -1,4 +1,5 @@
 import {
+  InvalidFieldError,
   MissingParamError,
   NotAllowedFieldsError,
   ServerError
@@ -8,7 +9,10 @@ import {
   HttpRequest,
   HttpResponse
 } from '../../protocols/controllers.protocols'
+import { DriverStandingsServiceAbstract } from '../../services/driver-standings/driver-standings.service'
 import { RaceClassificationServiceAbstract } from '../../services/race-classification/race-classification.service'
+import { RaceServiceAbstract } from '../../services/race/race.service'
+import { TeamStandingsServiceAbstract } from '../../services/team-standings/team-standings.service'
 
 export interface RaceClassificationControllerAbstract {
   getOne(httpRequest: HttpRequest): Promise<HttpResponse>
@@ -17,11 +21,13 @@ export interface RaceClassificationControllerAbstract {
 
 class RaceClassificationController
 implements RaceClassificationControllerAbstract {
-  private readonly raceClassificationService: RaceClassificationServiceAbstract
-
-  constructor(raceClassificationService: RaceClassificationServiceAbstract) {
-    this.raceClassificationService = raceClassificationService
-  }
+  // eslint-disable-next-line no-useless-constructor
+  constructor(
+    private readonly raceClassificationService: RaceClassificationServiceAbstract,
+    private readonly driverStandingsService: DriverStandingsServiceAbstract,
+    private readonly teamStandingsService: TeamStandingsServiceAbstract,
+    private readonly raceService: RaceServiceAbstract
+  ) {}
 
   async getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -67,6 +73,12 @@ implements RaceClassificationControllerAbstract {
         return badRequest(
           new Error('Some user provided on the classification is invalid.')
         )
+      }
+
+      const race = await this.raceService.getOne(httpRequest.query.race)
+
+      if (!race) {
+        return badRequest(new InvalidFieldError('race'))
       }
 
       const raceClassification = await this.raceClassificationService.update(
