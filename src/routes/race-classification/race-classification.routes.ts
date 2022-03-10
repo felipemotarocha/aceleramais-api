@@ -8,6 +8,11 @@ const raceClassificationRoutes = (router: Router): void => {
     '/raceClassification',
     adaptRoute(makeRaceClassificationController(), 'getOne')
   )
+
+  router.patch(
+    '/raceClassification',
+    adaptRoute(makeRaceClassificationController(), 'update')
+  )
 }
 
 export default raceClassificationRoutes
