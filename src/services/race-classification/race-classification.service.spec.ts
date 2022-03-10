@@ -4,9 +4,9 @@ import {
 } from '../../dtos/race-classification.dtos'
 import RaceClassification from '../../entities/race-classification.entity'
 import { RaceClassificationRepositoryStub } from '../../repositories/race-classification/race-classification.repository.stub'
-import RaceClassificationService, {
-  RaceClassificationServiceAbstract
-} from './race-classification.service'
+import { RaceRepositoryStub } from '../../repositories/race/race.repository.stub'
+import { validRace } from '../race/race.service.stub'
+import RaceClassificationService from './race-classification.service'
 
 describe('Race Classification Service', () => {
   const validRaceClassification: RaceClassification = {
@@ -24,12 +24,25 @@ describe('Race Classification Service', () => {
     ]
   }
 
-  const makeSut = (): RaceClassificationServiceAbstract => {
-    return new RaceClassificationService(new RaceClassificationRepositoryStub())
+  const makeSut = () => {
+    const raceClassificationRepositoryStub =
+      new RaceClassificationRepositoryStub()
+    const raceRepositoryStub = new RaceRepositoryStub()
+
+    const sut = new RaceClassificationService(
+      raceClassificationRepositoryStub,
+      raceRepositoryStub
+    )
+
+    return {
+      sut,
+      raceClassificationRepositoryStub,
+      raceRepositoryStub
+    }
   }
 
   it('should create a Race Classification', async () => {
-    const sut = makeSut()
+    const { sut } = makeSut()
 
     const dto: CreateRaceClassificationDto = {
       race: 'valid_id',
@@ -51,7 +64,7 @@ describe('Race Classification Service', () => {
   })
 
   it('should get a Race Classification by Race', async () => {
-    const sut = makeSut()
+    const { sut } = makeSut()
 
     const result = await sut.getOne('valid_id')
 
@@ -59,7 +72,8 @@ describe('Race Classification Service', () => {
   })
 
   it('should update a Race Classification', async () => {
-    const sut = makeSut()
+    const { sut, raceRepositoryStub, raceClassificationRepositoryStub } =
+      makeSut()
 
     const dto: UpdateRaceClassificationDto = {
       classification: [
@@ -74,8 +88,55 @@ describe('Race Classification Service', () => {
       ]
     }
 
+    jest.spyOn(raceClassificationRepositoryStub, 'update').mockReturnValueOnce(
+      Promise.resolve({
+        ...validRaceClassification,
+        race: validRace
+      })
+    )
+
+    const updateRaceSpy = jest.spyOn(raceRepositoryStub, 'update')
+
     const result = await sut.update('valid_id', dto)
 
-    expect(result).toStrictEqual(validRaceClassification)
+    expect(updateRaceSpy).toHaveBeenCalledWith('valid_id', {
+      isCompleted: true
+    })
+
+    expect(result).toStrictEqual({
+      ...validRaceClassification,
+      race: validRace
+    })
+  })
+
+  it('should update a Race Classification with an empty Classification', async () => {
+    const { sut, raceRepositoryStub, raceClassificationRepositoryStub } =
+      makeSut()
+
+    const dto: UpdateRaceClassificationDto = {
+      classification: []
+    }
+
+    jest.spyOn(raceClassificationRepositoryStub, 'update').mockReturnValueOnce(
+      Promise.resolve({
+        ...validRaceClassification,
+        classification: [],
+        race: validRace
+      })
+    )
+
+    const updateRaceSpy = jest.spyOn(raceRepositoryStub, 'update')
+
+    const result = await sut.update('valid_id', dto)
+
+    expect(updateRaceSpy).toHaveBeenCalledWith('valid_id', {
+      isCompleted: false
+    })
+
+    expect(result).toStrictEqual({
+      ...validRaceClassification,
+      classification: [],
+      race: validRace
+    })
   })
 })
