@@ -6,11 +6,13 @@ import {
   NotAllowedFieldsError,
   ServerError
 } from '../../errors/controllers.errors'
+import { DriverStandingsServiceAbstract } from '../../services/driver-standings/driver-standings.service'
 import DriverStandingsServiceStub from '../../services/driver-standings/driver-standings.service.stub'
 
 import { RaceClassificationServiceAbstract } from '../../services/race-classification/race-classification.service'
 import { RaceServiceAbstract } from '../../services/race/race.service'
 import RaceServiceStub from '../../services/race/race.service.stub'
+import { TeamStandingsServiceAbstract } from '../../services/team-standings/team-standings.service'
 import TeamStandingsServiceStub from '../../services/team-standings/team-standings.service.stub'
 import RaceClassificationController, {
   RaceClassificationControllerAbstract
@@ -36,6 +38,8 @@ describe('Race Classification Controller', () => {
     sut: RaceClassificationControllerAbstract
     raceClassificationServiceStub: RaceClassificationServiceAbstract
     raceServiceStub: RaceServiceAbstract
+    driverStandingsServiceStub: DriverStandingsServiceAbstract
+    teamStandingsServiceStub: TeamStandingsServiceAbstract
   }
 
   const makeSut = (): SutTypes => {
@@ -66,7 +70,13 @@ describe('Race Classification Controller', () => {
       raceServiceStub
     )
 
-    return { sut, raceClassificationServiceStub, raceServiceStub }
+    return {
+      sut,
+      raceClassificationServiceStub,
+      raceServiceStub,
+      driverStandingsServiceStub,
+      teamStandingsServiceStub
+    }
   }
 
   it('should return 200 on getting a Race Classification by Race', async () => {
@@ -114,8 +124,9 @@ describe('Race Classification Controller', () => {
     expect(result.body).toStrictEqual(new ServerError())
   })
 
-  it('should return 200 on update success', async () => {
-    const { sut } = makeSut()
+  it('should return 200 on update success and call Driver and Team Standings refresh method', async () => {
+    const { sut, driverStandingsServiceStub, teamStandingsServiceStub } =
+      makeSut()
 
     const dto: UpdateRaceClassificationDto = {
       classification: [
@@ -130,11 +141,17 @@ describe('Race Classification Controller', () => {
       ]
     }
 
+    const driverStandingsSpy = jest.spyOn(driverStandingsServiceStub, 'refresh')
+
+    const teamStandingsSpy = jest.spyOn(teamStandingsServiceStub, 'refresh')
+
     const result = await sut.update({
       query: { race: 'valid_id' },
       body: dto
     })
 
+    expect(driverStandingsSpy).toHaveBeenCalledWith('valid_championship_id')
+    expect(teamStandingsSpy).toHaveBeenCalledWith('valid_championship_id')
     expect(result.statusCode).toBe(200)
     expect(result.body).toStrictEqual(validRaceClassification)
   })
