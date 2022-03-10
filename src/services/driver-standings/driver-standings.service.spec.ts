@@ -1,5 +1,6 @@
 import { CreateDriverStandingsDto } from '../../dtos/driver-standings.dto'
 import DriverStandings from '../../entities/driver-standings.entity'
+import Team from '../../entities/team.entity'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import ChampionshipRepositoryStub, {
   validChampionship
@@ -10,7 +11,10 @@ import {
   RaceClassificationRepositoryStub,
   validRaceClassification
 } from '../../repositories/race-classification/race-classification.repository.stub'
-import { RaceRepositoryStub } from '../../repositories/race/race.repository.stub'
+import {
+  RaceRepositoryStub,
+  validRace
+} from '../../repositories/race/race.repository.stub'
 import { ScoringSystemRepositoryStub } from '../../repositories/scoring-system/scoring-system.repository.stub'
 import {
   DriverStandingsService,
@@ -259,6 +263,7 @@ describe('Driver Standings Service', () => {
     jest.spyOn(championshipRepositoryStub, 'getOne').mockReturnValueOnce(
       Promise.resolve({
         ...validChampionship,
+        driverStandings: { ...validDriverStandings, standings: [] },
         drivers: [
           {
             user: {
@@ -296,11 +301,16 @@ describe('Driver Standings Service', () => {
       Promise.resolve([
         {
           ...validRaceClassification,
+          race: validRace,
           classification: [
             {
               position: 1,
               user: 'valid_id',
-              team: 'valid_id',
+              team: {
+                id: 'valid_id',
+                name: 'valid_name',
+                championship: 'valid_championship'
+              } as Team,
               isRegistered: true,
               hasFastestLap: true,
               hasPolePosition: true
@@ -308,7 +318,11 @@ describe('Driver Standings Service', () => {
             {
               position: 2,
               user: 'valid_id_2',
-              team: 'valid_id',
+              team: {
+                id: 'valid_id',
+                name: 'valid_name',
+                championship: 'valid_championship'
+              } as Team,
               isRegistered: true,
               hasFastestLap: true,
               hasPolePosition: true
@@ -322,13 +336,14 @@ describe('Driver Standings Service', () => {
 
     await sut.refresh('valid_championship_id')
 
-    expect(updateSpy).toHaveBeenCalledWith('valid_driver_standings', {
+    expect(updateSpy).toHaveBeenCalledWith(validDriverStandings.id, {
       standings: [
         {
           user: 'valid_id_2',
           position: 1,
           firstName: undefined,
           lastName: undefined,
+          team: 'valid_id',
           isRegistered: true,
           points: 20
         },
@@ -337,6 +352,7 @@ describe('Driver Standings Service', () => {
           position: 2,
           firstName: undefined,
           lastName: undefined,
+          team: 'valid_id',
           isRegistered: true,
           points: 16
         }

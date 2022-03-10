@@ -6,6 +6,8 @@ import Bonification from '../../entities/bonification.entity'
 import DriverStandings from '../../entities/driver-standings.entity'
 import Penalty from '../../entities/penalty.entity'
 import RaceClassification from '../../entities/race-classification.entity'
+import Race from '../../entities/race.entity'
+import Team from '../../entities/team.entity'
 import User from '../../entities/user.entity'
 
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
@@ -70,7 +72,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
     })
 
     const _raceClassifications = await this.raceClassificationRepository.getAll(
-      races.map((race) => race.classification)
+      races.map((race) => race.id)
     )
 
     const scoringSystem = await this.scoringSystemRepository.getOne({
@@ -81,7 +83,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
     const raceClassifications: { [id: string]: RaceClassification } = {}
 
     for (const item of _raceClassifications) {
-      raceClassifications[item.id] = item
+      raceClassifications[(item.race as Race).id] = item
     }
 
     // Calculate the standings
@@ -91,6 +93,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
         lastName?: string
         isRegistered: boolean
         points: number
+        team?: string
       }
     } = {}
 
@@ -108,6 +111,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
           firstName: classification?.firstName,
           lastName: classification?.lastName,
           isRegistered: classification.isRegistered,
+          team: (classification.team as Team).id,
           points: (newDriverStandings[driver]?.points || 0) + points
         }
       }
@@ -158,7 +162,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
       })
 
     const driverStandings = await this.driverStandingsRepository.update(
-      championship.driverStandings as string,
+      (championship.driverStandings as DriverStandings).id,
       {
         standings: updateDto
       }
