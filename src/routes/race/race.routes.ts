@@ -1,7 +1,7 @@
 import { Router } from 'express'
 
 import adaptRoute from '../../adapters/express-routes.adapter'
-import makeRaceController from '../../factories/race.factory'
+import { makeRaceController } from '../../factories/race.factory'
 
 const raceRoutes = (router: Router): void => {
   router.get('/race', adaptRoute(makeRaceController(), 'getAll'))

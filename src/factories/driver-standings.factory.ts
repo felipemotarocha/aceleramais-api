@@ -18,7 +18,7 @@ import { DriverStandingsService } from '../services/driver-standings/driver-stan
 // Controllers
 import { DriverStandingsController } from '../controllers/driver-standings/driver-standings.controller'
 
-const makeDriverStandingsController = () => {
+export const makeDriverStandingsService = () => {
   const driverStandingsRepository = new MongoDriverStandingsRepository(
     DriverStandingsModel
   )
@@ -42,7 +42,11 @@ const makeDriverStandingsController = () => {
     championshipRepository
   )
 
-  return new DriverStandingsController(driverStandingsService)
+  return driverStandingsService
 }
 
-export default makeDriverStandingsController
+export const makeDriverStandingsController = () => {
+  const driverStandingsService = makeDriverStandingsService()
+
+  return new DriverStandingsController(driverStandingsService)
+}

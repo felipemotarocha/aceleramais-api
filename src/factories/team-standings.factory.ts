@@ -14,7 +14,7 @@ import { TeamStandingsService } from '../services/team-standings/team-standings.
 // Controllers
 import { TeamStandingsController } from '../controllers/team-standings/team-standings.controller'
 
-const makeTeamStandingsController = () => {
+export const makeTeamStandingsService = () => {
   const teamStandingsRepository = new MongoTeamStandingsRepository(
     TeamStandingsModel
   )
@@ -32,7 +32,11 @@ const makeTeamStandingsController = () => {
     championshipRepository
   )
 
-  return new TeamStandingsController(teamStandingsService)
+  return teamStandingsService
 }
 
-export default makeTeamStandingsController
+export const makeTeamStandingsController = () => {
+  const teamStandingsService = makeTeamStandingsService()
+
+  return new TeamStandingsController(teamStandingsService)
+}

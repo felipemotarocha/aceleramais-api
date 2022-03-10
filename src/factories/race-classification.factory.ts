@@ -10,7 +10,18 @@ import RaceClassificationService from '../services/race-classification/race-clas
 // Controllers
 import RaceClassificationController from '../controllers/race-classification/race-classification.controller'
 
+// Factories
+import { makeTeamStandingsService } from './team-standings.factory'
+import { makeDriverStandingsService } from './driver-standings.factory'
+import { makeRaceService } from './race.factory'
+
 const makeRaceClassificationController = () => {
+  const driverStandingsService = makeDriverStandingsService()
+
+  const teamStandingsService = makeTeamStandingsService()
+
+  const raceService = makeRaceService()
+
   const raceClassificationRepository = new MongoRaceClassificationRepository(
     RaceClassificationModel
   )
@@ -19,7 +30,12 @@ const makeRaceClassificationController = () => {
     raceClassificationRepository
   )
 
-  return new RaceClassificationController(raceClassificationService)
+  return new RaceClassificationController(
+    raceClassificationService,
+    driverStandingsService,
+    teamStandingsService,
+    raceService
+  )
 }
 
 export default makeRaceClassificationController

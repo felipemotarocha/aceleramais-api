@@ -12,18 +12,17 @@ import RaceService from '../services/race/race.service'
 // Controllers
 import RaceController from '../controllers/race/race.controller'
 
-const makeRaceController = () => {
+export const makeRaceService = () => {
   const raceRepository = new MongoRaceRepository(RaceModel)
   const raceClassificationRepository = new MongoRaceClassificationRepository(
     RaceClassificationModel
   )
 
-  const raceService = new RaceService(
-    raceRepository,
-    raceClassificationRepository
-  )
+  return new RaceService(raceRepository, raceClassificationRepository)
+}
+
+export const makeRaceController = () => {
+  const raceService = makeRaceService()
 
   return new RaceController(raceService)
 }
-
-export default makeRaceController
