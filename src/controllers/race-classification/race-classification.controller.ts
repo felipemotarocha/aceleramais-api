@@ -92,7 +92,6 @@ implements RaceClassificationControllerAbstract {
 
       return ok(raceClassification)
     } catch (error) {
-      console.log({ error })
       return badRequest(new ServerError())
     }
   }
