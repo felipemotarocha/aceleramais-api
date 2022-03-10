@@ -41,10 +41,14 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
   ): Promise<RaceClassification> {
-    return await this.raceClassificationRepository.update(
-      id,
-      updateRaceClassificationDto
-    )
+    const sortedRaceClassification =
+      updateRaceClassificationDto.classification.sort(
+        (a, b) => a.position - b.position
+      )
+
+    return await this.raceClassificationRepository.update(id, {
+      classification: sortedRaceClassification
+    })
   }
 }
 
