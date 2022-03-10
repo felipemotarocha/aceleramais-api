@@ -1,12 +1,17 @@
 import { UpdateRaceClassificationDto } from '../../dtos/race-classification.dtos'
 import RaceClassification from '../../entities/race-classification.entity'
 import {
+  InvalidFieldError,
   MissingParamError,
   NotAllowedFieldsError,
   ServerError
 } from '../../errors/controllers.errors'
+import DriverStandingsServiceStub from '../../services/driver-standings/driver-standings.service.stub'
 
 import { RaceClassificationServiceAbstract } from '../../services/race-classification/race-classification.service'
+import { RaceServiceAbstract } from '../../services/race/race.service'
+import RaceServiceStub from '../../services/race/race.service.stub'
+import TeamStandingsServiceStub from '../../services/team-standings/team-standings.service.stub'
 import RaceClassificationController, {
   RaceClassificationControllerAbstract
 } from './race-classification.controller'
@@ -30,6 +35,7 @@ describe('Race Classification Controller', () => {
   interface SutTypes {
     sut: RaceClassificationControllerAbstract
     raceClassificationServiceStub: RaceClassificationServiceAbstract
+    raceServiceStub: RaceServiceAbstract
   }
 
   const makeSut = (): SutTypes => {
@@ -49,9 +55,18 @@ describe('Race Classification Controller', () => {
     }
 
     const raceClassificationServiceStub = new RaceClassificationServiceStub()
-    const sut = new RaceClassificationController(raceClassificationServiceStub)
+    const teamStandingsServiceStub = new TeamStandingsServiceStub()
+    const driverStandingsServiceStub = new DriverStandingsServiceStub()
+    const raceServiceStub = new RaceServiceStub()
 
-    return { sut, raceClassificationServiceStub }
+    const sut = new RaceClassificationController(
+      raceClassificationServiceStub,
+      driverStandingsServiceStub,
+      teamStandingsServiceStub,
+      raceServiceStub
+    )
+
+    return { sut, raceClassificationServiceStub, raceServiceStub }
   }
 
   it('should return 200 on getting a Race Classification by Race', async () => {
@@ -149,6 +164,37 @@ describe('Race Classification Controller', () => {
 
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new MissingParamError('race'))
+  })
+
+  it('should return 400 on updating a Race Classification with an invalid Race', async () => {
+    const { sut, raceServiceStub } = makeSut()
+
+    const dto: UpdateRaceClassificationDto = {
+      classification: [
+        {
+          position: 1,
+          user: 'valid_id',
+          team: 'valid_id',
+          isRegistered: true,
+          hasFastestLap: true,
+          hasPolePosition: true
+        }
+      ]
+    }
+
+    jest
+      .spyOn(raceServiceStub, 'getOne')
+      .mockReturnValueOnce(Promise.resolve(null as any))
+
+    const result = await sut.update({
+      query: {
+        race: 'invalid_race'
+      },
+      body: dto
+    })
+
+    expect(result.statusCode).toBe(400)
+    expect(result.body).toStrictEqual(new InvalidFieldError('race'))
   })
 
   it('should return 400 when providing an unallowed update', async () => {
