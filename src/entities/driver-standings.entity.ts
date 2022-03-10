@@ -1,3 +1,5 @@
+import Team from './team.entity'
+
 interface DriverStandings {
   id: string
   championship: string
@@ -6,7 +8,7 @@ interface DriverStandings {
     id?: string
     firstName?: string
     lastName?: string
-    team?: string
+    team?: string | Team
     position: number
     points: number
     isRegistered: boolean
