@@ -1,8 +1,10 @@
 // Repositories
 import { MongoRaceClassificationRepository } from '../repositories/race-classification/race-classification.repository'
+import MongoRaceRepository from '../repositories/race/race.repository'
 
 // Models
 import RaceClassificationModel from '../models/race-classification.model'
+import RaceModel from '../models/race.model'
 
 // Services
 import RaceClassificationService from '../services/race-classification/race-classification.service'
@@ -22,12 +24,15 @@ const makeRaceClassificationController = () => {
 
   const raceService = makeRaceService()
 
+  const raceRepository = new MongoRaceRepository(RaceModel)
+
   const raceClassificationRepository = new MongoRaceClassificationRepository(
     RaceClassificationModel
   )
 
   const raceClassificationService = new RaceClassificationService(
-    raceClassificationRepository
+    raceClassificationRepository,
+    raceRepository
   )
 
   return new RaceClassificationController(

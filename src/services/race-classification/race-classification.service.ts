@@ -1,9 +1,13 @@
+/* eslint-disable no-useless-constructor */
+import { isEmpty } from 'lodash'
 import {
   CreateRaceClassificationDto,
   UpdateRaceClassificationDto
 } from '../../dtos/race-classification.dtos'
 import RaceClassification from '../../entities/race-classification.entity'
+import Race from '../../entities/race.entity'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
+import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
 
 export interface RaceClassificationServiceAbstract {
   create(
@@ -17,13 +21,10 @@ export interface RaceClassificationServiceAbstract {
 }
 
 class RaceClassificationService implements RaceClassificationServiceAbstract {
-  private readonly raceClassificationRepository: RaceClassificationRepositoryAbstract
-
   constructor(
-    raceClassificationRepository: RaceClassificationRepositoryAbstract
-  ) {
-    this.raceClassificationRepository = raceClassificationRepository
-  }
+    private readonly raceClassificationRepository: RaceClassificationRepositoryAbstract,
+    private readonly raceRepository: RaceRepositoryAbstract
+  ) {}
 
   async create(
     createRaceClassificationDto: CreateRaceClassificationDto
@@ -46,9 +47,28 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
         (a, b) => a.position - b.position
       )
 
-    return await this.raceClassificationRepository.update(id, {
-      classification: sortedRaceClassification
-    })
+    const newRaceClassification =
+      await this.raceClassificationRepository.update(id, {
+        classification: sortedRaceClassification
+      })
+
+    if (isEmpty(newRaceClassification.classification)) {
+      await this.raceRepository.update(
+        (newRaceClassification.race as Race).id,
+        {
+          isCompleted: false
+        }
+      )
+    } else {
+      await this.raceRepository.update(
+        (newRaceClassification.race as Race).id,
+        {
+          isCompleted: true
+        }
+      )
+    }
+
+    return newRaceClassification
   }
 }
 
