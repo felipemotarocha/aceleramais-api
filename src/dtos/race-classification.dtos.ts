@@ -20,7 +20,7 @@ export interface UpdateRaceClassificationDto {
     id?: string
     firstName?: string
     lastName?: string
-    team: string
+    team?: string
     isRegistered: boolean
     hasFastestLap: boolean
     hasPolePosition: boolean

@@ -91,7 +91,8 @@ implements RaceClassificationControllerAbstract {
       await this.teamStandingsService.refresh(race.championship)
 
       return ok(raceClassification)
-    } catch (_) {
+    } catch (error) {
+      console.log({ error })
       return badRequest(new ServerError())
     }
   }

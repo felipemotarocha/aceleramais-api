@@ -7,7 +7,7 @@ const classificationSchema = new Schema(
       required: true
     },
     user: {
-      type: Types.ObjectId,
+      type: String,
       ref: 'User',
       required: false
     },
@@ -35,11 +35,11 @@ const classificationSchema = new Schema(
     },
     hasFastestLap: {
       type: Boolean,
-      required: true
+      required: false
     },
     hasPolePosition: {
       type: Boolean,
-      required: true
+      required: false
     }
   },
   { _id: false }
