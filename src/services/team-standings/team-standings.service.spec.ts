@@ -1,4 +1,13 @@
 import TeamStandings from '../../entities/team-standings.entity'
+import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
+import ChampionshipRepositoryStub, {
+  validChampionship
+} from '../../repositories/championship/championship.repository.stub'
+import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
+import {
+  DriverStandingsRepositoryStub,
+  validDriverStandings
+} from '../../repositories/driver-standings/driver-standings.repository.stub'
 import { TeamStandingsRepositoryAbstract } from '../../repositories/team-standings/team-standings.repository'
 import {
   TeamStandingsService,
@@ -20,6 +29,8 @@ describe('Team Standings Service', () => {
 
   interface SutTypes {
     teamStandingsRepositoryStub: TeamStandingsRepositoryAbstract
+    driverStandingsRepositoryStub: DriverStandingsRepositoryAbstract
+    championshipRepositoryStub: ChampionshipRepositoryAbstract
     sut: TeamStandingsServiceAbstract
   }
 
@@ -44,9 +55,21 @@ describe('Team Standings Service', () => {
     }
 
     const teamStandingsRepositoryStub = new TeamStandingsRepositoryStub()
-    const sut = new TeamStandingsService(teamStandingsRepositoryStub)
+    const driverStandingsRepositoryStub = new DriverStandingsRepositoryStub()
+    const championshipRepositoryStub = new ChampionshipRepositoryStub()
 
-    return { teamStandingsRepositoryStub, sut }
+    const sut = new TeamStandingsService(
+      teamStandingsRepositoryStub,
+      driverStandingsRepositoryStub,
+      championshipRepositoryStub
+    )
+
+    return {
+      teamStandingsRepositoryStub,
+      driverStandingsRepositoryStub,
+      championshipRepositoryStub,
+      sut
+    }
   }
 
   it('should get a TeamStandings by Championship', async () => {
@@ -84,5 +107,66 @@ describe('Team Standings Service', () => {
     const promise = sut.getOne({ championship: 'invalid_championship_id' })
 
     expect(promise).rejects.toThrow()
+  })
+
+  it('should refresh the Team Standings', async () => {
+    const {
+      sut,
+      driverStandingsRepositoryStub,
+      championshipRepositoryStub,
+      teamStandingsRepositoryStub
+    } = makeSut()
+
+    jest.spyOn(driverStandingsRepositoryStub, 'getOne').mockReturnValueOnce(
+      Promise.resolve({
+        ...validDriverStandings,
+        standings: [
+          {
+            user: 'valid_id_2',
+            position: 1,
+            firstName: undefined,
+            lastName: undefined,
+            isRegistered: true,
+            points: 20,
+            team: {
+              championship: 'valid_championship',
+              id: 'valid_team_id_1',
+              name: 'valid_name_1'
+            }
+          },
+          {
+            user: 'valid_id',
+            position: 2,
+            firstName: undefined,
+            lastName: undefined,
+            isRegistered: true,
+            points: 16,
+            team: {
+              championship: 'valid_championship',
+              id: 'valid_team_id_2',
+              name: 'valid_name_2'
+            }
+          }
+        ]
+      })
+    )
+
+    jest.spyOn(championshipRepositoryStub, 'getOne').mockReturnValueOnce(
+      Promise.resolve({
+        ...validChampionship,
+        teams: ['valid_team_id_1', 'valid_team_id_2']
+      })
+    )
+
+    const updateSpy = jest.spyOn(teamStandingsRepositoryStub, 'update')
+
+    await sut.refresh('valid_championship')
+
+    expect(updateSpy).toHaveBeenCalledWith('valid_id', {
+      standings: [
+        { team: 'valid_team_id_1', points: 20, position: 1 },
+        { team: 'valid_team_id_2', points: 16, position: 2 }
+      ]
+    })
   })
 })
