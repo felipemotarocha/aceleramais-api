@@ -7,6 +7,7 @@ const DriverHelpers = {
         (!item.user && item.isRegistered) ||
         (item.user && (item.firstName || item.lastName || item.id)) ||
         (item.user && !item.isRegistered) ||
+        (!item.isRegistered && !item.id) ||
         ((item.firstName || item.lastName || item.id) && item.isRegistered) ||
         item.isRegistered === undefined ||
         item.isRegistered === null
