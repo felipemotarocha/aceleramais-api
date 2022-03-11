@@ -382,7 +382,10 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: [{ name: 'valid_team', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: false }],
+      drivers: [
+        { user: 'valid_user', isRegistered: false },
+        { isRegistered: false, id: undefined }
+      ],
       scoringSystem: { 1: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
