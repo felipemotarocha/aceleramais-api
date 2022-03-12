@@ -111,7 +111,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
           firstName: classification?.firstName,
           lastName: classification?.lastName,
           isRegistered: classification.isRegistered,
-          team: (classification.team as Team).id,
+          team: (classification.team as Team)?.id,
           points: (newDriverStandings[driver]?.points || 0) + points
         }
       }

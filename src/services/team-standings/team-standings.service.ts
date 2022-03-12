@@ -53,7 +53,7 @@ export class TeamStandingsService implements TeamStandingsServiceAbstract {
         0
       )
 
-      return { team, points, position: 0 }
+      return { team, points: points || 0, position: 0 }
     })
 
     const newTeamStandingsWithPositions = newTeamStandings

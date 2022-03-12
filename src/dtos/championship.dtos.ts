@@ -15,6 +15,7 @@ export interface CreateChampionshipDto {
     track: string
   }[]
   teams?: {
+    id: string
     name: string
     color?: string
   }[]

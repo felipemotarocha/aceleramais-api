@@ -1,5 +1,6 @@
 import { Types } from 'mongoose'
 import { CreateChampionshipDto } from '../../dtos/championship.dtos'
+import { CreateTeamDto } from '../../dtos/team.dtos'
 import Championship from '../../entities/championship.entity'
 import { BonificationRepositoryAbstract } from '../../repositories/bonification/bonification.repository'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
@@ -74,20 +75,56 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     createChampionshipDto: CreateChampionshipDto
   }): Promise<Championship> {
     const championshipId = id
-    const { name, description, platform, drivers, admins } =
-      createChampionshipDto
+    const { name, description, platform, admins } = createChampionshipDto
 
     let teamIds: string[] = []
 
+    const driversPerTeam = {}
+
+    if (createChampionshipDto.drivers) {
+      for (const driver of createChampionshipDto.drivers) {
+        if (!driver?.team) continue
+
+        driversPerTeam[driver.team] = true
+      }
+    }
+
     if (createChampionshipDto?.teams) {
-      const teams = await this.teamRepository.bulkCreate(
-        createChampionshipDto.teams.map((team) => ({
-          ...team,
-          championship: championshipId as any
-        }))
-      )
+      const bulkCreatePayload: CreateTeamDto[] = []
+
+      for (const team of createChampionshipDto.teams) {
+        const id = new Types.ObjectId()
+
+        if (driversPerTeam[team.id]) {
+          driversPerTeam[team.id] = id
+        }
+
+        bulkCreatePayload.push({
+          _id: id as any,
+          name: team.name,
+          color: team.color,
+          championship: championshipId
+        } as any)
+      }
+
+      const teams = await this.teamRepository.bulkCreate(bulkCreatePayload)
 
       teamIds = teams.map((team) => team.id)
+    }
+
+    let drivers: {
+      user?: string
+      id?: string
+      firstName?: string
+      lastName?: string
+      team?: string
+      isRegistered: boolean
+    }[] = []
+
+    if (createChampionshipDto.drivers) {
+      drivers = createChampionshipDto.drivers.map((driver) =>
+        driver.team ? { ...driver, team: driversPerTeam[driver.team] } : driver
+      )
     }
 
     let bonificationIds: string[] = []
