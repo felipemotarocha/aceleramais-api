@@ -25,7 +25,7 @@ const driverBonificationSchema = new Schema(
       ref: 'Bonification',
       required: true,
       autopopulate: {
-        select: ['points']
+        select: ['name', 'points']
       }
     },
     race: {
@@ -44,7 +44,7 @@ const driverPenaltySchema = new Schema(
       ref: 'Penalty',
       required: true,
       autopopulate: {
-        select: ['points']
+        select: ['name', 'points']
       }
     },
     race: {
