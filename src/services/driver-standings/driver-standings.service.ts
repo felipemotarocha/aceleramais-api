@@ -112,7 +112,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
           lastName: classification?.lastName,
           isRegistered: classification.isRegistered,
           team: (classification.team as Team)?.id,
-          points: (newDriverStandings[driver]?.points || 0) + points
+          points: (newDriverStandings[driver]?.points || 0) + (points || 0)
         }
       }
     }
@@ -155,7 +155,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
         }
 
         return {
-          user: undefined,
+          id: key,
           position: index + 1,
           ...newDriverStandings[key]
         }
