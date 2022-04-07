@@ -10,6 +10,7 @@
     "test:watch": "jest --passWithNoTests --runInBand --watch",
     "test:staged": "yarn test",
     "test:ci": "yarn test --coverage",
+    "mongodb:seed": "sucrase-node seeds/mongodb/mongodb.seed.ts",
     "husky:prepare": "husky install"
   },
   "keywords": [],
@@ -35,6 +36,7 @@
     "husky": "^7.0.4",
     "jest": "^27.4.7",
     "lint-staged": "^12.2.2",
+    "mongo-seeding": "^3.7.1",
     "nodemon": "^2.0.15",
     "prettier-config-standard": "^4.0.0",
     "sucrase": "^3.20.3",
