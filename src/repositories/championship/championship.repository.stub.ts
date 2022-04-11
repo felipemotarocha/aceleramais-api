@@ -25,6 +25,10 @@ class ChampionshipRepositoryStub implements ChampionshipRepositoryAbstract {
     return validChampionship
   }
 
+  async update(): Promise<Championship> {
+    return validChampionship
+  }
+
   async getOne(): Promise<Championship> {
     return validChampionship
   }

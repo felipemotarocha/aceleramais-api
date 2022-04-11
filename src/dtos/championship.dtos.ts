@@ -64,3 +64,19 @@ export interface CreateChampionshipMongoDto {
   bonifications?: string[]
   penalties?: string[]
 }
+
+export interface UpdateChampionshipDto {
+  bonifications?: {
+    name: string
+    points: number
+  }[]
+  penalties?: {
+    name: string
+    points: number
+  }[]
+}
+
+export interface UpdateChampionshipMongoDto {
+  bonifications?: string[]
+  penalties?: string[]
+}

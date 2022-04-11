@@ -1,4 +1,7 @@
-import { CreateChampionshipMongoDto } from '../../dtos/championship.dtos'
+import {
+  CreateChampionshipMongoDto,
+  UpdateChampionshipMongoDto
+} from '../../dtos/championship.dtos'
 import Championship from '../../entities/championship.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import ChampionshipModel from '../../models/championship.model'
@@ -15,10 +18,15 @@ export interface ChampionshipRepositoryAbstract {
     driver?: string
     admin?: string
   }): Promise<Championship[]>
+  update(
+    id: string,
+    updateChampionshipDto: UpdateChampionshipMongoDto
+  ): Promise<Championship>
 }
 
 export class MongoChampionshipRepository
-implements ChampionshipRepositoryAbstract {
+  implements ChampionshipRepositoryAbstract
+{
   private readonly championshipModel: typeof ChampionshipModel
 
   constructor(championshipModel: typeof ChampionshipModel) {
@@ -95,5 +103,13 @@ implements ChampionshipRepositoryAbstract {
     }
 
     return []
+  }
+
+  async update(id: string, updateChampionshipDto: UpdateChampionshipMongoDto) {
+    return await this.championshipModel.findByIdAndUpdate(
+      id,
+      updateChampionshipDto,
+      { new: true }
+    )
   }
 }

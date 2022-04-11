@@ -67,6 +67,10 @@ describe('Championship Service', () => {
         return validChampionship
       }
 
+      async update(): Promise<Championship> {
+        return validChampionship
+      }
+
       async getOne(): Promise<Championship> {
         return validChampionship
       }
