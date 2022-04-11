@@ -13,6 +13,27 @@ import UserModel from '../../models/user.model'
 import { MongoChampionshipRepository } from './championship.repository'
 
 describe('Mongo Driver Standings Repository', () => {
+  const validDto = {
+    description: 'valid_description',
+    name: 'valid_name',
+    platform: 'valid_platform',
+    avatarImageUrl: 'valid_url',
+    races: [new Types.ObjectId() as any],
+    teams: [new Types.ObjectId() as any],
+    drivers: [
+      {
+        user: 'valid_user',
+        isRegistered: true,
+        bonifications: [],
+        penalties: []
+      }
+    ],
+    scoringSystem: new Types.ObjectId() as any,
+    admins: [{ user: 'valid_user', isCreator: true }],
+    teamStandings: new Types.ObjectId() as any,
+    driverStandings: new Types.ObjectId() as any
+  }
+
   beforeAll(async () => {
     await MongooseHelper.connect(env.mongodbUrl)
   })
@@ -37,38 +58,17 @@ describe('Mongo Driver Standings Repository', () => {
   it('should create a Championship', async () => {
     const sut = makeSut()
 
-    const dto = {
-      description: 'valid_description',
-      name: 'valid_name',
-      platform: 'valid_platform',
-      avatarImageUrl: 'valid_url',
-      races: [new Types.ObjectId() as any],
-      teams: [new Types.ObjectId() as any],
-      drivers: [
-        {
-          user: 'valid_user',
-          isRegistered: true,
-          bonifications: [],
-          penalties: []
-        }
-      ],
-      scoringSystem: new Types.ObjectId() as any,
-      admins: [{ user: 'valid_user', isCreator: true }],
-      teamStandings: new Types.ObjectId() as any,
-      driverStandings: new Types.ObjectId() as any
-    }
-
-    const result = await sut.create(dto)
+    const result = await sut.create(validDto)
 
     expect(result.id).toBeTruthy()
-    expect(result.description).toStrictEqual(dto.description)
-    expect(result.name).toStrictEqual(dto.name)
-    expect(result.platform).toStrictEqual(dto.platform)
-    expect(result.avatarImageUrl).toStrictEqual(dto.avatarImageUrl)
-    expect(result.races).toStrictEqual(dto.races)
-    expect(result.teams).toStrictEqual(dto.teams)
-    expect(result.drivers).toStrictEqual(dto.drivers)
-    expect(result.scoringSystem).toStrictEqual(dto.scoringSystem)
+    expect(result.description).toStrictEqual(validDto.description)
+    expect(result.name).toStrictEqual(validDto.name)
+    expect(result.platform).toStrictEqual(validDto.platform)
+    expect(result.avatarImageUrl).toStrictEqual(validDto.avatarImageUrl)
+    expect(result.races).toStrictEqual(validDto.races)
+    expect(result.teams).toStrictEqual(validDto.teams)
+    expect(result.drivers).toStrictEqual(validDto.drivers)
+    expect(result.scoringSystem).toStrictEqual(validDto.scoringSystem)
   })
 
   it('should call ChampionshipModel create method with correct values', async () => {
@@ -93,6 +93,18 @@ describe('Mongo Driver Standings Repository', () => {
     await sut.create(dto)
 
     expect(createChampionshipSpy).toHaveBeenCalledWith(dto)
+  })
+
+  it('should update a championship', async () => {
+    const sut = makeSut()
+
+    const championship = await sut.create(validDto)
+
+    const bonifications: any[] = [new Types.ObjectId()]
+
+    const result = await sut.update(championship.id, { bonifications })
+
+    expect(result.bonifications).toStrictEqual(bonifications)
   })
 
   it('should get a Championship by ID', async () => {
