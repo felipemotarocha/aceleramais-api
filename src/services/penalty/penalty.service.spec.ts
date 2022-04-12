@@ -1,5 +1,5 @@
-import Penalty from '../../entities/penalty.entity'
 import { PenaltyRepositoryAbstract } from '../../repositories/penalty/penalty.repository'
+import { PenaltyRepositoryStub } from '../../repositories/penalty/penalty.repository.stub'
 import { PenaltyService, PenaltyServiceAbstract } from './penalty.service'
 
 export const validPenalty = {
@@ -16,28 +16,6 @@ describe('Penalty Service', () => {
   }
 
   const makeSut = (): SutTypes => {
-    class PenaltyRepositoryStub implements PenaltyRepositoryAbstract {
-      async create(): Promise<Penalty> {
-        return validPenalty
-      }
-
-      async bulkCreate(): Promise<Penalty[]> {
-        return [validPenalty]
-      }
-
-      async getAll(): Promise<Penalty[]> {
-        return [validPenalty]
-      }
-
-      async update(): Promise<Penalty> {
-        return validPenalty
-      }
-
-      async delete(): Promise<Penalty> {
-        return validPenalty
-      }
-    }
-
     const penaltyRepositoryStub = new PenaltyRepositoryStub()
     const sut = new PenaltyService(penaltyRepositoryStub)
 

@@ -22,4 +22,8 @@ export class PenaltyRepositoryStub implements PenaltyRepositoryAbstract {
   async delete(): Promise<Penalty> {
     return validPenalty
   }
+
+  async bulkDelete(): Promise<number> {
+    return 1
+  }
 }

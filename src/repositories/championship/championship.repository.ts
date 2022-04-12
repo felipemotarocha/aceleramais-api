@@ -25,8 +25,7 @@ export interface ChampionshipRepositoryAbstract {
 }
 
 export class MongoChampionshipRepository
-  implements ChampionshipRepositoryAbstract
-{
+implements ChampionshipRepositoryAbstract {
   private readonly championshipModel: typeof ChampionshipModel
 
   constructor(championshipModel: typeof ChampionshipModel) {

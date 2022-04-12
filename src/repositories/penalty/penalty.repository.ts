@@ -9,6 +9,7 @@ export interface PenaltyRepositoryAbstract {
   bulkCreate(bulkCreatePenaltyDto: CreatePenaltyDto[]): Promise<Penalty[]>
   update(id: string, updatePenaltyDto: UpdatePenaltyDto): Promise<Penalty>
   delete(id: string): Promise<Penalty>
+  bulkDelete(ids: string[]): Promise<number>
 }
 
 export class MongoPenaltyRepository implements PenaltyRepositoryAbstract {
@@ -59,5 +60,13 @@ export class MongoPenaltyRepository implements PenaltyRepositoryAbstract {
     })
 
     return MongooseHelper.map<Penalty>(penalty.toJSON())
+  }
+
+  async bulkDelete(ids: string[]): Promise<number> {
+    const { deletedCount } = await this.penaltyModel.deleteMany({
+      _id: ids
+    })
+
+    return deletedCount
   }
 }
