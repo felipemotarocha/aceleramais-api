@@ -49,7 +49,7 @@ describe('Championship Service', () => {
   }
 
   interface SutTypes {
-    championshipStandingsRepositoryStub: ChampionshipRepositoryAbstract
+    championshipRepositoryStub: ChampionshipRepositoryAbstract
     teamRepositoryStub: TeamRepositoryAbstract
     driverStandingsRepositoryStub: DriverStandingsRepositoryAbstract
     teamStandingsRepositoryStub: TeamStandingsRepositoryAbstract
@@ -82,7 +82,7 @@ describe('Championship Service', () => {
 
     const teamRepositoryStub = new TeamRepositoryStub()
     const driverStandingsRepositoryStub = new DriverStandingsRepositoryStub()
-    const championshipStandingsRepositoryStub = new ChampionshipRepositoryStub()
+    const championshipRepositoryStub = new ChampionshipRepositoryStub()
     const teamStandingsRepositoryStub = new TeamStandingsRepositoryStub()
     const scoringSystemRepositoryStub = new ScoringSystemRepositoryStub()
     const raceRepositoryStub = new RaceRepositoryStub()
@@ -93,7 +93,7 @@ describe('Championship Service', () => {
     const s3RepositoryStub = new S3RepositoryStub()
 
     const sut = new ChampionshipService(
-      championshipStandingsRepositoryStub,
+      championshipRepositoryStub,
       teamRepositoryStub,
       driverStandingsRepositoryStub,
       teamStandingsRepositoryStub,
@@ -106,7 +106,7 @@ describe('Championship Service', () => {
     )
 
     return {
-      championshipStandingsRepositoryStub,
+      championshipRepositoryStub,
       teamRepositoryStub,
       driverStandingsRepositoryStub,
       teamStandingsRepositoryStub,
@@ -140,13 +140,6 @@ describe('Championship Service', () => {
       }
     })
 
-    // expect(createTeamSpy).toHaveBeenCalledWith([
-    //   {
-    //     championship: validChampionship.id,
-    //     name: 'valid_name',
-    //     color: 'valid_color'
-    //   }
-    // ])
     expect(createTeamSpy).toHaveReturned()
     expect(result.teams).toStrictEqual(['valid_team'])
   })
@@ -414,5 +407,48 @@ describe('Championship Service', () => {
     const result = await sut.getAll({ admin: 'valid_user' })
 
     expect(result).toStrictEqual([validChampionship])
+  })
+
+  it('should prepare to update', async () => {
+    const {
+      sut,
+      teamRepositoryStub,
+      bonificationRepositoryStub,
+      penaltyRepositoryStub,
+      championshipRepositoryStub
+    } = makeSut()
+
+    const bulkDeleteTeamsSpy = jest.spyOn(teamRepositoryStub, 'bulkDelete')
+    const bulkDeleteBonificationsSpy = jest.spyOn(
+      bonificationRepositoryStub,
+      'bulkDelete'
+    )
+    const bulkDeletePenaltiesSpy = jest.spyOn(
+      penaltyRepositoryStub,
+      'bulkDelete'
+    )
+    const bulkUpdateChampionshipSpy = jest.spyOn(
+      championshipRepositoryStub,
+      'update'
+    )
+
+    await sut.prepareToUpdate(validChampionship.id)
+
+    expect(bulkDeleteTeamsSpy).toHaveBeenCalledWith(validChampionship.teams)
+    expect(bulkDeleteBonificationsSpy).toHaveBeenCalledWith(
+      validChampionship.bonifications
+    )
+    expect(bulkDeletePenaltiesSpy).toHaveBeenCalledWith(
+      validChampionship.penalties
+    )
+    expect(bulkUpdateChampionshipSpy).toHaveBeenCalledWith(
+      validChampionship.id,
+      {
+        drivers: [],
+        teams: [],
+        penalties: [],
+        bonifications: []
+      }
+    )
   })
 })
