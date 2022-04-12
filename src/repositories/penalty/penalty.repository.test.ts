@@ -182,4 +182,17 @@ describe('Mongo Penalty Repository', () => {
       }
     )
   })
+
+  it('should delete Penalties', async () => {
+    const sut = makeSut()
+
+    await PenaltyModel.create({
+      _id: validPenalty.id,
+      ...validPenalty
+    })
+
+    const result = await sut.bulkDelete([validPenalty.id.toHexString()])
+
+    expect(result).toBeTruthy()
+  })
 })
