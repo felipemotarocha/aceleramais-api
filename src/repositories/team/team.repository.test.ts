@@ -153,4 +153,14 @@ describe('Mongo Team Repository', () => {
 
     expect(deleteTeamSpy).toHaveBeenCalledWith(validTeam.id, { new: true })
   })
+
+  it('should delete Teams', async () => {
+    const sut = makeSut()
+
+    await TeamModel.create({ _id: validTeam.id, ...validTeam })
+
+    const result = await sut.bulkDelete([validTeam.id])
+
+    expect(result).toBe(1)
+  })
 })
