@@ -17,6 +17,7 @@ export interface BonificationRepositoryAbstract {
     updateBonificationDto: UpdateBonificationDto
   ): Promise<Bonification>
   delete(id: string): Promise<Bonification>
+  bulkDelete(ids: string[]): Promise<number>
 }
 
 export class MongoBonificationRepository
@@ -78,5 +79,13 @@ implements BonificationRepositoryAbstract {
     })
 
     return MongooseHelper.map<Bonification>(bonification.toJSON())
+  }
+
+  async bulkDelete(ids: string[]): Promise<number> {
+    const { deletedCount } = await this.bonificationModel.deleteMany({
+      _id: ids
+    })
+
+    return deletedCount
   }
 }

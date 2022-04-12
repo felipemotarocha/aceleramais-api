@@ -1,5 +1,5 @@
-import Bonification from '../../entities/bonification.entity'
 import { BonificationRepositoryAbstract } from '../../repositories/bonification/bonification.repository'
+import { BonificationRepositoryStub } from '../../repositories/bonification/bonification.repository.stub'
 import {
   BonificationService,
   BonificationServiceAbstract
@@ -19,28 +19,6 @@ describe('Bonification Service', () => {
   }
 
   const makeSut = (): SutTypes => {
-    class BonificationRepositoryStub implements BonificationRepositoryAbstract {
-      async create(): Promise<Bonification> {
-        return validBonification
-      }
-
-      async bulkCreate(): Promise<Bonification[]> {
-        return [validBonification]
-      }
-
-      async getAll(): Promise<Bonification[]> {
-        return [validBonification]
-      }
-
-      async update(): Promise<Bonification> {
-        return validBonification
-      }
-
-      async delete(): Promise<Bonification> {
-        return validBonification
-      }
-    }
-
     const bonificationRepositoryStub = new BonificationRepositoryStub()
     const sut = new BonificationService(bonificationRepositoryStub)
 

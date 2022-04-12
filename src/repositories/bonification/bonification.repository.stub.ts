@@ -23,4 +23,8 @@ implements BonificationRepositoryAbstract {
   async delete(): Promise<Bonification> {
     return validBonification
   }
+
+  async bulkDelete(): Promise<number> {
+    return 1
+  }
 }
