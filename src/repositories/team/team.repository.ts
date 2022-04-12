@@ -49,4 +49,13 @@ export class MongoTeamRepository implements TeamRepositoryAbstract {
 
     return MongooseHelper.map<Team>(team.toJSON())
   }
+
+  async bulkDelete(ids: string[]): Promise<number> {
+    const { deletedCount } = await this.TeamModel.deleteMany(
+      { _id: ids },
+      { new: true }
+    )
+
+    return deletedCount
+  }
 }
