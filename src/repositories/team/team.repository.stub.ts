@@ -29,4 +29,8 @@ export class TeamRepositoryStub implements TeamRepositoryAbstract {
   async delete(): Promise<Team> {
     return validTeam
   }
+
+  async bulkDelete(): Promise<number> {
+    return 1
+  }
 }

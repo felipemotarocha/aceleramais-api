@@ -37,6 +37,10 @@ describe('Team Service', () => {
       async delete(): Promise<Team> {
         return validTeam
       }
+
+      async bulkDelete(): Promise<number> {
+        return 1
+      }
     }
 
     const teamRepositoryStub = new TeamRepositoryStub()

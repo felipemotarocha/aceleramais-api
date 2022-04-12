@@ -9,6 +9,7 @@ export interface TeamRepositoryAbstract {
   getAll({ championship }: { championship: string }): Promise<Team[]>
   update(id: string, updateTeamDto: UpdateTeamDto): Promise<Team>
   delete(id: string): Promise<Team>
+  bulkDelete(ids: string[]): Promise<number>
 }
 
 export class MongoTeamRepository implements TeamRepositoryAbstract {
