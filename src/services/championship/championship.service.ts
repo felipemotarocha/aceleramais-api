@@ -1,7 +1,14 @@
+/* eslint-disable no-useless-constructor */
 import { Types } from 'mongoose'
-import { CreateChampionshipDto } from '../../dtos/championship.dtos'
+import {
+  CreateChampionshipDto,
+  UpdateChampionshipDto
+} from '../../dtos/championship.dtos'
 import { CreateTeamDto } from '../../dtos/team.dtos'
+import Bonification from '../../entities/bonification.entity'
 import Championship from '../../entities/championship.entity'
+import Penalty from '../../entities/penalty.entity'
+import Team from '../../entities/team.entity'
 import { BonificationRepositoryAbstract } from '../../repositories/bonification/bonification.repository'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
@@ -29,42 +36,118 @@ export interface ChampionshipServiceAbstract {
     driver?: string
     admin?: string
   }): Promise<Championship[]>
+  update(
+    id: string,
+    updateChampionshipDto: UpdateChampionshipDto
+  ): Promise<Championship>
+  prepareToUpdate(championship): Promise<void>
 }
 
 export class ChampionshipService implements ChampionshipServiceAbstract {
-  private readonly championshipRepository: ChampionshipRepositoryAbstract
-  private readonly teamRepository: TeamRepositoryAbstract
-  private readonly driverStandingsRepository: DriverStandingsRepositoryAbstract
-  private readonly teamStandingsRepository: TeamStandingsRepositoryAbstract
-  private readonly scoringSystemRepository: ScoringSystemRepositoryAbstract
-  private readonly raceRepository: RaceRepositoryAbstract
-  private readonly raceClassificationRepository: RaceClassificationRepositoryAbstract
-  private readonly bonificationRepository: BonificationRepositoryAbstract
-  private readonly penaltyRepository: PenaltyRepositoryAbstract
-  private readonly s3Repository: S3RepositoryAbstract
-
   constructor(
-    championshipRepository: ChampionshipRepositoryAbstract,
-    teamRepository: TeamRepositoryAbstract,
-    driverStandingsRepository: DriverStandingsRepositoryAbstract,
-    teamStandingsRepository: TeamStandingsRepositoryAbstract,
-    scoringSystemRepository: ScoringSystemRepositoryAbstract,
-    raceRepository: RaceRepositoryAbstract,
-    raceClassificationRepository: RaceClassificationRepositoryAbstract,
-    bonificationRepository: BonificationRepositoryAbstract,
-    penaltyRepository: PenaltyRepositoryAbstract,
-    s3Repository: S3RepositoryAbstract
-  ) {
-    this.championshipRepository = championshipRepository
-    this.teamRepository = teamRepository
-    this.driverStandingsRepository = driverStandingsRepository
-    this.teamStandingsRepository = teamStandingsRepository
-    this.scoringSystemRepository = scoringSystemRepository
-    this.raceRepository = raceRepository
-    this.raceClassificationRepository = raceClassificationRepository
-    this.bonificationRepository = bonificationRepository
-    this.penaltyRepository = penaltyRepository
-    this.s3Repository = s3Repository
+    private readonly championshipRepository: ChampionshipRepositoryAbstract,
+    private readonly teamRepository: TeamRepositoryAbstract,
+    private readonly driverStandingsRepository: DriverStandingsRepositoryAbstract,
+    private readonly teamStandingsRepository: TeamStandingsRepositoryAbstract,
+    private readonly scoringSystemRepository: ScoringSystemRepositoryAbstract,
+    private readonly raceRepository: RaceRepositoryAbstract,
+    private readonly raceClassificationRepository: RaceClassificationRepositoryAbstract,
+    private readonly bonificationRepository: BonificationRepositoryAbstract,
+    private readonly penaltyRepository: PenaltyRepositoryAbstract,
+    private readonly s3Repository: S3RepositoryAbstract
+  ) {}
+
+  async createDriversAndTeams({
+    championship,
+    drivers,
+    teams
+  }: {
+    championship: string
+    drivers: CreateChampionshipDto['drivers']
+    teams: CreateChampionshipDto['teams']
+  }) {
+    let _teams: Team[] = []
+
+    const driversPerTeam = {}
+
+    if (drivers) {
+      for (const driver of drivers) {
+        if (!driver?.team) continue
+
+        driversPerTeam[driver.team] = true
+      }
+    }
+
+    if (teams) {
+      const bulkCreatePayload: CreateTeamDto[] = []
+
+      for (const team of teams) {
+        const id = new Types.ObjectId()
+
+        if (driversPerTeam[team.id]) {
+          driversPerTeam[team.id] = id
+        }
+
+        bulkCreatePayload.push({
+          _id: id as any,
+          name: team.name,
+          color: team.color,
+          championship
+        } as any)
+      }
+
+      _teams = await this.teamRepository.bulkCreate(bulkCreatePayload)
+    }
+
+    let _drivers: {
+      user?: string
+      id?: string
+      firstName?: string
+      lastName?: string
+      team?: string
+      isRegistered: boolean
+    }[] = []
+
+    if (drivers) {
+      _drivers = drivers.map((driver) =>
+        driver.team ? { ...driver, team: driversPerTeam[driver.team] } : driver
+      )
+    }
+
+    return { drivers: _drivers, teams: _teams }
+  }
+
+  async createPenaltiesAndBonifications({
+    championship,
+    penalties,
+    bonifications
+  }: {
+    championship: string
+    penalties: CreateChampionshipDto['penalties']
+    bonifications: CreateChampionshipDto['bonifications']
+  }) {
+    let _bonifications: Bonification[] = []
+    let _penalties: Penalty[] = []
+
+    if (bonifications) {
+      _bonifications = await this.bonificationRepository.bulkCreate(
+        bonifications.map((item) => ({
+          ...item,
+          championship: championship
+        }))
+      )
+    }
+
+    if (penalties) {
+      _penalties = await this.penaltyRepository.bulkCreate(
+        penalties.map((item) => ({
+          ...item,
+          championship: championship
+        }))
+      )
+    }
+
+    return { penalties: _penalties, bonifications: _bonifications }
   }
 
   async create({
@@ -77,81 +160,11 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     const championshipId = id
     const { name, description, platform, admins } = createChampionshipDto
 
-    let teamIds: string[] = []
-
-    const driversPerTeam = {}
-
-    if (createChampionshipDto.drivers) {
-      for (const driver of createChampionshipDto.drivers) {
-        if (!driver?.team) continue
-
-        driversPerTeam[driver.team] = true
-      }
-    }
-
-    if (createChampionshipDto?.teams) {
-      const bulkCreatePayload: CreateTeamDto[] = []
-
-      for (const team of createChampionshipDto.teams) {
-        const id = new Types.ObjectId()
-
-        if (driversPerTeam[team.id]) {
-          driversPerTeam[team.id] = id
-        }
-
-        bulkCreatePayload.push({
-          _id: id as any,
-          name: team.name,
-          color: team.color,
-          championship: championshipId
-        } as any)
-      }
-
-      const teams = await this.teamRepository.bulkCreate(bulkCreatePayload)
-
-      teamIds = teams.map((team) => team.id)
-    }
-
-    let drivers: {
-      user?: string
-      id?: string
-      firstName?: string
-      lastName?: string
-      team?: string
-      isRegistered: boolean
-    }[] = []
-
-    if (createChampionshipDto.drivers) {
-      drivers = createChampionshipDto.drivers.map((driver) =>
-        driver.team ? { ...driver, team: driversPerTeam[driver.team] } : driver
-      )
-    }
-
-    let bonificationIds: string[] = []
-
-    if (createChampionshipDto.bonifications) {
-      const bonifications = await this.bonificationRepository.bulkCreate(
-        createChampionshipDto.bonifications.map((item) => ({
-          ...item,
-          championship: championshipId as any
-        }))
-      )
-
-      bonificationIds = bonifications.map((item) => item.id)
-    }
-
-    let penaltyIds: string[] = []
-
-    if (createChampionshipDto.penalties) {
-      const penalties = await this.penaltyRepository.bulkCreate(
-        createChampionshipDto.penalties.map((item) => ({
-          ...item,
-          championship: championshipId as any
-        }))
-      )
-
-      penaltyIds = penalties.map((item) => item.id)
-    }
+    const { drivers, teams } = await this.createDriversAndTeams({
+      championship: id,
+      drivers: createChampionshipDto.drivers,
+      teams: createChampionshipDto.teams
+    })
 
     const driverStandings = await this.driverStandingsRepository.create({
       championship: championshipId,
@@ -167,6 +180,13 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       championship: championshipId,
       scoringSystem: createChampionshipDto.scoringSystem
     })
+
+    const { bonifications, penalties } =
+      await this.createPenaltiesAndBonifications({
+        championship: id,
+        bonifications: createChampionshipDto.bonifications,
+        penalties: createChampionshipDto.penalties
+      })
 
     const races: string[] = []
 
@@ -208,14 +228,52 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       scoringSystem: scoringSystem.id,
       driverStandings: driverStandings.id,
       teamStandings: teamStandings.id,
-      teams: teamIds,
-      bonifications: bonificationIds,
-      penalties: penaltyIds,
+      teams: teams.map((item) => item.id),
+      bonifications: bonifications.map((item) => item.id),
+      penalties: penalties.map((item) => item.id),
       races,
       drivers
     })
 
     return championship
+  }
+
+  async prepareToUpdate(championship: string) {
+    const { teams, bonifications, penalties } =
+      await this.championshipRepository.getOne({
+        id: championship
+      })
+
+    await this.teamRepository.bulkDelete(teams as string[])
+    await this.bonificationRepository.bulkDelete(bonifications as string[])
+    await this.penaltyRepository.bulkDelete(penalties as string[])
+
+    await this.championshipRepository.update(championship, {
+      drivers: [],
+      bonifications: [],
+      penalties: [],
+      teams: []
+    })
+  }
+
+  async update(
+    id: string,
+    updateChampionshipDto: UpdateChampionshipDto
+  ): Promise<Championship> {
+    await this.prepareToUpdate(id)
+
+    await this.createDriversAndTeams({
+      championship: id,
+      drivers: updateChampionshipDto.drivers,
+      teams: updateChampionshipDto.teams
+    })
+    await this.createPenaltiesAndBonifications({
+      championship: id,
+      bonifications: updateChampionshipDto.bonifications,
+      penalties: updateChampionshipDto.penalties
+    })
+
+    return Promise.resolve(null as any)
   }
 
   async getOne({ id }: { id: string }): Promise<Championship> {

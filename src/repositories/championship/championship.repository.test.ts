@@ -102,9 +102,17 @@ describe('Mongo Driver Standings Repository', () => {
 
     const bonifications: any[] = [new Types.ObjectId()]
 
-    const result = await sut.update(championship.id, { bonifications })
+    const result = await sut.update(championship.id, {
+      bonifications,
+      penalties: [],
+      drivers: [],
+      teams: []
+    })
 
     expect(result.bonifications).toStrictEqual(bonifications)
+    expect(result.penalties).toStrictEqual([])
+    expect(result.drivers).toStrictEqual([])
+    expect(result.teams).toStrictEqual([])
   })
 
   it('should get a Championship by ID', async () => {

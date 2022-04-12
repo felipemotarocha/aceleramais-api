@@ -66,11 +66,16 @@ export interface CreateChampionshipMongoDto {
 }
 
 export interface UpdateChampionshipDto {
-  drivers?: {
+  drivers: {
     user?: string
     userName?: string
     team?: string
     isRegistered: boolean
+  }[]
+  teams: {
+    id: string
+    name: string
+    color?: string
   }[]
   bonifications: {
     race: string
@@ -85,12 +90,13 @@ export interface UpdateChampionshipDto {
 }
 
 export interface UpdateChampionshipMongoDto {
-  drivers?: {
+  drivers: {
     user?: string
     userName?: string
     team?: string
     isRegistered: boolean
   }[]
-  bonifications?: string[]
-  penalties?: string[]
+  teams: string[]
+  bonifications: string[]
+  penalties: string[]
 }

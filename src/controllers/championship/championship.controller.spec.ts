@@ -58,6 +58,8 @@ describe('Championship Controller', () => {
         return validChampionship
       }
 
+      async prepareToUpdate(): Promise<void> {}
+
       async delete(): Promise<Championship> {
         return validChampionship
       }
