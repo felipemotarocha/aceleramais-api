@@ -195,4 +195,17 @@ describe('Mongo Bonification Repository', () => {
       }
     )
   })
+
+  it('should delete Bonifications', async () => {
+    const sut = makeSut()
+
+    await BonificationModel.create({
+      _id: validBonification.id,
+      ...validBonification
+    })
+
+    const result = await sut.bulkDelete([validBonification.id.toHexString()])
+
+    expect(result).toBe(1)
+  })
 })
