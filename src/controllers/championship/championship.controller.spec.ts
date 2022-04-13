@@ -5,6 +5,8 @@ import {
   ServerError
 } from '../../errors/controllers.errors'
 import { ChampionshipServiceAbstract } from '../../services/championship/championship.service'
+import DriverStandingsServiceStub from '../../services/driver-standings/driver-standings.service.stub'
+import TeamStandingsServiceStub from '../../services/team-standings/team-standings.service.stub'
 import {
   ChampionshipControllerAbstract,
   ChampionshipController
@@ -66,7 +68,14 @@ describe('Championship Controller', () => {
     }
 
     const championshipServicestub = new ChampionshipServiceStub()
-    const sut = new ChampionshipController(championshipServicestub)
+    const driverStandingsServiceStub = new DriverStandingsServiceStub()
+    const teamStandingsServiceStub = new TeamStandingsServiceStub()
+
+    const sut = new ChampionshipController(
+      championshipServicestub,
+      driverStandingsServiceStub,
+      teamStandingsServiceStub
+    )
 
     return { sut, championshipServicestub }
   }
