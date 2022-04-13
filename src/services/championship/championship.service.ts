@@ -264,18 +264,31 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
   ): Promise<Championship> {
     await this.prepareToUpdate(id)
 
-    await this.createDriversAndTeams({
+    const { drivers, teams } = await this.createDriversAndTeams({
       championship: id,
       drivers: updateChampionshipDto.drivers,
       teams: updateChampionshipDto.teams
     })
-    await this.createPenaltiesAndBonifications({
+    const { penalties, bonifications } =
+      await this.createPenaltiesAndBonifications({
+        championship: id,
+        bonifications: updateChampionshipDto.bonifications,
+        penalties: updateChampionshipDto.penalties
+      })
+
+    const scoringSystem = await this.scoringSystemRepository.create({
       championship: id,
-      bonifications: updateChampionshipDto.bonifications,
-      penalties: updateChampionshipDto.penalties
+      scoringSystem: updateChampionshipDto.scoringSystem
     })
 
-    return Promise.resolve(null as any)
+    return await this.championshipRepository.update(id, {
+      ...updateChampionshipDto,
+      drivers,
+      scoringSystem: scoringSystem.id,
+      teams: teams.map((item) => item.id),
+      bonifications: bonifications.map((item) => item.id),
+      penalties: penalties.map((item) => item.id)
+    })
   }
 
   async getOne({ id }: { id: string }): Promise<Championship> {

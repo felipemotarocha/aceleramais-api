@@ -87,6 +87,9 @@ export interface UpdateChampionshipDto {
     name: string
     points: number
   }[]
+  scoringSystem: {
+    [key: string]: number
+  }
 }
 
 export interface UpdateChampionshipMongoDto {
