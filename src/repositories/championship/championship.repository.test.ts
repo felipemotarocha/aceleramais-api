@@ -106,7 +106,8 @@ describe('Mongo Driver Standings Repository', () => {
       bonifications,
       penalties: [],
       drivers: [],
-      teams: []
+      teams: [],
+      scoringSystem: new Types.ObjectId() as any
     })
 
     expect(result.bonifications).toStrictEqual(bonifications)

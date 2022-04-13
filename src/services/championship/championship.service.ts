@@ -239,7 +239,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
   }
 
   async prepareToUpdate(championship: string) {
-    const { teams, bonifications, penalties } =
+    const { teams, bonifications, penalties, scoringSystem } =
       await this.championshipRepository.getOne({
         id: championship
       })
@@ -247,12 +247,14 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     await this.teamRepository.bulkDelete(teams as string[])
     await this.bonificationRepository.bulkDelete(bonifications as string[])
     await this.penaltyRepository.bulkDelete(penalties as string[])
+    await this.scoringSystemRepository.delete(scoringSystem as string)
 
     await this.championshipRepository.update(championship, {
       drivers: [],
       bonifications: [],
       penalties: [],
-      teams: []
+      teams: [],
+      scoringSystem: scoringSystem as string
     })
   }
 

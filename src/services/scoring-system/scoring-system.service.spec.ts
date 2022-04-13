@@ -1,5 +1,5 @@
-import ScoringSystem from '../../entities/scoring-system.entity'
 import { ScoringSystemRepositoryAbstract } from '../../repositories/scoring-system/scoring-system.repository'
+import { ScoringSystemRepositoryStub } from '../../repositories/scoring-system/scoring-system.repository.stub'
 import {
   ScoringSystemServiceAbstract,
   ScoringSystemService
@@ -18,25 +18,6 @@ describe('Scoring System Service', () => {
   }
 
   const makeSut = (): SutTypes => {
-    class ScoringSystemRepositoryStub
-    implements ScoringSystemRepositoryAbstract {
-      async create(): Promise<ScoringSystem> {
-        return validScoringSystem
-      }
-
-      async getOne(): Promise<ScoringSystem> {
-        return validScoringSystem
-      }
-
-      async update(): Promise<ScoringSystem> {
-        return validScoringSystem
-      }
-
-      async delete(): Promise<ScoringSystem> {
-        return validScoringSystem
-      }
-    }
-
     const scoringSystemRepositoryStub = new ScoringSystemRepositoryStub()
     const sut = new ScoringSystemService(scoringSystemRepositoryStub)
 

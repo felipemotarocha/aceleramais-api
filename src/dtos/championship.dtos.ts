@@ -96,6 +96,7 @@ export interface UpdateChampionshipMongoDto {
     team?: string
     isRegistered: boolean
   }[]
+  scoringSystem: string
   teams: string[]
   bonifications: string[]
   penalties: string[]
