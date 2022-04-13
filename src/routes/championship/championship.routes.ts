@@ -14,6 +14,12 @@ const championshipRoutes = (router: Router): void => {
     adaptRoute(makeChampionshipController(), 'create')
   )
 
+  router.put(
+    '/championship/:id',
+    upload.single('avatarImage'),
+    adaptRoute(makeChampionshipController(), 'update')
+  )
+
   router.get(
     '/championship',
     adaptRoute(makeChampionshipController(), 'getAll')
