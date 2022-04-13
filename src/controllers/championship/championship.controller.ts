@@ -19,6 +19,7 @@ export interface ChampionshipControllerAbstract {
   create(httpRequest: HttpRequest): Promise<HttpResponse>
   getOne(httpRequest: HttpRequest): Promise<HttpResponse>
   getAll(httpRequest: HttpRequest): Promise<HttpResponse>
+  update(httpRequest: HttpRequest): Promise<HttpResponse>
 }
 
 export class ChampionshipController implements ChampionshipControllerAbstract {

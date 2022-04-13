@@ -1,3 +1,4 @@
+import { UpdateChampionshipDto } from '../../dtos/championship.dtos'
 import Championship from '../../entities/championship.entity'
 import {
   InvalidFieldError,
@@ -39,6 +40,8 @@ describe('Championship Controller', () => {
 
   interface SutTypes {
     championshipServicestub: ChampionshipServiceAbstract
+    teamStandingsServiceStub: TeamStandingsServiceStub
+    driverStandingsServiceStub: DriverStandingsServiceStub
     sut: ChampionshipControllerAbstract
   }
 
@@ -77,7 +80,12 @@ describe('Championship Controller', () => {
       teamStandingsServiceStub
     )
 
-    return { sut, championshipServicestub }
+    return {
+      sut,
+      championshipServicestub,
+      driverStandingsServiceStub,
+      teamStandingsServiceStub
+    }
   }
 
   it('should return 201 on creation success', async () => {
@@ -482,6 +490,40 @@ describe('Championship Controller', () => {
 
     expect(result.statusCode).toBe(500)
     expect(result.body).toStrictEqual(new ServerError())
+  })
+
+  it('should update a Championship', async () => {
+    const { sut, driverStandingsServiceStub, teamStandingsServiceStub } =
+      makeSut()
+
+    const refreshDriverStandingsSpy = jest.spyOn(
+      driverStandingsServiceStub,
+      'refresh'
+    )
+    const refreshTeamStandingsSpy = jest.spyOn(
+      teamStandingsServiceStub,
+      'refresh'
+    )
+
+    const dto: UpdateChampionshipDto = {
+      teams: [{ name: 'valid_name', color: 'valid_color', id: 'valid_id' }],
+      drivers: [{ user: 'valid_user', isRegistered: true }],
+      penalties: [{ name: 'valid_penalty', points: 1, race: 'valid_race' }],
+      bonifications: [
+        { name: 'valid_bonification', points: 1, race: 'valid_race' }
+      ],
+      scoringSystem: { 1: 25, 2: 20 }
+    }
+
+    const result = await sut.update({
+      params: { id: validChampionship.id },
+      body: { data: JSON.stringify(dto) }
+    })
+
+    expect(result.statusCode).toBe(200)
+
+    expect(refreshDriverStandingsSpy).toHaveBeenCalledWith(validChampionship.id)
+    expect(refreshTeamStandingsSpy).toHaveBeenCalledWith(validChampionship.id)
   })
 
   it('should return 200 on getting a Championship by ID', async () => {
