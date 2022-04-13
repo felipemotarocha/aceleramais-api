@@ -383,6 +383,46 @@ describe('Championship Service', () => {
     expect(result).toStrictEqual(validChampionship)
   })
 
+  it('should update a Championship', async () => {
+    const { sut } = makeSut()
+
+    const prepareToUpdateSpy = jest.spyOn(sut, 'prepareToUpdate')
+    const createDriversAndTeamsSpy = jest.spyOn(
+      sut,
+      'createDriversAndTeams' as any
+    )
+    const createPenaltiesAndBonificationsSpy = jest.spyOn(
+      sut,
+      'createPenaltiesAndBonifications' as any
+    )
+
+    const result = await sut.update(validChampionship.id, {
+      bonifications: [
+        { name: 'valid_bonification', points: 1, race: 'valid_race' }
+      ],
+      drivers: [{ isRegistered: true, team: '1', user: 'valid_user' }],
+      penalties: [{ name: 'valid_penalty', points: 1, race: 'valid_race' }],
+      teams: [{ id: '1', name: 'Mercedes', color: 'color' }],
+      scoringSystem: { 1: 25 }
+    })
+
+    expect(prepareToUpdateSpy).toHaveBeenCalledWith(validChampionship.id)
+    expect(createDriversAndTeamsSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      drivers: [{ isRegistered: true, team: '1', user: 'valid_user' }],
+      teams: [{ id: '1', name: 'Mercedes', color: 'color' }]
+    })
+    expect(createPenaltiesAndBonificationsSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      penalties: [{ name: 'valid_penalty', points: 1, race: 'valid_race' }],
+      bonifications: [
+        { name: 'valid_bonification', points: 1, race: 'valid_race' }
+      ]
+    })
+
+    expect(result).toStrictEqual(validChampionship)
+  })
+
   it('should get a Championship by ID', async () => {
     const { sut } = makeSut()
 
