@@ -1,5 +1,4 @@
 import { ChampionshipController } from '../controllers/championship/championship.controller'
-import BonificationModel from '../models/bonification.model'
 
 // Models
 import ChampionshipModel from '../models/championship.model'
@@ -10,6 +9,7 @@ import RaceModel from '../models/race.model'
 import ScoringSystemModel from '../models/scoring-system.model'
 import TeamStandingsModel from '../models/team-standings.model'
 import TeamModel from '../models/team.model'
+import BonificationModel from '../models/bonification.model'
 
 // Repositories
 import { MongoChampionshipRepository } from '../repositories/championship/championship.repository'
@@ -21,10 +21,14 @@ import { MongoScoringSystemRepository } from '../repositories/scoring-system/sco
 import { MongoTeamStandingsRepository } from '../repositories/team-standings/team-standings.repository'
 import { MongoTeamRepository } from '../repositories/team/team.repository'
 import { MongoBonificationRepository } from '../repositories/bonification/bonification.repository'
+import { S3Repository } from '../repositories/s3/s3.repository'
 
 // Services
 import { ChampionshipService } from '../services/championship/championship.service'
-import { S3Repository } from '../repositories/s3/s3.repository'
+
+// Factories
+import { makeDriverStandingsService } from './driver-standings.factory'
+import { makeTeamStandingsService } from './team-standings.factory'
 
 const makeChampionshipController = (): ChampionshipController => {
   const championshipRepository = new MongoChampionshipRepository(
@@ -64,7 +68,14 @@ const makeChampionshipController = (): ChampionshipController => {
     s3Repository
   )
 
-  return new ChampionshipController(championshipService)
+  const driverStandingsService = makeDriverStandingsService()
+  const teamStandingsService = makeTeamStandingsService()
+
+  return new ChampionshipController(
+    championshipService,
+    driverStandingsService,
+    teamStandingsService
+  )
 }
 
 export default makeChampionshipController

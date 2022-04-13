@@ -1,19 +1,19 @@
-import {
-  InvalidFieldError,
-  MissingParamError
-} from '../../errors/controllers.errors'
+/* eslint-disable no-useless-constructor */
+import { MissingParamError } from '../../errors/controllers.errors'
 import {
   badRequest,
   created,
   ok,
   serverError
 } from '../../helpers/controllers.helpers'
-import DriverHelpers from '../../helpers/driver.helpers'
 import {
   HttpRequest,
   HttpResponse
 } from '../../protocols/controllers.protocols'
 import { ChampionshipServiceAbstract } from '../../services/championship/championship.service'
+import { DriverStandingsServiceAbstract } from '../../services/driver-standings/driver-standings.service'
+import { TeamStandingsServiceAbstract } from '../../services/team-standings/team-standings.service'
+import ChampionshipControllerHelper from './championship.controller.helpers'
 
 export interface ChampionshipControllerAbstract {
   create(httpRequest: HttpRequest): Promise<HttpResponse>
@@ -22,62 +22,22 @@ export interface ChampionshipControllerAbstract {
 }
 
 export class ChampionshipController implements ChampionshipControllerAbstract {
-  private readonly championshipService: ChampionshipServiceAbstract
-
-  constructor(championshipService: ChampionshipServiceAbstract) {
-    this.championshipService = championshipService
-  }
+  constructor(
+    private readonly championshipService: ChampionshipServiceAbstract,
+    private readonly driverStandingsService: DriverStandingsServiceAbstract,
+    private readonly teamStandingsService: TeamStandingsServiceAbstract
+  ) {}
 
   async create(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const body = JSON.parse(httpRequest.body.data)
 
-      const requiredFields = ['name', 'platform', 'races', 'scoringSystem']
+      const errorResponse = ChampionshipControllerHelper.validateDto({
+        dto: body,
+        requiredFields: ['name', 'platform', 'races', 'scoringSystem']
+      })
 
-      for (const field of requiredFields) {
-        if (!body[field]) {
-          return badRequest(new MissingParamError(field))
-        }
-      }
-
-      const someRaceIsInvalid = body.races.some(
-        (race) => !race.track || !race.startDate
-      )
-
-      if (someRaceIsInvalid) {
-        return badRequest(new InvalidFieldError('races'))
-      }
-
-      const someScoringSystemIsInvalid = Object.keys(body.scoringSystem).some(
-        (key) => {
-          return (
-            ![...Array(50).keys()].includes(parseInt(key)) ||
-            typeof body.scoringSystem[key] !== 'number'
-          )
-        }
-      )
-
-      if (someScoringSystemIsInvalid) {
-        return badRequest(new InvalidFieldError('scoringSystem'))
-      }
-
-      if (body.teams) {
-        const someTeamIsInvalid = body.teams.some((team) => !team.name)
-
-        if (someTeamIsInvalid) {
-          return badRequest(new InvalidFieldError('teams'))
-        }
-      }
-
-      if (body.drivers) {
-        const someDriverIsInvalid = DriverHelpers.verifyIfAreInvalid(
-          body.drivers
-        )
-
-        if (someDriverIsInvalid) {
-          return badRequest(new InvalidFieldError('drivers'))
-        }
-      }
+      if (errorResponse) return errorResponse
 
       const championship = await this.championshipService.create({
         createChampionshipDto: { ...body, avatarImage: httpRequest.file }
@@ -85,6 +45,42 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
 
       return created(championship)
     } catch (error) {
+      return serverError()
+    }
+  }
+
+  async update(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      if (!httpRequest.params?.id) {
+        return badRequest(new MissingParamError('id'))
+      }
+
+      const body = JSON.parse(httpRequest.body.data)
+
+      const errorResponse = ChampionshipControllerHelper.validateDto({
+        dto: body,
+        requiredFields: [
+          'scoringSystem',
+          'drivers',
+          'teams',
+          'bonifications',
+          'penalties'
+        ]
+      })
+
+      if (errorResponse) return errorResponse
+
+      const championship = await this.championshipService.update(
+        httpRequest.params.id,
+        body
+      )
+
+      await this.driverStandingsService.refresh(httpRequest.params.id)
+      await this.teamStandingsService.refresh(httpRequest.params.id)
+
+      return ok(championship)
+    } catch (error) {
+      console.log({ error })
       return serverError()
     }
   }
