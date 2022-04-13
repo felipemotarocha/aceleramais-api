@@ -415,7 +415,8 @@ describe('Championship Service', () => {
       teamRepositoryStub,
       bonificationRepositoryStub,
       penaltyRepositoryStub,
-      championshipRepositoryStub
+      championshipRepositoryStub,
+      scoringSystemRepositoryStub
     } = makeSut()
 
     const bulkDeleteTeamsSpy = jest.spyOn(teamRepositoryStub, 'bulkDelete')
@@ -426,6 +427,10 @@ describe('Championship Service', () => {
     const bulkDeletePenaltiesSpy = jest.spyOn(
       penaltyRepositoryStub,
       'bulkDelete'
+    )
+    const bulkDeleteScoringSystemSpy = jest.spyOn(
+      scoringSystemRepositoryStub,
+      'delete'
     )
     const bulkUpdateChampionshipSpy = jest.spyOn(
       championshipRepositoryStub,
@@ -441,13 +446,17 @@ describe('Championship Service', () => {
     expect(bulkDeletePenaltiesSpy).toHaveBeenCalledWith(
       validChampionship.penalties
     )
+    expect(bulkDeleteScoringSystemSpy).toHaveBeenCalledWith(
+      validChampionship.scoringSystem
+    )
     expect(bulkUpdateChampionshipSpy).toHaveBeenCalledWith(
       validChampionship.id,
       {
         drivers: [],
         teams: [],
         penalties: [],
-        bonifications: []
+        bonifications: [],
+        scoringSystem: validChampionship.scoringSystem
       }
     )
   })
