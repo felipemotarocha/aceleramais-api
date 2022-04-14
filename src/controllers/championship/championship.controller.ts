@@ -65,7 +65,8 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
           'drivers',
           'teams',
           'bonifications',
-          'penalties'
+          'penalties',
+          'races'
         ]
       })
 
