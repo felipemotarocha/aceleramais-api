@@ -41,7 +41,7 @@ describe('Championship Routes', () => {
       .expect(201)
   })
 
-  it('should return a Championship on creation success', async () => {
+  it('should update a Championship', async () => {
     const data = {
       description: 'valid_description',
       name: 'valid_name',

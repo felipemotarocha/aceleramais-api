@@ -518,7 +518,8 @@ describe('Championship Controller', () => {
       bonifications: [
         { name: 'valid_bonification', points: 1, race: 'valid_race' }
       ],
-      scoringSystem: { 1: 25, 2: 20 }
+      scoringSystem: { 1: 25, 2: 20 },
+      races: []
     }
 
     const result = await sut.update({

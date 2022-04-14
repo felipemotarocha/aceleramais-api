@@ -41,7 +41,7 @@ export interface ChampionshipServiceAbstract {
     id: string,
     updateChampionshipDto: UpdateChampionshipDto
   ): Promise<Championship>
-  prepareToUpdate(championship: string): Promise<void>
+  prepareToUpdate(championship: Championship): Promise<void>
   updateRaces(
     championship: string,
     races: UpdateChampionshipDto['races']
@@ -254,18 +254,15 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     return championship
   }
 
-  async prepareToUpdate(championship: string) {
-    const { teams, bonifications, penalties, scoringSystem } =
-      await this.championshipRepository.getOne({
-        id: championship
-      })
+  async prepareToUpdate(championship: Championship) {
+    const { teams, bonifications, penalties, scoringSystem } = championship
 
     await this.teamRepository.bulkDelete(teams as string[])
     await this.bonificationRepository.bulkDelete(bonifications as string[])
     await this.penaltyRepository.bulkDelete(penalties as string[])
     await this.scoringSystemRepository.delete(scoringSystem as string)
 
-    await this.championshipRepository.update(championship, {
+    await this.championshipRepository.update(championship.id, {
       drivers: [],
       bonifications: [],
       penalties: [],
@@ -304,7 +301,9 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     id: string,
     updateChampionshipDto: UpdateChampionshipDto
   ): Promise<Championship> {
-    await this.prepareToUpdate(id)
+    const championship = await this.championshipRepository.getOne({ id })
+
+    await this.prepareToUpdate(championship)
 
     const { drivers, teams } = await this.createDriversAndTeams({
       championship: id,
@@ -323,14 +322,18 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       scoringSystem: updateChampionshipDto.scoringSystem
     })
 
-    const updatedRaces = await (
-      await this.updateRaces(id, updateChampionshipDto.races)
-    ).map((race) => race.id!)
+    let races = championship.races as string[]
+
+    if (updateChampionshipDto.races) {
+      races = await (
+        await this.updateRaces(id, updateChampionshipDto.races)
+      ).map((race) => race.id!)
+    }
 
     // eslint-disable-next-line no-undef-init
-    let avatarImageUrl: string | undefined = undefined
+    let avatarImageUrl: string | undefined = championship?.avatarImageUrl
 
-    if (updateChampionshipDto) {
+    if (updateChampionshipDto.avatarImage) {
       avatarImageUrl = await this.s3Repository.uploadImage({
         folderName: 'championship-images',
         fileName: id,
@@ -345,7 +348,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       teams: teams.map((item) => item.id),
       bonifications: bonifications.map((item) => item.id),
       penalties: penalties.map((item) => item.id),
-      races: updatedRaces,
+      races,
       avatarImageUrl
     })
   }

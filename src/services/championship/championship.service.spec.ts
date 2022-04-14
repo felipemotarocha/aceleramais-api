@@ -411,7 +411,7 @@ describe('Championship Service', () => {
       'update'
     )
 
-    await sut.prepareToUpdate(validChampionship.id)
+    await sut.prepareToUpdate(validChampionship)
 
     expect(bulkDeleteTeamsSpy).toHaveBeenCalledWith(validChampionship.teams)
     expect(bulkDeleteBonificationsSpy).toHaveBeenCalledWith(
@@ -491,7 +491,7 @@ describe('Championship Service', () => {
       ]
     })
 
-    expect(prepareToUpdateSpy).toHaveBeenCalledWith(validChampionship.id)
+    expect(prepareToUpdateSpy).toHaveBeenCalledWith(validChampionship)
     expect(createDriversAndTeamsSpy).toHaveBeenCalledWith({
       championship: validChampionship.id,
       drivers: [{ isRegistered: true, team: '1', user: 'valid_user' }],
