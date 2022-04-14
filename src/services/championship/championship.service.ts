@@ -327,6 +327,17 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       await this.updateRaces(id, updateChampionshipDto.races)
     ).map((race) => race.id!)
 
+    // eslint-disable-next-line no-undef-init
+    let avatarImageUrl: string | undefined = undefined
+
+    if (updateChampionshipDto) {
+      avatarImageUrl = await this.s3Repository.uploadImage({
+        folderName: 'championship-images',
+        fileName: id,
+        file: updateChampionshipDto.avatarImage!
+      })
+    }
+
     return await this.championshipRepository.update(id, {
       ...updateChampionshipDto,
       drivers,
@@ -334,7 +345,8 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       teams: teams.map((item) => item.id),
       bonifications: bonifications.map((item) => item.id),
       penalties: penalties.map((item) => item.id),
-      races: updatedRaces
+      races: updatedRaces,
+      avatarImageUrl
     })
   }
 

@@ -73,7 +73,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
 
       const championship = await this.championshipService.update(
         httpRequest.params.id,
-        body
+        { ...body, avatarImage: httpRequest.file }
       )
 
       await this.driverStandingsService.refresh(httpRequest.params.id)

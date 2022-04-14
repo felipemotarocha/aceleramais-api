@@ -95,6 +95,8 @@ export interface UpdateChampionshipDto {
   scoringSystem: {
     [key: string]: number
   }
+  avatarImage?: Express.Multer.File
+  avatarImageUrl?: string
 }
 
 export interface UpdateChampionshipMongoDto {
@@ -109,4 +111,5 @@ export interface UpdateChampionshipMongoDto {
   teams: string[]
   bonifications: string[]
   penalties: string[]
+  avatarImageUrl?: string
 }
