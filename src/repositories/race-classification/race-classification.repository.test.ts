@@ -153,4 +153,14 @@ describe('Mongo Race Classification Repository', () => {
       dto.classification[0].hasPolePosition
     )
   })
+
+  it('should bulk delete Race Classifications', async () => {
+    const sut = makeSut()
+
+    const raceClassification = await sut.create(validRaceClassification as any)
+
+    const result = await sut.bulkDelete([raceClassification.id])
+
+    expect(result).toBe(1)
+  })
 })
