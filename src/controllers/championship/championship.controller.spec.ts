@@ -1,5 +1,6 @@
 import { UpdateChampionshipDto } from '../../dtos/championship.dtos'
 import Championship from '../../entities/championship.entity'
+import Race from '../../entities/race.entity'
 import {
   InvalidFieldError,
   MissingParamError,
@@ -7,6 +8,7 @@ import {
 } from '../../errors/controllers.errors'
 import { ChampionshipServiceAbstract } from '../../services/championship/championship.service'
 import DriverStandingsServiceStub from '../../services/driver-standings/driver-standings.service.stub'
+import { validRace } from '../../services/race/race.service.stub'
 import TeamStandingsServiceStub from '../../services/team-standings/team-standings.service.stub'
 import {
   ChampionshipControllerAbstract,
@@ -64,6 +66,10 @@ describe('Championship Controller', () => {
       }
 
       async prepareToUpdate(): Promise<void> {}
+
+      async updateRaces(): Promise<Race[]> {
+        return [validRace]
+      }
 
       async delete(): Promise<Championship> {
         return validChampionship

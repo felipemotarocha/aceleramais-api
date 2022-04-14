@@ -8,6 +8,7 @@ import { CreateTeamDto } from '../../dtos/team.dtos'
 import Bonification from '../../entities/bonification.entity'
 import Championship from '../../entities/championship.entity'
 import Penalty from '../../entities/penalty.entity'
+import Race from '../../entities/race.entity'
 import Team from '../../entities/team.entity'
 import { BonificationRepositoryAbstract } from '../../repositories/bonification/bonification.repository'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
@@ -40,7 +41,11 @@ export interface ChampionshipServiceAbstract {
     id: string,
     updateChampionshipDto: UpdateChampionshipDto
   ): Promise<Championship>
-  prepareToUpdate(championship): Promise<void>
+  prepareToUpdate(championship: string): Promise<void>
+  updateRaces(
+    championship: string,
+    races: UpdateChampionshipDto['races']
+  ): Promise<Race[]>
 }
 
 export class ChampionshipService implements ChampionshipServiceAbstract {
@@ -150,6 +155,32 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     return { penalties: _penalties, bonifications: _bonifications }
   }
 
+  async createRaces(
+    championship: string,
+    races: CreateChampionshipDto['races']
+  ): Promise<Race[]> {
+    const _races: Race[] = []
+
+    for (const race of races) {
+      const raceId = new Types.ObjectId()
+
+      const raceClassification = await this.raceClassificationRepository.create(
+        { race: raceId as any, classification: [] }
+      )
+      const result = await this.raceRepository.create({
+        _id: raceId as any,
+        championship,
+        classification: raceClassification.id,
+        startDate: race.startDate,
+        track: race.track
+      })
+
+      _races.push(result)
+    }
+
+    return _races
+  }
+
   async create({
     id = new Types.ObjectId() as any,
     createChampionshipDto
@@ -188,24 +219,9 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
         penalties: createChampionshipDto.penalties
       })
 
-    const races: string[] = []
-
-    for (const race of createChampionshipDto.races) {
-      const raceId = new Types.ObjectId()
-
-      const raceClassification = await this.raceClassificationRepository.create(
-        { race: raceId as any, classification: [] }
-      )
-      const result = await this.raceRepository.create({
-        _id: raceId as any,
-        championship: championshipId,
-        classification: raceClassification.id,
-        startDate: race.startDate,
-        track: race.track
-      })
-
-      races.push(result.id)
-    }
+    const races = (
+      await this.createRaces(championshipId, createChampionshipDto.races)
+    ).map((race) => race.id)
 
     // eslint-disable-next-line no-undef-init
     let avatarImageUrl: string | undefined = undefined
@@ -258,6 +274,32 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     })
   }
 
+  async updateRaces(
+    championship: string,
+    races: UpdateChampionshipDto['races']
+  ) {
+    const existingRaces = races!.filter((race) => race.id)
+    const newRaces = races!.filter((race) => !race?.id)
+
+    const championshipRaces = await this.raceRepository.getAll({ championship })
+
+    const racesToDelete = championshipRaces.filter((race) =>
+      existingRaces.every((_race) => _race.id !== race.id)
+    )
+
+    await this.raceRepository.bulkDelete(racesToDelete.map((race) => race.id))
+    await this.raceClassificationRepository.bulkDelete(
+      racesToDelete.map((race) => race.classification)
+    )
+
+    const createdRaces = await this.createRaces(
+      championship,
+      newRaces as CreateChampionshipDto['races']
+    )
+
+    return [...createdRaces, ...existingRaces] as Race[]
+  }
+
   async update(
     id: string,
     updateChampionshipDto: UpdateChampionshipDto
@@ -281,13 +323,18 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       scoringSystem: updateChampionshipDto.scoringSystem
     })
 
+    const updatedRaces = await (
+      await this.updateRaces(id, updateChampionshipDto.races)
+    ).map((race) => race.id!)
+
     return await this.championshipRepository.update(id, {
       ...updateChampionshipDto,
       drivers,
       scoringSystem: scoringSystem.id,
       teams: teams.map((item) => item.id),
       bonifications: bonifications.map((item) => item.id),
-      penalties: penalties.map((item) => item.id)
+      penalties: penalties.map((item) => item.id),
+      races: updatedRaces
     })
   }
 

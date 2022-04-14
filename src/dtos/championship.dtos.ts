@@ -66,6 +66,11 @@ export interface CreateChampionshipMongoDto {
 }
 
 export interface UpdateChampionshipDto {
+  races?: {
+    id?: string
+    startDate: string
+    track: string
+  }[]
   drivers: {
     user?: string
     userName?: string
@@ -99,6 +104,7 @@ export interface UpdateChampionshipMongoDto {
     team?: string
     isRegistered: boolean
   }[]
+  races?: string[]
   scoringSystem: string
   teams: string[]
   bonifications: string[]
