@@ -3,6 +3,7 @@ import Race from '../../entities/race.entity'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
 import { RaceClassificationRepositoryStub } from '../../repositories/race-classification/race-classification.repository.stub'
 import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
+import { RaceRepositoryStub } from '../../repositories/race/race.repository.stub'
 import RaceService, { RaceServiceAbstract } from './race.service'
 
 describe('Race Service', () => {
@@ -37,24 +38,6 @@ describe('Race Service', () => {
   }
 
   const makeSut = (): SutTypes => {
-    class RaceRepositoryStub implements RaceRepositoryAbstract {
-      async create(): Promise<Race> {
-        return validRace
-      }
-
-      async getOne(): Promise<Race> {
-        return validRace
-      }
-
-      async getAll(): Promise<Race[]> {
-        return [validRace]
-      }
-
-      async update(): Promise<Race> {
-        return validRace
-      }
-    }
-
     const raceRepositoryStub = new RaceRepositoryStub()
     const raceClassificationRepositoryStub =
       new RaceClassificationRepositoryStub()

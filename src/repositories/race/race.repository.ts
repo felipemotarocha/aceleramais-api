@@ -12,6 +12,7 @@ export interface RaceRepositoryAbstract {
   getOne(id: string): Promise<Race>
   getAll(getAllRacesDto: GetAllRacesDto): Promise<Race[]>
   update(id: string, updateRaceDto: UpdateRaceDto): Promise<Race>
+  bulkDelete(ids: string[]): Promise<number>
 }
 
 class MongoRaceRepository implements RaceRepositoryAbstract {
@@ -43,6 +44,12 @@ class MongoRaceRepository implements RaceRepositoryAbstract {
     const race = await this.RaceModel.findByIdAndUpdate(id, updateRaceDto)
 
     return MongooseHelper.map<Race>(race.toJSON())
+  }
+
+  async bulkDelete(ids: string[]): Promise<number> {
+    const { deletedCount } = await this.RaceModel.deleteMany({ _id: ids })
+
+    return deletedCount
   }
 }
 
