@@ -16,6 +16,7 @@ export interface RaceClassificationRepositoryAbstract {
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
   ): Promise<RaceClassification>
+  bulkDelete(ids: string[]): Promise<number>
 }
 
 export class MongoRaceClassificationRepository
@@ -87,5 +88,13 @@ implements RaceClassificationRepositoryAbstract {
       ...MongooseHelper.map<RaceClassification>(raceClassification.toJSON()),
       classification
     }
+  }
+
+  async bulkDelete(ids: string[]): Promise<number> {
+    const { deletedCount } = await this.RaceClassificationModel.deleteMany({
+      _id: ids
+    })
+
+    return deletedCount
   }
 }

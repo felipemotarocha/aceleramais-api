@@ -33,4 +33,8 @@ implements RaceClassificationRepositoryAbstract {
   async update(): Promise<RaceClassification> {
     return validRaceClassification
   }
+
+  async bulkDelete(ids: string[]): Promise<number> {
+    return 1
+  }
 }
