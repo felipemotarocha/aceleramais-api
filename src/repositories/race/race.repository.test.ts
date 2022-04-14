@@ -198,4 +198,22 @@ describe('Mongo Race Repository', () => {
       startDate: dto.startDate
     })
   })
+
+  it('should bulk delete Races', async () => {
+    const sut = makeSut()
+
+    const dto = {
+      id: new Types.ObjectId(),
+      championship: new Types.ObjectId() as any,
+      classification: new Types.ObjectId() as any,
+      track: new Types.ObjectId() as any,
+      startDate: 'valid_start_date'
+    }
+
+    await RaceModel.create([{ _id: dto.id, ...dto }])
+
+    const result = await sut.bulkDelete([dto.id as any])
+
+    expect(result).toBe(1)
+  })
 })
