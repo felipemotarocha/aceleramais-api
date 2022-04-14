@@ -383,72 +383,6 @@ describe('Championship Service', () => {
     expect(result).toStrictEqual(validChampionship)
   })
 
-  it('should update a Championship', async () => {
-    const { sut } = makeSut()
-
-    const prepareToUpdateSpy = jest.spyOn(sut, 'prepareToUpdate')
-    const createDriversAndTeamsSpy = jest.spyOn(
-      sut,
-      'createDriversAndTeams' as any
-    )
-    const createPenaltiesAndBonificationsSpy = jest.spyOn(
-      sut,
-      'createPenaltiesAndBonifications' as any
-    )
-
-    const result = await sut.update(validChampionship.id, {
-      bonifications: [
-        { name: 'valid_bonification', points: 1, race: 'valid_race' }
-      ],
-      drivers: [{ isRegistered: true, team: '1', user: 'valid_user' }],
-      penalties: [{ name: 'valid_penalty', points: 1, race: 'valid_race' }],
-      teams: [{ id: '1', name: 'Mercedes', color: 'color' }],
-      scoringSystem: { 1: 25 }
-    })
-
-    expect(prepareToUpdateSpy).toHaveBeenCalledWith(validChampionship.id)
-    expect(createDriversAndTeamsSpy).toHaveBeenCalledWith({
-      championship: validChampionship.id,
-      drivers: [{ isRegistered: true, team: '1', user: 'valid_user' }],
-      teams: [{ id: '1', name: 'Mercedes', color: 'color' }]
-    })
-    expect(createPenaltiesAndBonificationsSpy).toHaveBeenCalledWith({
-      championship: validChampionship.id,
-      penalties: [{ name: 'valid_penalty', points: 1, race: 'valid_race' }],
-      bonifications: [
-        { name: 'valid_bonification', points: 1, race: 'valid_race' }
-      ]
-    })
-
-    expect(result).toStrictEqual(validChampionship)
-  })
-
-  it('should get a Championship by ID', async () => {
-    const { sut } = makeSut()
-
-    jest.setTimeout(10000)
-
-    const result = await sut.getOne({ id: 'valid_id' })
-
-    expect(result).toStrictEqual(validChampionship)
-  })
-
-  it('should get Championships by Driver', async () => {
-    const { sut } = makeSut()
-
-    const result = await sut.getAll({ driver: 'valid_user' })
-
-    expect(result).toStrictEqual([validChampionship])
-  })
-
-  it('should get Championships by Admin', async () => {
-    const { sut } = makeSut()
-
-    const result = await sut.getAll({ admin: 'valid_user' })
-
-    expect(result).toStrictEqual([validChampionship])
-  })
-
   it('should prepare to update', async () => {
     const {
       sut,
@@ -499,5 +433,108 @@ describe('Championship Service', () => {
         scoringSystem: validChampionship.scoringSystem
       }
     )
+  })
+
+  it('should update races', async () => {
+    const { sut, raceRepositoryStub, raceClassificationRepositoryStub } =
+      makeSut()
+
+    const raceRepositoryBulkDeleteSpy = jest.spyOn(
+      raceRepositoryStub,
+      'bulkDelete'
+    )
+    const raceClassificationRepositoryBulkDeleteSpy = jest.spyOn(
+      raceClassificationRepositoryStub,
+      'bulkDelete'
+    )
+    const createRacesSpy = jest.spyOn(sut, 'createRaces' as any)
+
+    await sut.updateRaces(validChampionship.id, [
+      { startDate: 'valid_start_date', track: 'valid_track', id: 'valid_race' },
+      { startDate: 'valid_start_date', track: 'valid_track' }
+    ])
+
+    expect(raceRepositoryBulkDeleteSpy).toHaveBeenCalledWith(['valid_id'])
+    expect(raceClassificationRepositoryBulkDeleteSpy).toHaveBeenCalledWith([
+      'valid_classification_id'
+    ])
+    expect(createRacesSpy).toHaveBeenCalledWith(validChampionship.id, [
+      { startDate: 'valid_start_date', track: 'valid_track' }
+    ])
+  })
+
+  it('should update a Championship', async () => {
+    const { sut } = makeSut()
+
+    const prepareToUpdateSpy = jest.spyOn(sut, 'prepareToUpdate')
+    const createDriversAndTeamsSpy = jest.spyOn(
+      sut,
+      'createDriversAndTeams' as any
+    )
+    const createPenaltiesAndBonificationsSpy = jest.spyOn(
+      sut,
+      'createPenaltiesAndBonifications' as any
+    )
+    const updateRacesSpy = jest.spyOn(sut, 'updateRaces' as any)
+
+    const result = await sut.update(validChampionship.id, {
+      bonifications: [
+        { name: 'valid_bonification', points: 1, race: 'valid_race' }
+      ],
+      drivers: [{ isRegistered: true, team: '1', user: 'valid_user' }],
+      penalties: [{ name: 'valid_penalty', points: 1, race: 'valid_race' }],
+      teams: [{ id: '1', name: 'Mercedes', color: 'color' }],
+      scoringSystem: { 1: 25 },
+      races: [
+        { startDate: 'valid_start_date', track: 'valid_track', id: 'valid_id' },
+        { startDate: 'valid_start_date', track: 'valid_track' }
+      ]
+    })
+
+    expect(prepareToUpdateSpy).toHaveBeenCalledWith(validChampionship.id)
+    expect(createDriversAndTeamsSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      drivers: [{ isRegistered: true, team: '1', user: 'valid_user' }],
+      teams: [{ id: '1', name: 'Mercedes', color: 'color' }]
+    })
+    expect(createPenaltiesAndBonificationsSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      penalties: [{ name: 'valid_penalty', points: 1, race: 'valid_race' }],
+      bonifications: [
+        { name: 'valid_bonification', points: 1, race: 'valid_race' }
+      ]
+    })
+    expect(updateRacesSpy).toHaveBeenCalledWith(validChampionship.id, [
+      { startDate: 'valid_start_date', track: 'valid_track', id: 'valid_id' },
+      { startDate: 'valid_start_date', track: 'valid_track' }
+    ])
+
+    expect(result).toStrictEqual(validChampionship)
+  })
+
+  it('should get a Championship by ID', async () => {
+    const { sut } = makeSut()
+
+    jest.setTimeout(10000)
+
+    const result = await sut.getOne({ id: 'valid_id' })
+
+    expect(result).toStrictEqual(validChampionship)
+  })
+
+  it('should get Championships by Driver', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ driver: 'valid_user' })
+
+    expect(result).toStrictEqual([validChampionship])
+  })
+
+  it('should get Championships by Admin', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ admin: 'valid_user' })
+
+    expect(result).toStrictEqual([validChampionship])
   })
 })
