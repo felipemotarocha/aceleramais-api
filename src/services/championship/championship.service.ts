@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-constructor */
-import { Types } from 'mongoose'
+import { isValidObjectId, Types } from 'mongoose'
 import {
   CreateChampionshipDto,
   UpdateChampionshipDto
@@ -93,7 +93,9 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       const bulkCreatePayload: CreateTeamDto[] = []
 
       for (const team of teams) {
-        const id = new Types.ObjectId()
+        const isBeingUpdated = isValidObjectId(team.id)
+
+        const id = isBeingUpdated ? team.id : new Types.ObjectId()
 
         if (driversPerTeam[team.id]) {
           driversPerTeam[team.id] = id
@@ -142,19 +144,43 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
 
     if (bonifications) {
       _bonifications = await this.bonificationRepository.bulkCreate(
-        bonifications.map((item) => ({
-          ...item,
-          championship: championship
-        }))
+        bonifications.map((item) => {
+          const isBeingUpdated = isValidObjectId((item as any)?.id)
+
+          if (isBeingUpdated) {
+            return {
+              ...item,
+              _id: (item as any).id,
+              championship: championship
+            }
+          }
+
+          return {
+            ...item,
+            championship: championship
+          }
+        })
       )
     }
 
     if (penalties) {
       _penalties = await this.penaltyRepository.bulkCreate(
-        penalties.map((item) => ({
-          ...item,
-          championship: championship
-        }))
+        penalties.map((item) => {
+          const isBeingUpdated = isValidObjectId((item as any)?.id)
+
+          if (isBeingUpdated) {
+            return {
+              ...item,
+              _id: (item as any).id,
+              championship: championship
+            }
+          }
+
+          return {
+            ...item,
+            championship: championship
+          }
+        })
       )
     }
 
@@ -348,7 +374,6 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     }
 
     return await this.championshipRepository.update(id, {
-      ...updateChampionshipDto,
       drivers,
       scoringSystem: scoringSystem.id,
       teams: teams.map((item) => item.id),
