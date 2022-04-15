@@ -5,12 +5,19 @@ import {
 import Championship from '../../entities/championship.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import ChampionshipModel from '../../models/championship.model'
+import ChampionshipRepositoryHelpers from './championship.repository.helpers'
 
 export interface ChampionshipRepositoryAbstract {
   create(
     createChampionshipDto: CreateChampionshipMongoDto
   ): Promise<Championship>
-  getOne({ id }: { id: string }): Promise<Championship>
+  getOne({
+    id,
+    fullPopulate
+  }: {
+    id: string
+    fullPopulate?: boolean
+  }): Promise<Championship>
   getAll({
     driver,
     admin
@@ -42,22 +49,18 @@ implements ChampionshipRepositoryAbstract {
     return MongooseHelper.map<Championship>(championship.toJSON())
   }
 
-  async getOne({ id }: { id: string }): Promise<Championship> {
-    const championship = await this.championshipModel.findById(id).populate([
-      {
-        path: 'driverStandings',
-        select: 'standings',
-        perDocumentLimit: 2
-      },
-      {
-        path: 'teamStandings',
-        select: 'standings'
-      },
-      {
-        path: 'nextRaces',
-        select: ['_id', 'track', 'startDate', '-championship']
-      }
-    ])
+  async getOne({
+    id,
+    fullPopulate
+  }: {
+    id: string
+    fullPopulate?: boolean
+  }): Promise<Championship> {
+    const championship = await this.championshipModel
+      .findById(id)
+      .populate(
+        ChampionshipRepositoryHelpers.handlePopulate(fullPopulate || false)
+      )
 
     const _championship = championship.toJSON()
 

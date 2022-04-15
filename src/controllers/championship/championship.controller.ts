@@ -97,7 +97,8 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       }
 
       const championship = await this.championshipService.getOne({
-        id: httpRequest.params.id
+        id: httpRequest.params.id,
+        fullPopulate: Boolean(httpRequest?.query?.full_populate)
       })
 
       return ok(championship)
