@@ -15,5 +15,6 @@
   "transform": {
     ".+\\.ts$": "ts-jest"
   },
-  "watchPathIgnorePatterns": ["globalConfig"]
+  "watchPathIgnorePatterns": ["globalConfig", "<rootDir>/dist/"],
+  "testPathIgnorePatterns": ["<rootDir>/dist/"]
 }
