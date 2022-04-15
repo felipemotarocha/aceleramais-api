@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "sucrase-node src/server.ts --respawn",
-    "start:dev": "ts-node-dev src/server.ts --respawn --inspect",
+    "start:dev": "ts-node-dev src/server.ts --respawn --inspect=4321",
     "test": "jest --passWithNoTests --runInBand",
     "test:watch": "jest --passWithNoTests --runInBand --watch",
     "test:staged": "yarn test",

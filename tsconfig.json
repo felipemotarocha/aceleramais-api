@@ -2,12 +2,14 @@
   "compilerOptions": {
     "outDir": "./dist",
     "module": "CommonJS",
-    "target": "es2019",
+    "target": "ES6",
     "esModuleInterop": true,
     "strictNullChecks": true,
     "sourceMap": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "moduleResolution": "node"
   },
+
   "exclude": ["./node_modules/", "./coverage/"],
-  "include": ["src"]
+  "include": ["src/**/*"]
 }
