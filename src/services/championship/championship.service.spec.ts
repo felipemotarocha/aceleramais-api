@@ -459,7 +459,7 @@ describe('Championship Service', () => {
       'valid_classification_id'
     ])
     expect(createRacesSpy).toHaveBeenCalledWith(validChampionship.id, [
-      { startDate: 'valid_start_date', track: 'valid_track' }
+      { id: 'valid_race', startDate: 'valid_start_date', track: 'valid_track' }
     ])
   })
 
