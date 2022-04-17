@@ -1,7 +1,8 @@
+import { isEmpty } from 'lodash'
+
 import TeamStandings from '../../entities/team-standings.entity'
 import DriverStandings from '../../entities/driver-standings.entity'
 import Team from '../../entities/team.entity'
-
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
 import { TeamStandingsRepositoryAbstract } from '../../repositories/team-standings/team-standings.repository'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
@@ -27,6 +28,12 @@ export class TeamStandingsService implements TeamStandingsServiceAbstract {
     const teamStandings = await this.teamStandingsRepository.getOne({
       championship
     })
+
+    if (isEmpty(driverStandings.standings)) {
+      return await this.teamStandingsRepository.update(teamStandings.id, {
+        standings: []
+      })
+    }
 
     const teams = await (
       await this.championshipRepository.getOne({ id: championship })
