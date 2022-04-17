@@ -307,8 +307,8 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     championship: string,
     races: UpdateChampionshipDto['races']
   ) {
-    const existingRaces = races!.filter((race) => race.id)
-    const newRaces = races!.filter((race) => !race?.id)
+    const existingRaces = races!.filter((race) => isValidObjectId(race.id))
+    const newRaces = races!.filter((race) => !isValidObjectId(race.id))
 
     const championshipRaces = await this.raceRepository.getAll({ championship })
 
