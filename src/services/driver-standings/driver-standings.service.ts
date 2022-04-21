@@ -102,6 +102,8 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
       const raceClassification = raceClassifications[race.id]
 
       for (const classification of raceClassification.classification) {
+        if (!classification.scores) continue
+
         const points = scoringSystem.scoringSystem[classification.position]
 
         const driver = classification.isRegistered
