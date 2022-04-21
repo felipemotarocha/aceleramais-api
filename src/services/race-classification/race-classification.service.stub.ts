@@ -10,6 +10,7 @@ export const validRaceClassification: RaceClassification = {
       user: 'valid_id',
       team: 'valid_id',
       isRegistered: true,
+      isRemoved: false,
       hasFastestLap: true,
       hasPolePosition: true
     }

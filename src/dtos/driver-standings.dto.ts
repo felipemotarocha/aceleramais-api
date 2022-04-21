@@ -8,6 +8,7 @@ export interface CreateDriverStandingsDto {
     position: number
     points: number
     isRegistered: boolean
+    isRemoved: boolean
   }[]
 }
 
@@ -20,5 +21,6 @@ export interface UpdateDriverStandingsDto {
     position: number
     points: number
     isRegistered: boolean
+    isRemoved: boolean
   }[]
 }

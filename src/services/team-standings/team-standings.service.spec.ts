@@ -127,6 +127,7 @@ describe('Team Standings Service', () => {
             firstName: undefined,
             lastName: undefined,
             isRegistered: true,
+            isRemoved: false,
             points: 20,
             team: {
               championship: 'valid_championship',
@@ -140,6 +141,7 @@ describe('Team Standings Service', () => {
             firstName: undefined,
             lastName: undefined,
             isRegistered: true,
+            isRemoved: false,
             points: 16,
             team: {
               championship: 'valid_championship',

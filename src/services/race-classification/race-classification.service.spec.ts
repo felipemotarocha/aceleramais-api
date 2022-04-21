@@ -45,6 +45,7 @@ describe('Race Classification Service', () => {
           user: 'valid_id',
           team: 'valid_id',
           isRegistered: true,
+          isRemoved: false,
           hasFastestLap: true,
           hasPolePosition: true
         }
@@ -75,6 +76,7 @@ describe('Race Classification Service', () => {
           user: 'valid_id',
           team: 'valid_id',
           isRegistered: true,
+          isRemoved: false,
           hasFastestLap: true,
           hasPolePosition: true
         }
@@ -145,9 +147,14 @@ describe('Race Classification Service', () => {
         ...validChampionship,
         drivers: [
           {
-            user: 'valid_user',
-            team: 'valid_team',
+            user: {
+              id: 'valid_user'
+            },
+            team: {
+              id: 'valid_team'
+            },
             isRegistered: true,
+            isRemoved: false,
             bonifications: [],
             penalties: []
           },
@@ -156,12 +163,15 @@ describe('Race Classification Service', () => {
             firstName: 'Max',
             lastName: 'Verstappen',
             isRegistered: false,
-            team: 'valid_team',
+            isRemoved: false,
+            team: {
+              id: 'valid_team'
+            },
             bonifications: [],
             penalties: []
           }
         ]
-      })
+      } as any)
     )
 
     jest.spyOn(raceClassificationRepositoryStub, 'getAll').mockReturnValueOnce(
@@ -171,9 +181,14 @@ describe('Race Classification Service', () => {
           classification: [
             {
               position: 1,
-              user: 'valid_user',
-              team: 'valid_team_2',
+              user: {
+                id: 'valid_user'
+              },
+              team: {
+                id: 'valid_team_2'
+              },
               isRegistered: true,
+              isRemoved: false,
               hasFastestLap: false,
               hasPolePosition: false
             },
@@ -183,13 +198,16 @@ describe('Race Classification Service', () => {
               firstName: 'Max',
               lastName: 'Verstappen',
               isRegistered: false,
-              team: 'valid_team_2',
+              isRemoved: false,
+              team: {
+                id: 'valid_team_2'
+              },
               hasFastestLap: false,
               hasPolePosition: false
             }
           ]
         }
-      ])
+      ] as any)
     )
 
     const updateSpy = jest.spyOn(sut, 'update')
@@ -203,6 +221,7 @@ describe('Race Classification Service', () => {
           user: 'valid_user',
           team: 'valid_team',
           isRegistered: true,
+          isRemoved: false,
           hasFastestLap: false,
           hasPolePosition: false
         },
@@ -212,6 +231,7 @@ describe('Race Classification Service', () => {
           firstName: 'Max',
           lastName: 'Verstappen',
           isRegistered: false,
+          isRemoved: false,
           team: 'valid_team',
           hasFastestLap: false,
           hasPolePosition: false

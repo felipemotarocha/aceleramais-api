@@ -8,6 +8,7 @@ export const validDriverStandings = {
     {
       user: 'valid_user',
       isRegistered: true,
+      isRemoved: false,
       position: 1,
       points: 25
     }

@@ -22,6 +22,7 @@ export interface ChampionshipDriver {
     penalty: string | Penalty
     race: string
   }[]
+  isRemoved: boolean
 }
 
 export interface ChampionshipAdmin {

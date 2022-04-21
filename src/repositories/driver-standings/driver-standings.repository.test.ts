@@ -27,6 +27,7 @@ describe('Mongo Driver Standings Repository', () => {
       {
         user: validUser.id,
         isRegistered: true,
+        isRemoved: false,
         position: 1,
         points: 10
       }
@@ -60,6 +61,7 @@ describe('Mongo Driver Standings Repository', () => {
         {
           user: validUser.id,
           isRegistered: true,
+          isRemoved: false,
           position: 1,
           points: 10
         }
@@ -86,6 +88,7 @@ describe('Mongo Driver Standings Repository', () => {
         {
           user: validUser.id,
           isRegistered: true,
+          isRemoved: false,
           position: 1,
           points: 10
         }
@@ -158,6 +161,7 @@ describe('Mongo Driver Standings Repository', () => {
           firstName: 'Max',
           lastName: 'Verstappen',
           isRegistered: false,
+          isRemoved: false,
           position: 1,
           points: 10
         }
@@ -172,6 +176,7 @@ describe('Mongo Driver Standings Repository', () => {
         firstName: 'Max',
         lastName: 'Verstappen',
         isRegistered: false,
+        isRemoved: false,
         position: 1,
         points: 10
       }
@@ -197,6 +202,7 @@ describe('Mongo Driver Standings Repository', () => {
           firstName: 'Max',
           lastName: 'Verstappen',
           isRegistered: false,
+          isRemoved: false,
           position: 1,
           points: 10
         }

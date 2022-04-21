@@ -10,7 +10,13 @@ export const validChampionship: Championship = {
   races: ['valid_race'],
   teams: ['valid_team'],
   drivers: [
-    { user: 'valid_user', isRegistered: true, penalties: [], bonifications: [] }
+    {
+      user: 'valid_user',
+      isRegistered: true,
+      isRemoved: false,
+      penalties: [],
+      bonifications: []
+    }
   ],
   admins: [],
   scoringSystem: 'valid_scoring_system',

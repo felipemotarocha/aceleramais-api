@@ -21,6 +21,7 @@ describe('Mongo Race Classification Repository', () => {
         user: 'valid_user',
         team: new Types.ObjectId() as any,
         isRegistered: true,
+        isRemoved: false,
         hasFastestLap: true,
         hasPolePosition: true
       }
@@ -128,6 +129,7 @@ describe('Mongo Race Classification Repository', () => {
           user: 'valid_user',
           team: new Types.ObjectId() as any,
           isRegistered: true,
+          isRemoved: false,
           hasFastestLap: false,
           hasPolePosition: false
         }

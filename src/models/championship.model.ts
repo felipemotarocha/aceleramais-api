@@ -88,6 +88,10 @@ const driversSchema = new Schema(
       type: Boolean,
       required: true
     },
+    isRemoved: {
+      type: Boolean,
+      required: true
+    },
     bonifications: {
       type: [driverBonificationSchema],
       required: false

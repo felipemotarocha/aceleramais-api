@@ -9,7 +9,8 @@ const raceClassification = [
         position: 1,
         user: 'ohYViVrxyCakFXTrUdlS981v8Pf2',
         team: new ObjectID('6259bf61c5112dc1e32a1e35'),
-        isRegistered: true
+        isRegistered: true,
+        isRemoved: false
       },
       {
         position: 2,
@@ -17,7 +18,8 @@ const raceClassification = [
         firstName: 'Carlos',
         lastName: 'Sainz',
         team: new ObjectID('6259bf61c5112dc1e32a1e35'),
-        isRegistered: false
+        isRegistered: false,
+        isRemoved: false
       },
       {
         position: 3,
@@ -25,7 +27,8 @@ const raceClassification = [
         firstName: 'Max',
         lastName: 'Verstappen',
         team: new ObjectID('6259bf61c5112dc1e32a1e36'),
-        isRegistered: false
+        isRegistered: false,
+        isRemoved: false
       },
       {
         position: 4,
@@ -33,7 +36,8 @@ const raceClassification = [
         firstName: 'Sérgio',
         lastName: 'Pérez',
         team: new ObjectID('6259bf61c5112dc1e32a1e36'),
-        isRegistered: false
+        isRegistered: false,
+        isRemoved: false
       }
     ]
   },

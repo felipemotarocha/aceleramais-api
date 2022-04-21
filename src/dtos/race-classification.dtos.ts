@@ -8,6 +8,7 @@ export interface CreateRaceClassificationDto {
     lastName?: string
     team: string
     isRegistered: boolean
+    isRemoved: boolean
     hasFastestLap: boolean
     hasPolePosition: boolean
   }[]
@@ -22,6 +23,7 @@ export interface UpdateRaceClassificationDto {
     lastName?: string
     team?: string
     isRegistered: boolean
+    isRemoved: boolean
     hasFastestLap: boolean
     hasPolePosition: boolean
   }[]

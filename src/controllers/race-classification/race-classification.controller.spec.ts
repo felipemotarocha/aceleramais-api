@@ -111,6 +111,7 @@ describe('Race Classification Controller', () => {
           user: 'valid_id',
           team: 'valid_id',
           isRegistered: true,
+          isRemoved: false,
           hasFastestLap: true,
           hasPolePosition: true
         }
@@ -148,6 +149,7 @@ describe('Race Classification Controller', () => {
           user: 'valid_id',
           team: 'valid_id',
           isRegistered: true,
+          isRemoved: false,
           hasFastestLap: true,
           hasPolePosition: true
         }
@@ -175,6 +177,7 @@ describe('Race Classification Controller', () => {
           user: 'valid_id',
           team: 'valid_id',
           isRegistered: true,
+          isRemoved: false,
           hasFastestLap: true,
           hasPolePosition: true
         }
@@ -224,6 +227,7 @@ describe('Race Classification Controller', () => {
           user: 'valid_id',
           team: 'valid_id',
           isRegistered: true,
+          isRemoved: false,
           hasFastestLap: true,
           hasPolePosition: true
         }
@@ -248,6 +252,7 @@ describe('Race Classification Controller', () => {
           userName: 'valid_userName',
           team: 'valid_id',
           isRegistered: true,
+          isRemoved: false,
           hasFastestLap: true,
           hasPolePosition: true
         }
@@ -276,6 +281,7 @@ describe('Race Classification Controller', () => {
           userName: 'valid_user_name',
           team: 'valid_id',
           isRegistered: true,
+          isRemoved: false,
           hasFastestLap: true,
           hasPolePosition: true
         }
@@ -303,6 +309,7 @@ describe('Race Classification Controller', () => {
           userName: 'valid_user_name',
           team: 'valid_id',
           isRegistered: true,
+          isRemoved: false,
           hasFastestLap: true,
           hasPolePosition: true
         }

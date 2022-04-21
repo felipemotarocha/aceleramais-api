@@ -12,6 +12,7 @@ interface DriverStandings {
     position: number
     points: number
     isRegistered: boolean
+    isRemoved: boolean
   }[]
 }
 

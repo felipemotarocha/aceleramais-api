@@ -6,6 +6,7 @@ import {
 } from '../../dtos/race-classification.dtos'
 import RaceClassification from '../../entities/race-classification.entity'
 import Race from '../../entities/race.entity'
+import Team from '../../entities/team.entity'
 import User from '../../entities/user.entity'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
@@ -90,7 +91,7 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
     for (const driver of _championship.drivers) {
       driverTeams = {
         ...driverTeams,
-        [driver?.id || (driver?.user as any)?.id]: driver?.team
+        [driver?.id || (driver?.user as any)?.id]: (driver?.team as Team)?.id
       }
     }
 
@@ -99,7 +100,7 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
       const newClassification = raceClassification.classification.map(
         (item) => ({
           ...item,
-          user: item?.user as string,
+          user: (item?.user as User)?.id,
           team: driverTeams[item?.id || (item?.user as User)?.id]
         })
       )

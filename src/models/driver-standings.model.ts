@@ -39,6 +39,10 @@ const standingsSchema = new Schema(
     isRegistered: {
       type: Boolean,
       required: true
+    },
+    isRemoved: {
+      type: Boolean,
+      required: true
     }
   },
   { _id: false }

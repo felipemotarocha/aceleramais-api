@@ -15,6 +15,7 @@ interface RaceClassification {
     isRegistered: boolean
     hasFastestLap: boolean
     hasPolePosition: boolean
+    isRemoved: boolean
   }[]
 }
 

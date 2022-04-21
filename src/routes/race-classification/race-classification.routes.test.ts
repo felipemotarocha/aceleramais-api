@@ -42,6 +42,7 @@ describe('Race Classification Routes', () => {
           user: new Types.ObjectId(),
           team: new Types.ObjectId(),
           isRegistered: true,
+          isRemoved: false,
           hasFastestLap: true,
           hasPolePosition: true
         }

@@ -36,6 +36,10 @@ const classificationSchema = new Schema(
       type: Boolean,
       required: true
     },
+    isRemoved: {
+      type: Boolean,
+      required: true
+    },
     hasFastestLap: {
       type: Boolean,
       required: false

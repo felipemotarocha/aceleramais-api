@@ -26,6 +26,7 @@ describe('Championship Controller', () => {
       {
         user: 'valid_user',
         isRegistered: true,
+        isRemoved: false,
         bonifications: [],
         penalties: []
       }
@@ -106,7 +107,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -131,7 +132,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -154,7 +155,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -176,7 +177,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -198,7 +199,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       platform: 'valid_platform',
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -220,7 +221,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       platform: 'valid_platform',
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -242,7 +243,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       platform: 'valid_platform',
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -265,7 +266,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: null }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -288,7 +289,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: null, track: 'valid_track' }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -311,7 +312,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       scoringSystem: { 1: 'a' },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -334,7 +335,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       scoringSystem: { a: 1 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -357,7 +358,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: [{ name: null, color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       scoringSystem: { 1: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -384,7 +385,8 @@ describe('Championship Controller', () => {
         {
           firstName: 'valid_first_name',
           lastName: 'valid_last_name',
-          isRegistered: true
+          isRegistered: true,
+          isRemoved: false
         }
       ],
       scoringSystem: { 1: 20 },
@@ -410,8 +412,8 @@ describe('Championship Controller', () => {
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: [{ name: 'valid_team', color: 'valid_color' }],
       drivers: [
-        { user: 'valid_user', isRegistered: false },
-        { isRegistered: false, id: undefined }
+        { user: 'valid_user', isRegistered: false, isRemoved: false },
+        { isRegistered: false, id: undefined, isRemoved: false }
       ],
       scoringSystem: { 1: 20 },
       teamStandings: 'valid_team_standings',
@@ -487,7 +489,7 @@ describe('Championship Controller', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: 'valid_track' }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       scoringSystem: { 1: 25, 2: 20 },
       teamStandings: 'valid_team_standings',
       driverStandings: 'valid_driver_standings',
@@ -524,7 +526,7 @@ describe('Championship Controller', () => {
 
     const dto: UpdateChampionshipDto = {
       teams: [{ name: 'valid_name', color: 'valid_color', id: 'valid_id' }],
-      drivers: [{ user: 'valid_user', isRegistered: true }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       penalties: [{ name: 'valid_penalty', points: 1, race: 'valid_race' }],
       bonifications: [
         { name: 'valid_bonification', points: 1, race: 'valid_race' }

@@ -25,6 +25,7 @@ const championships = [
         user: 'ohYViVrxyCakFXTrUdlS981v8Pf2',
         team: new ObjectID('6259bf61c5112dc1e32a1e35'),
         isRegistered: true,
+        isRemoved: false,
         bonifications: [],
         penalties: []
       },
@@ -34,6 +35,7 @@ const championships = [
         lastName: 'Sainz',
         team: new ObjectID('6259bf61c5112dc1e32a1e35'),
         isRegistered: false,
+        isRemoved: false,
         bonifications: [],
         penalties: []
       },
@@ -43,6 +45,7 @@ const championships = [
         lastName: 'Verstappen',
         team: new ObjectID('6259bf61c5112dc1e32a1e36'),
         isRegistered: false,
+        isRemoved: false,
         bonifications: [],
         penalties: []
       },
@@ -52,6 +55,7 @@ const championships = [
         lastName: 'Pérez',
         team: new ObjectID('6259bf61c5112dc1e32a1e36'),
         isRegistered: false,
+        isRemoved: false,
         bonifications: [],
         penalties: []
       }

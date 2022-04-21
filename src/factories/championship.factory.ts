@@ -29,6 +29,7 @@ import { ChampionshipService } from '../services/championship/championship.servi
 // Factories
 import { makeDriverStandingsService } from './driver-standings.factory'
 import { makeTeamStandingsService } from './team-standings.factory'
+import { makeRaceClassificationService } from './race-classification.factory'
 
 const makeChampionshipController = (): ChampionshipController => {
   const championshipRepository = new MongoChampionshipRepository(
@@ -68,11 +69,13 @@ const makeChampionshipController = (): ChampionshipController => {
     s3Repository
   )
 
+  const raceClassificationService = makeRaceClassificationService()
   const driverStandingsService = makeDriverStandingsService()
   const teamStandingsService = makeTeamStandingsService()
 
   return new ChampionshipController(
     championshipService,
+    raceClassificationService,
     driverStandingsService,
     teamStandingsService
   )

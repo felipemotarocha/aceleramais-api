@@ -29,6 +29,7 @@ describe('Driver Standings Service', () => {
       {
         user: 'valid_user',
         isRegistered: true,
+        isRemoved: false,
         position: 1,
         points: 10
       }
@@ -94,6 +95,7 @@ describe('Driver Standings Service', () => {
         {
           user: 'valid_user',
           isRegistered: true,
+          isRemoved: false,
           position: 1,
           points: 10
         }
@@ -119,6 +121,7 @@ describe('Driver Standings Service', () => {
         {
           user: 'valid_user',
           isRegistered: true,
+          isRemoved: false,
           position: 1,
           points: 10
         }
@@ -145,6 +148,7 @@ describe('Driver Standings Service', () => {
         {
           user: 'valid_user',
           isRegistered: true,
+          isRemoved: false,
           position: 1,
           points: 10
         }
@@ -207,6 +211,7 @@ describe('Driver Standings Service', () => {
           firstName: 'Max',
           lastName: 'Verstappen',
           isRegistered: false,
+          isRemoved: false,
           position: 1,
           points: 10
         }
@@ -220,6 +225,7 @@ describe('Driver Standings Service', () => {
           firstName: 'Max',
           lastName: 'Verstappen',
           isRegistered: false,
+          isRemoved: false,
           position: 1,
           points: 10
         }
@@ -243,6 +249,7 @@ describe('Driver Standings Service', () => {
           firstName: 'Max',
           lastName: 'Verstappen',
           isRegistered: false,
+          isRemoved: false,
           position: 1,
           points: 10
         }
@@ -270,6 +277,7 @@ describe('Driver Standings Service', () => {
               id: 'valid_id'
             } as any,
             isRegistered: true,
+            isRemoved: false,
             bonifications: [
               {
                 bonification: {
@@ -296,6 +304,7 @@ describe('Driver Standings Service', () => {
           {
             user: { id: 'valid_id_2' } as any,
             isRegistered: true,
+            isRemoved: false,
             bonifications: [],
             penalties: []
           }
@@ -318,6 +327,7 @@ describe('Driver Standings Service', () => {
                 championship: 'valid_championship'
               } as Team,
               isRegistered: true,
+              isRemoved: false,
               hasFastestLap: true,
               hasPolePosition: true
             },
@@ -330,6 +340,7 @@ describe('Driver Standings Service', () => {
                 championship: 'valid_championship'
               } as Team,
               isRegistered: true,
+              isRemoved: false,
               hasFastestLap: true,
               hasPolePosition: true
             }
@@ -351,6 +362,7 @@ describe('Driver Standings Service', () => {
           lastName: undefined,
           team: 'valid_id',
           isRegistered: true,
+          isRemoved: false,
           points: 20
         },
         {
@@ -360,6 +372,7 @@ describe('Driver Standings Service', () => {
           lastName: undefined,
           team: 'valid_id',
           isRegistered: true,
+          isRemoved: false,
           points: 16
         }
       ]

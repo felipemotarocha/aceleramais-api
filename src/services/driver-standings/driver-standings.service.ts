@@ -92,6 +92,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
         firstName?: string
         lastName?: string
         isRegistered: boolean
+        isRemoved: boolean
         points: number
         team?: string
       }
@@ -111,6 +112,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
           firstName: classification?.firstName,
           lastName: classification?.lastName,
           isRegistered: classification.isRegistered,
+          isRemoved: classification.isRemoved,
           team: (classification.team as Team)?.id,
           points: (newDriverStandings[driver]?.points || 0) + (points || 0)
         }

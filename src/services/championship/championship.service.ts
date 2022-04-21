@@ -150,6 +150,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       lastName?: string
       team?: string
       isRegistered: boolean
+      isRemoved: boolean
     }[] = []
 
     if (drivers) {

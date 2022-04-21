@@ -11,7 +11,8 @@ export const validRaceClassification = {
       team: 'valid_id',
       isRegistered: true,
       hasFastestLap: true,
-      hasPolePosition: true
+      hasPolePosition: true,
+      isRemoved: false
     }
   ]
 }

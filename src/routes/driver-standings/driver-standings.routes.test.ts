@@ -25,7 +25,8 @@ describe('Driver Standings Routes', () => {
         user: validUser.id,
         isRegistered: true,
         position: 1,
-        points: 10
+        points: 10,
+        isRemoved: false
       }
     ]
   }

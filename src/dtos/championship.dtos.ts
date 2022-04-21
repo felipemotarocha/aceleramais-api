@@ -26,6 +26,7 @@ export interface CreateChampionshipDto {
     lastName?: string
     team?: string
     isRegistered: boolean
+    isRemoved: boolean
   }[]
   scoringSystem: {
     [key: string]: number
@@ -57,6 +58,7 @@ export interface CreateChampionshipMongoDto {
     userName?: string
     team?: string
     isRegistered: boolean
+    isRemoved: boolean
   }[]
   scoringSystem: string
   driverStandings: string
@@ -76,6 +78,7 @@ export interface UpdateChampionshipDto {
     userName?: string
     team?: string
     isRegistered: boolean
+    isRemoved: boolean
   }[]
   teams: {
     id: string
@@ -105,6 +108,7 @@ export interface UpdateChampionshipMongoDto {
     userName?: string
     team?: string
     isRegistered: boolean
+    isRemoved: boolean
   }[]
   races?: string[]
   scoringSystem: string

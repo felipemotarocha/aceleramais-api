@@ -27,7 +27,9 @@ describe('Championship Routes', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: new Types.ObjectId() }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: new Types.ObjectId(), isRegistered: true }],
+      drivers: [
+        { user: new Types.ObjectId(), isRegistered: true, isRemoved: false }
+      ],
       bonifications: [{ name: 'valid_bonifcation', points: 1 }],
       penalties: [{ name: 'valid_penalty', points: 1 }],
       scoringSystem: { 1: 25, 2: 20 },
@@ -49,7 +51,9 @@ describe('Championship Routes', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: new Types.ObjectId() }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: new Types.ObjectId(), isRegistered: true }],
+      drivers: [
+        { user: new Types.ObjectId(), isRegistered: true, isRemoved: false }
+      ],
       bonifications: [{ name: 'valid_bonifcation', points: 1 }],
       penalties: [{ name: 'valid_penalty', points: 1 }],
       scoringSystem: { 1: 25, 2: 20 },
@@ -112,7 +116,9 @@ describe('Championship Routes', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: new Types.ObjectId() }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: new Types.ObjectId(), isRegistered: true }],
+      drivers: [
+        { user: new Types.ObjectId(), isRegistered: true, isRemoved: false }
+      ],
       bonifications: [{ name: 'valid_bonifcation', points: 1 }],
       penalties: [{ name: 'valid_penalty', points: 1 }],
       scoringSystem: { 1: 25, 2: 20 },
@@ -135,7 +141,9 @@ describe('Championship Routes', () => {
       avatarImageUrl: 'valid_url',
       races: [{ startDate: 'valid_start_date', track: new Types.ObjectId() }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: new Types.ObjectId(), isRegistered: true }],
+      drivers: [
+        { user: new Types.ObjectId(), isRegistered: true, isRemoved: false }
+      ],
       bonifications: [{ name: 'valid_bonifcation', points: 1 }],
       penalties: [{ name: 'valid_penalty', points: 1 }],
       scoringSystem: { 1: 25, 2: 20 },
