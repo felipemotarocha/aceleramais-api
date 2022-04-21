@@ -20,7 +20,7 @@ export interface RaceClassificationServiceAbstract {
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
   ): Promise<RaceClassification>
-  refreshTeams(race: string): Promise<RaceClassification>
+  refreshTeams(race: string): Promise<void>
 }
 
 class RaceClassificationService implements RaceClassificationServiceAbstract {
@@ -75,37 +75,39 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
     return newRaceClassification
   }
 
-  async refreshTeams(race: string): Promise<RaceClassification> {
-    const raceClassification = await this.raceClassificationRepository.getOne(
-      race
-    )
-    const { championship: championshipId } = await this.raceRepository.getOne(
-      race
-    )
-    const championship = await this.championshipRepository.getOne({
-      id: championshipId
+  async refreshTeams(championship: string): Promise<void> {
+    const _championship = await this.championshipRepository.getOne({
+      id: championship
     })
+
+    const raceClassifications = await this.raceClassificationRepository.getAll(
+      _championship.races as string[]
+    )
 
     // Normalize championship drivers
     let driverTeams: { [driver: string]: string } = {}
 
-    for (const driver of championship.drivers) {
+    for (const driver of _championship.drivers) {
       driverTeams = {
         ...driverTeams,
         [driver?.id || (driver?.user as any)?.id]: driver?.team
       }
     }
 
-    // Update the teams
-    const newClassification = raceClassification.classification.map((item) => ({
-      ...item,
-      user: item?.user as string,
-      team: driverTeams[item?.id || (item?.user as User)?.id]
-    }))
+    for (const raceClassification of raceClassifications) {
+      // Update the teams
+      const newClassification = raceClassification.classification.map(
+        (item) => ({
+          ...item,
+          user: item?.user as string,
+          team: driverTeams[item?.id || (item?.user as User)?.id]
+        })
+      )
 
-    return await this.update(raceClassification.id, {
-      classification: newClassification
-    })
+      await this.update(raceClassification.id, {
+        classification: newClassification
+      })
+    }
   }
 }
 

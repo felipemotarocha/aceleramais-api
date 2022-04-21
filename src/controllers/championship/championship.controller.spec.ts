@@ -8,6 +8,7 @@ import {
 } from '../../errors/controllers.errors'
 import { ChampionshipServiceAbstract } from '../../services/championship/championship.service'
 import DriverStandingsServiceStub from '../../services/driver-standings/driver-standings.service.stub'
+import RaceClassificationServiceStub from '../../services/race-classification/race-classification.service.stub'
 import { validRace } from '../../services/race/race.service.stub'
 import TeamStandingsServiceStub from '../../services/team-standings/team-standings.service.stub'
 import {
@@ -87,9 +88,11 @@ describe('Championship Controller', () => {
     const championshipServicestub = new ChampionshipServiceStub()
     const driverStandingsServiceStub = new DriverStandingsServiceStub()
     const teamStandingsServiceStub = new TeamStandingsServiceStub()
+    const raceClassificationServiceStub = new RaceClassificationServiceStub()
 
     const sut = new ChampionshipController(
       championshipServicestub,
+      raceClassificationServiceStub,
       driverStandingsServiceStub,
       teamStandingsServiceStub
     )

@@ -30,9 +30,7 @@ implements RaceClassificationServiceAbstract {
     return validRaceClassification
   }
 
-  async refreshTeams(race: string): Promise<RaceClassification> {
-    return validRaceClassification
-  }
+  async refreshTeams(championship: string): Promise<void> {}
 }
 
 export default RaceClassificationServiceStub

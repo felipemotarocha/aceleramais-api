@@ -12,6 +12,7 @@ import {
 } from '../../protocols/controllers.protocols'
 import { ChampionshipServiceAbstract } from '../../services/championship/championship.service'
 import { DriverStandingsServiceAbstract } from '../../services/driver-standings/driver-standings.service'
+import { RaceClassificationServiceAbstract } from '../../services/race-classification/race-classification.service'
 import { TeamStandingsServiceAbstract } from '../../services/team-standings/team-standings.service'
 import ChampionshipControllerHelper from './championship.controller.helpers'
 
@@ -25,6 +26,7 @@ export interface ChampionshipControllerAbstract {
 export class ChampionshipController implements ChampionshipControllerAbstract {
   constructor(
     private readonly championshipService: ChampionshipServiceAbstract,
+    private readonly raceClassificationService: RaceClassificationServiceAbstract,
     private readonly driverStandingsService: DriverStandingsServiceAbstract,
     private readonly teamStandingsService: TeamStandingsServiceAbstract
   ) {}
