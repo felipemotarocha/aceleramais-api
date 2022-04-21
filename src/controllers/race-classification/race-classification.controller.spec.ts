@@ -97,8 +97,12 @@ describe('Race Classification Controller', () => {
   })
 
   it('should return 200 on update success and call Driver and Team Standings refresh method', async () => {
-    const { sut, driverStandingsServiceStub, teamStandingsServiceStub } =
-      makeSut()
+    const {
+      sut,
+      driverStandingsServiceStub,
+      teamStandingsServiceStub,
+      raceClassificationServiceStub
+    } = makeSut()
 
     const dto: UpdateRaceClassificationDto = {
       classification: [
@@ -113,8 +117,11 @@ describe('Race Classification Controller', () => {
       ]
     }
 
+    const raceClassificationTeamsSpy = jest.spyOn(
+      raceClassificationServiceStub,
+      'refreshTeams'
+    )
     const driverStandingsSpy = jest.spyOn(driverStandingsServiceStub, 'refresh')
-
     const teamStandingsSpy = jest.spyOn(teamStandingsServiceStub, 'refresh')
 
     const result = await sut.update({
@@ -122,6 +129,9 @@ describe('Race Classification Controller', () => {
       body: dto
     })
 
+    expect(raceClassificationTeamsSpy).toHaveBeenCalledWith(
+      'valid_championship_id'
+    )
     expect(driverStandingsSpy).toHaveBeenCalledWith('valid_championship_id')
     expect(teamStandingsSpy).toHaveBeenCalledWith('valid_championship_id')
     expect(result.statusCode).toBe(200)
