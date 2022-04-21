@@ -164,30 +164,32 @@ describe('Race Classification Service', () => {
       })
     )
 
-    jest.spyOn(raceClassificationRepositoryStub, 'getOne').mockReturnValueOnce(
-      Promise.resolve({
-        ...validRaceClassification,
-        classification: [
-          {
-            position: 1,
-            user: 'valid_user',
-            team: 'valid_team_2',
-            isRegistered: true,
-            hasFastestLap: false,
-            hasPolePosition: false
-          },
-          {
-            position: 2,
-            id: 'valid_id',
-            firstName: 'Max',
-            lastName: 'Verstappen',
-            isRegistered: false,
-            team: 'valid_team_2',
-            hasFastestLap: false,
-            hasPolePosition: false
-          }
-        ]
-      })
+    jest.spyOn(raceClassificationRepositoryStub, 'getAll').mockReturnValueOnce(
+      Promise.resolve([
+        {
+          ...validRaceClassification,
+          classification: [
+            {
+              position: 1,
+              user: 'valid_user',
+              team: 'valid_team_2',
+              isRegistered: true,
+              hasFastestLap: false,
+              hasPolePosition: false
+            },
+            {
+              position: 2,
+              id: 'valid_id',
+              firstName: 'Max',
+              lastName: 'Verstappen',
+              isRegistered: false,
+              team: 'valid_team_2',
+              hasFastestLap: false,
+              hasPolePosition: false
+            }
+          ]
+        }
+      ])
     )
 
     const updateSpy = jest.spyOn(sut, 'update')
