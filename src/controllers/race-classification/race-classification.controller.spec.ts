@@ -120,7 +120,7 @@ describe('Race Classification Controller', () => {
 
     const raceClassificationTeamsSpy = jest.spyOn(
       raceClassificationServiceStub,
-      'refreshTeams'
+      'refresh'
     )
     const driverStandingsSpy = jest.spyOn(driverStandingsServiceStub, 'refresh')
     const teamStandingsSpy = jest.spyOn(teamStandingsServiceStub, 'refresh')

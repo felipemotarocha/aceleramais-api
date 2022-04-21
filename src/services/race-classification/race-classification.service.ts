@@ -21,7 +21,7 @@ export interface RaceClassificationServiceAbstract {
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
   ): Promise<RaceClassification>
-  refreshTeams(championship: string): Promise<void>
+  refresh(championship: string): Promise<void>
 }
 
 class RaceClassificationService implements RaceClassificationServiceAbstract {
@@ -76,7 +76,7 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
     return newRaceClassification
   }
 
-  async refreshTeams(championship: string): Promise<void> {
+  async refresh(championship: string): Promise<void> {
     const _championship = await this.championshipRepository.getOne({
       id: championship
     })
@@ -86,22 +86,28 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
     )
 
     // Normalize championship drivers
-    let driverTeams: { [driver: string]: string } = {}
+    let driverTeams: {
+      [driver: string]: { team: string; isRemoved: boolean }
+    } = {}
 
     for (const driver of _championship.drivers) {
       driverTeams = {
         ...driverTeams,
-        [driver?.id || (driver?.user as any)?.id]: (driver?.team as Team)?.id
+        [driver?.id || (driver?.user as any)?.id]: {
+          team: (driver?.team as Team)?.id,
+          isRemoved: driver.isRemoved
+        }
       }
     }
 
     for (const raceClassification of raceClassifications) {
-      // Update the teams
+      // Update the teams and isRemoved
       const newClassification = raceClassification.classification.map(
         (item) => ({
           ...item,
           user: (item?.user as User)?.id,
-          team: driverTeams[item?.id || (item?.user as User)?.id]
+          team: driverTeams[item?.id || (item?.user as User)?.id]?.team,
+          isRemoved: driverTeams[item?.id || (item?.user as User)?.id].isRemoved
         })
       )
 
