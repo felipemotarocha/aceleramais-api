@@ -135,7 +135,7 @@ describe('Race Classification Service', () => {
     })
   })
 
-  it('should update classification driver teams based on championship driver teams', async () => {
+  it('should update classification driver teams and isRemoved fields based on championship drivers', async () => {
     const {
       sut,
       raceClassificationRepositoryStub,
@@ -163,7 +163,7 @@ describe('Race Classification Service', () => {
             firstName: 'Max',
             lastName: 'Verstappen',
             isRegistered: false,
-            isRemoved: false,
+            isRemoved: true,
             team: {
               id: 'valid_team'
             },
@@ -212,7 +212,7 @@ describe('Race Classification Service', () => {
 
     const updateSpy = jest.spyOn(sut, 'update')
 
-    await sut.refreshTeams('valid_race')
+    await sut.refresh('valid_race')
 
     expect(updateSpy).toHaveBeenCalledWith(validRaceClassification.id, {
       classification: [
@@ -231,7 +231,7 @@ describe('Race Classification Service', () => {
           firstName: 'Max',
           lastName: 'Verstappen',
           isRegistered: false,
-          isRemoved: false,
+          isRemoved: true,
           team: 'valid_team',
           hasFastestLap: false,
           hasPolePosition: false
