@@ -1,5 +1,4 @@
 import { UpdateRaceClassificationDto } from '../../dtos/race-classification.dtos'
-import RaceClassification from '../../entities/race-classification.entity'
 import {
   InvalidFieldError,
   MissingParamError,
@@ -10,6 +9,9 @@ import { DriverStandingsServiceAbstract } from '../../services/driver-standings/
 import DriverStandingsServiceStub from '../../services/driver-standings/driver-standings.service.stub'
 
 import { RaceClassificationServiceAbstract } from '../../services/race-classification/race-classification.service'
+import RaceClassificationServiceStub, {
+  validRaceClassification
+} from '../../services/race-classification/race-classification.service.stub'
 import { RaceServiceAbstract } from '../../services/race/race.service'
 import RaceServiceStub from '../../services/race/race.service.stub'
 import { TeamStandingsServiceAbstract } from '../../services/team-standings/team-standings.service'
@@ -19,21 +21,6 @@ import RaceClassificationController, {
 } from './race-classification.controller'
 
 describe('Race Classification Controller', () => {
-  const validRaceClassification: RaceClassification = {
-    id: 'valid_id',
-    race: 'valid_id',
-    classification: [
-      {
-        position: 1,
-        user: 'valid_id',
-        team: 'valid_id',
-        isRegistered: true,
-        hasFastestLap: true,
-        hasPolePosition: true
-      }
-    ]
-  }
-
   interface SutTypes {
     sut: RaceClassificationControllerAbstract
     raceClassificationServiceStub: RaceClassificationServiceAbstract
@@ -43,21 +30,6 @@ describe('Race Classification Controller', () => {
   }
 
   const makeSut = (): SutTypes => {
-    class RaceClassificationServiceStub
-    implements RaceClassificationServiceAbstract {
-      async create(): Promise<RaceClassification> {
-        return validRaceClassification
-      }
-
-      async getOne(): Promise<RaceClassification> {
-        return validRaceClassification
-      }
-
-      async update(): Promise<RaceClassification> {
-        return validRaceClassification
-      }
-    }
-
     const raceClassificationServiceStub = new RaceClassificationServiceStub()
     const teamStandingsServiceStub = new TeamStandingsServiceStub()
     const driverStandingsServiceStub = new DriverStandingsServiceStub()

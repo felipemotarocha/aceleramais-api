@@ -52,6 +52,37 @@ export interface ChampionshipServiceAbstract {
     championship: string,
     races: UpdateChampionshipDto['races']
   ): Promise<Race[]>
+  createPenaltiesAndBonifications({
+    championship,
+    penalties,
+    bonifications
+  }: {
+    championship: string
+    penalties: CreateChampionshipDto['penalties']
+    bonifications: CreateChampionshipDto['bonifications']
+  }): Promise<{
+    penalties: Penalty[]
+    bonifications: Bonification[]
+  }>
+  createDriversAndTeams({
+    championship,
+    drivers,
+    teams
+  }: {
+    championship: string
+    drivers: CreateChampionshipDto['drivers']
+    teams: CreateChampionshipDto['teams']
+  }): Promise<{
+    drivers: {
+      user?: string | undefined
+      id?: string | undefined
+      firstName?: string | undefined
+      lastName?: string | undefined
+      team?: string | undefined
+      isRegistered: boolean
+    }[]
+    teams: Team[]
+  }>
 }
 
 export class ChampionshipService implements ChampionshipServiceAbstract {

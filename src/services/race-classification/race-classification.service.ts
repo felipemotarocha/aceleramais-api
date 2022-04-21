@@ -6,6 +6,8 @@ import {
 } from '../../dtos/race-classification.dtos'
 import RaceClassification from '../../entities/race-classification.entity'
 import Race from '../../entities/race.entity'
+import User from '../../entities/user.entity'
+import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import { RaceClassificationRepositoryAbstract } from '../../repositories/race-classification/race-classification.repository'
 import { RaceRepositoryAbstract } from '../../repositories/race/race.repository'
 
@@ -18,12 +20,14 @@ export interface RaceClassificationServiceAbstract {
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
   ): Promise<RaceClassification>
+  refreshTeams(race: string): Promise<RaceClassification>
 }
 
 class RaceClassificationService implements RaceClassificationServiceAbstract {
   constructor(
     private readonly raceClassificationRepository: RaceClassificationRepositoryAbstract,
-    private readonly raceRepository: RaceRepositoryAbstract
+    private readonly raceRepository: RaceRepositoryAbstract,
+    private readonly championshipRepository: ChampionshipRepositoryAbstract
   ) {}
 
   async create(
@@ -69,6 +73,39 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
     }
 
     return newRaceClassification
+  }
+
+  async refreshTeams(race: string): Promise<RaceClassification> {
+    const raceClassification = await this.raceClassificationRepository.getOne(
+      race
+    )
+    const { championship: championshipId } = await this.raceRepository.getOne(
+      race
+    )
+    const championship = await this.championshipRepository.getOne({
+      id: championshipId
+    })
+
+    // Normalize championship drivers
+    let driverTeams: { [driver: string]: string } = {}
+
+    for (const driver of championship.drivers) {
+      driverTeams = {
+        ...driverTeams,
+        [driver?.id || (driver?.user as any)?.id]: driver?.team
+      }
+    }
+
+    // Update the teams
+    const newClassification = raceClassification.classification.map((item) => ({
+      ...item,
+      user: item?.user as string,
+      team: driverTeams[item?.id || (item?.user as User)?.id]
+    }))
+
+    return await this.update(raceClassification.id, {
+      classification: newClassification
+    })
   }
 }
 

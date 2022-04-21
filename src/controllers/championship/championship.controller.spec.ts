@@ -71,6 +71,14 @@ describe('Championship Controller', () => {
         return [validRace]
       }
 
+      async createDriversAndTeams() {
+        return { drivers: [], teams: [] }
+      }
+
+      async createPenaltiesAndBonifications() {
+        return { bonifications: [], penalties: [] }
+      }
+
       async delete(): Promise<Championship> {
         return validChampionship
       }

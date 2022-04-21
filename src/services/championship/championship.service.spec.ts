@@ -435,6 +435,16 @@ describe('Championship Service', () => {
     )
   })
 
+  // it('should create the bonifications and penalties', async () => {
+  //   const { sut, bonificationRepositoryStub, penaltyRepositoryStub } = makeSut()
+
+  //   const result = await sut.createDriversAndTeams({
+  //     drives: validChampionship.drivers,
+  //     teams: validChampionship.teams,
+  //     championship: validChampionship.id
+  //   })
+  // })
+
   it('should update races', async () => {
     const { sut, raceRepositoryStub, raceClassificationRepositoryStub } =
       makeSut()
