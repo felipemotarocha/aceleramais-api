@@ -11,10 +11,7 @@ import DriverStandingsServiceStub from '../../services/driver-standings/driver-s
 import RaceClassificationServiceStub from '../../services/race-classification/race-classification.service.stub'
 import { validRace } from '../../services/race/race.service.stub'
 import TeamStandingsServiceStub from '../../services/team-standings/team-standings.service.stub'
-import {
-  ChampionshipControllerAbstract,
-  ChampionshipController
-} from './championship.controller'
+import { ChampionshipController } from './championship.controller'
 
 describe('Championship Controller', () => {
   const validChampionship: Championship = {
@@ -41,14 +38,7 @@ describe('Championship Controller', () => {
     penalties: ['valid_penalty']
   }
 
-  interface SutTypes {
-    championshipServicestub: ChampionshipServiceAbstract
-    teamStandingsServiceStub: TeamStandingsServiceStub
-    driverStandingsServiceStub: DriverStandingsServiceStub
-    sut: ChampionshipControllerAbstract
-  }
-
-  const makeSut = (): SutTypes => {
+  const makeSut = () => {
     class ChampionshipServiceStub implements ChampionshipServiceAbstract {
       async create(): Promise<Championship> {
         return validChampionship
@@ -101,7 +91,8 @@ describe('Championship Controller', () => {
       sut,
       championshipServicestub,
       driverStandingsServiceStub,
-      teamStandingsServiceStub
+      teamStandingsServiceStub,
+      raceClassificationServiceStub
     }
   }
 
@@ -510,8 +501,17 @@ describe('Championship Controller', () => {
   })
 
   it('should update a Championship', async () => {
-    const { sut, driverStandingsServiceStub, teamStandingsServiceStub } =
-      makeSut()
+    const {
+      sut,
+      driverStandingsServiceStub,
+      teamStandingsServiceStub,
+      raceClassificationServiceStub
+    } = makeSut()
+
+    const refreshRaceClassificationTeamsSpy = jest.spyOn(
+      raceClassificationServiceStub,
+      'refreshTeams'
+    )
 
     const refreshDriverStandingsSpy = jest.spyOn(
       driverStandingsServiceStub,
@@ -540,6 +540,9 @@ describe('Championship Controller', () => {
 
     expect(result.statusCode).toBe(200)
 
+    expect(refreshRaceClassificationTeamsSpy).toHaveBeenCalledWith(
+      validChampionship.id
+    )
     expect(refreshDriverStandingsSpy).toHaveBeenCalledWith(validChampionship.id)
     expect(refreshTeamStandingsSpy).toHaveBeenCalledWith(validChampionship.id)
   })
