@@ -86,8 +86,8 @@ implements RaceClassificationControllerAbstract {
         httpRequest.body
       )
 
+      await this.raceClassificationService.refreshTeams(race.championship)
       await this.driverStandingsService.refresh(race.championship)
-
       await this.teamStandingsService.refresh(race.championship)
 
       return ok(raceClassification)
