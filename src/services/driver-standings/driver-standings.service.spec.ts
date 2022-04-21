@@ -307,6 +307,13 @@ describe('Driver Standings Service', () => {
             isRemoved: false,
             bonifications: [],
             penalties: []
+          },
+          {
+            user: { id: 'valid_id_3' } as any,
+            isRegistered: true,
+            isRemoved: false,
+            bonifications: [],
+            penalties: []
           }
         ]
       })
@@ -343,6 +350,20 @@ describe('Driver Standings Service', () => {
               isRegistered: true,
               isRemoved: false,
               scores: true,
+              hasFastestLap: true,
+              hasPolePosition: true
+            },
+            {
+              position: 3,
+              user: { id: 'valid_id_3' } as any,
+              team: {
+                id: 'valid_id',
+                name: 'valid_name',
+                championship: 'valid_championship'
+              } as Team,
+              isRegistered: true,
+              isRemoved: false,
+              scores: false,
               hasFastestLap: true,
               hasPolePosition: true
             }
