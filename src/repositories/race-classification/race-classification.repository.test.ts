@@ -23,7 +23,8 @@ describe('Mongo Race Classification Repository', () => {
         isRegistered: true,
         isRemoved: false,
         hasFastestLap: true,
-        hasPolePosition: true
+        hasPolePosition: true,
+        scores: true
       }
     ]
   }
@@ -131,7 +132,8 @@ describe('Mongo Race Classification Repository', () => {
           isRegistered: true,
           isRemoved: false,
           hasFastestLap: false,
-          hasPolePosition: false
+          hasPolePosition: false,
+          scores: true
         }
       ]
     }

@@ -113,7 +113,8 @@ describe('Race Classification Controller', () => {
           isRegistered: true,
           isRemoved: false,
           hasFastestLap: true,
-          hasPolePosition: true
+          hasPolePosition: true,
+          scores: true
         }
       ]
     }
@@ -150,6 +151,7 @@ describe('Race Classification Controller', () => {
           team: 'valid_id',
           isRegistered: true,
           isRemoved: false,
+          scores: true,
           hasFastestLap: true,
           hasPolePosition: true
         }
@@ -179,7 +181,8 @@ describe('Race Classification Controller', () => {
           isRegistered: true,
           isRemoved: false,
           hasFastestLap: true,
-          hasPolePosition: true
+          hasPolePosition: true,
+          scores: true
         }
       ]
     }
@@ -229,7 +232,8 @@ describe('Race Classification Controller', () => {
           isRegistered: true,
           isRemoved: false,
           hasFastestLap: true,
-          hasPolePosition: true
+          hasPolePosition: true,
+          scores: true
         }
       ]
     }

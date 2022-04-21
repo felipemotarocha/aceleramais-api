@@ -40,6 +40,10 @@ const classificationSchema = new Schema(
       type: Boolean,
       required: true
     },
+    scores: {
+      type: Boolean,
+      required: true
+    },
     hasFastestLap: {
       type: Boolean,
       required: false

@@ -27,7 +27,8 @@ describe('Race Service', () => {
         isRegistered: true,
         hasFastestLap: true,
         hasPolePosition: true,
-        isRemoved: false
+        isRemoved: false,
+        scores: true
       }
     ]
   }

@@ -328,6 +328,7 @@ describe('Driver Standings Service', () => {
               } as Team,
               isRegistered: true,
               isRemoved: false,
+              scores: true,
               hasFastestLap: true,
               hasPolePosition: true
             },
@@ -341,6 +342,7 @@ describe('Driver Standings Service', () => {
               } as Team,
               isRegistered: true,
               isRemoved: false,
+              scores: true,
               hasFastestLap: true,
               hasPolePosition: true
             }

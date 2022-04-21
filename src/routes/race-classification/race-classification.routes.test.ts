@@ -44,7 +44,8 @@ describe('Race Classification Routes', () => {
           isRegistered: true,
           isRemoved: false,
           hasFastestLap: true,
-          hasPolePosition: true
+          hasPolePosition: true,
+          scores: true
         }
       ]
     })

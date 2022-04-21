@@ -11,6 +11,7 @@ export interface CreateRaceClassificationDto {
     isRemoved: boolean
     hasFastestLap: boolean
     hasPolePosition: boolean
+    scores: boolean
   }[]
 }
 
@@ -26,5 +27,6 @@ export interface UpdateRaceClassificationDto {
     isRemoved: boolean
     hasFastestLap: boolean
     hasPolePosition: boolean
+    scores: boolean
   }[]
 }

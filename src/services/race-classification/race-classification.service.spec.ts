@@ -47,7 +47,8 @@ describe('Race Classification Service', () => {
           isRegistered: true,
           isRemoved: false,
           hasFastestLap: true,
-          hasPolePosition: true
+          hasPolePosition: true,
+          scores: true
         }
       ]
     }
@@ -78,7 +79,8 @@ describe('Race Classification Service', () => {
           isRegistered: true,
           isRemoved: false,
           hasFastestLap: true,
-          hasPolePosition: true
+          hasPolePosition: true,
+          scores: true
         }
       ]
     }

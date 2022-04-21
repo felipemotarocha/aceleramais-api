@@ -12,7 +12,8 @@ export const validRaceClassification = {
       isRegistered: true,
       hasFastestLap: true,
       hasPolePosition: true,
-      isRemoved: false
+      isRemoved: false,
+      scores: true
     }
   ]
 }
