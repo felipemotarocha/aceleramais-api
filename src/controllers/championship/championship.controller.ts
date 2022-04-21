@@ -78,6 +78,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
         { ...body, avatarImage: httpRequest.file }
       )
 
+      await this.raceClassificationService.refreshTeams(httpRequest.params.id)
       await this.driverStandingsService.refresh(httpRequest.params.id)
       await this.teamStandingsService.refresh(httpRequest.params.id)
 

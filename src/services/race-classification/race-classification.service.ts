@@ -20,7 +20,7 @@ export interface RaceClassificationServiceAbstract {
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
   ): Promise<RaceClassification>
-  refreshTeams(race: string): Promise<void>
+  refreshTeams(championship: string): Promise<void>
 }
 
 class RaceClassificationService implements RaceClassificationServiceAbstract {
