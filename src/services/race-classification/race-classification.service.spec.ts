@@ -2,42 +2,35 @@ import {
   CreateRaceClassificationDto,
   UpdateRaceClassificationDto
 } from '../../dtos/race-classification.dtos'
-import RaceClassification from '../../entities/race-classification.entity'
-import { RaceClassificationRepositoryStub } from '../../repositories/race-classification/race-classification.repository.stub'
+import ChampionshipRepositoryStub, {
+  validChampionship
+} from '../../repositories/championship/championship.repository.stub'
+import {
+  RaceClassificationRepositoryStub,
+  validRaceClassification
+} from '../../repositories/race-classification/race-classification.repository.stub'
 import { RaceRepositoryStub } from '../../repositories/race/race.repository.stub'
 import { validRace } from '../race/race.service.stub'
 import RaceClassificationService from './race-classification.service'
 
 describe('Race Classification Service', () => {
-  const validRaceClassification: RaceClassification = {
-    id: 'valid_id',
-    race: 'valid_id',
-    classification: [
-      {
-        position: 1,
-        user: 'valid_id',
-        team: 'valid_id',
-        isRegistered: true,
-        hasFastestLap: true,
-        hasPolePosition: true
-      }
-    ]
-  }
-
   const makeSut = () => {
     const raceClassificationRepositoryStub =
       new RaceClassificationRepositoryStub()
     const raceRepositoryStub = new RaceRepositoryStub()
+    const championshipRepositoryStub = new ChampionshipRepositoryStub()
 
     const sut = new RaceClassificationService(
       raceClassificationRepositoryStub,
-      raceRepositoryStub
+      raceRepositoryStub,
+      championshipRepositoryStub
     )
 
     return {
       sut,
       raceClassificationRepositoryStub,
-      raceRepositoryStub
+      raceRepositoryStub,
+      championshipRepositoryStub
     }
   }
 
@@ -137,6 +130,91 @@ describe('Race Classification Service', () => {
       ...validRaceClassification,
       classification: [],
       race: validRace
+    })
+  })
+
+  it('should update classification driver teams based on championship driver teams', async () => {
+    const {
+      sut,
+      raceClassificationRepositoryStub,
+      championshipRepositoryStub
+    } = makeSut()
+
+    jest.spyOn(championshipRepositoryStub, 'getOne').mockReturnValueOnce(
+      Promise.resolve({
+        ...validChampionship,
+        drivers: [
+          {
+            user: 'valid_user',
+            team: 'valid_team',
+            isRegistered: true,
+            bonifications: [],
+            penalties: []
+          },
+          {
+            id: 'valid_id',
+            firstName: 'Max',
+            lastName: 'Verstappen',
+            isRegistered: false,
+            team: 'valid_team',
+            bonifications: [],
+            penalties: []
+          }
+        ]
+      })
+    )
+
+    jest.spyOn(raceClassificationRepositoryStub, 'getOne').mockReturnValueOnce(
+      Promise.resolve({
+        ...validRaceClassification,
+        classification: [
+          {
+            position: 1,
+            user: 'valid_user',
+            team: 'valid_team_2',
+            isRegistered: true,
+            hasFastestLap: false,
+            hasPolePosition: false
+          },
+          {
+            position: 2,
+            id: 'valid_id',
+            firstName: 'Max',
+            lastName: 'Verstappen',
+            isRegistered: false,
+            team: 'valid_team_2',
+            hasFastestLap: false,
+            hasPolePosition: false
+          }
+        ]
+      })
+    )
+
+    const updateSpy = jest.spyOn(sut, 'update')
+
+    await sut.refreshTeams('valid_race')
+
+    expect(updateSpy).toHaveBeenCalledWith(validRaceClassification.id, {
+      classification: [
+        {
+          position: 1,
+          user: 'valid_user',
+          team: 'valid_team',
+          isRegistered: true,
+          hasFastestLap: false,
+          hasPolePosition: false
+        },
+        {
+          position: 2,
+          id: 'valid_id',
+          firstName: 'Max',
+          lastName: 'Verstappen',
+          isRegistered: false,
+          team: 'valid_team',
+          hasFastestLap: false,
+          hasPolePosition: false
+        }
+      ]
     })
   })
 })
