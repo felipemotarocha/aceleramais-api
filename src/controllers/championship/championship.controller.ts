@@ -113,12 +113,14 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
 
   async getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      if (!httpRequest.query?.driver) {
-        return badRequest(new MissingParamError('driver'))
+      if (!httpRequest.query) {
+        return badRequest(new MissingParamError('query'))
       }
 
       const championships = await this.championshipService.getAll({
-        driver: httpRequest.query.driver
+        driver: httpRequest.query.driver,
+        admin: httpRequest.query.admin,
+        nameOrCode: httpRequest.query.nameOrCode
       })
 
       return ok(championships)

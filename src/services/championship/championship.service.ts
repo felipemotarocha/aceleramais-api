@@ -40,10 +40,12 @@ export interface ChampionshipServiceAbstract {
   }): Promise<Championship | null>
   getAll({
     driver,
-    admin
+    admin,
+    nameOrCode
   }: {
     driver?: string
     admin?: string
+    nameOrCode?: string
   }): Promise<Championship[]>
   update(
     id: string,
@@ -449,14 +451,17 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
 
   async getAll({
     driver,
-    admin
+    admin,
+    nameOrCode
   }: {
     driver?: string | undefined
     admin?: string | undefined
+    nameOrCode?: string
   }): Promise<Championship[]> {
     const championships = await this.championshipRepository.getAll({
       driver,
-      admin
+      admin,
+      nameOrCode
     })
 
     return championships

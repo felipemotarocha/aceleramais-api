@@ -26,6 +26,7 @@ export interface ChampionshipRepositoryAbstract {
   }: {
     driver?: string
     admin?: string
+    nameOrCode?: string
   }): Promise<Championship[]>
   update(
     id: string,
@@ -95,10 +96,12 @@ implements ChampionshipRepositoryAbstract {
 
   async getAll({
     driver,
-    admin
+    admin,
+    nameOrCode
   }: {
     driver?: string | undefined
     admin?: string | undefined
+    nameOrCode?: string
   }): Promise<Championship[]> {
     if (driver) {
       const championships = await this.championshipModel.find({
@@ -114,6 +117,21 @@ implements ChampionshipRepositoryAbstract {
       const championships = await this.championshipModel.find({
         'admins.user': admin
       })
+
+      return championships.map((championship) =>
+        MongooseHelper.map<Championship>(championship.toJSON())
+      )
+    }
+
+    if (nameOrCode) {
+      const championships = await this.championshipModel
+        .find({
+          $or: [
+            { name: { $regex: new RegExp(nameOrCode, 'i') } },
+            { code: { $regex: new RegExp(nameOrCode, 'i') } }
+          ]
+        })
+        .sort({ name: 1 })
 
       return championships.map((championship) =>
         MongooseHelper.map<Championship>(championship.toJSON())
