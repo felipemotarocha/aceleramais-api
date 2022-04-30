@@ -3,6 +3,7 @@ import { ObjectID } from 'mongodb'
 const championships = [
   {
     _id: new ObjectID('6259bf61c5112dc1e32a1e34'),
+    code: '12345678',
     name: 'PSGL Sim Racing League',
     avatarImageUrl:
       'https://sim-racer-app.s3.sa-east-1.amazonaws.com/championship-images/6259bf61c5112dc1e32a1e34.jpeg',
