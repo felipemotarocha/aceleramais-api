@@ -43,6 +43,7 @@ export interface CreateChampionshipDto {
 
 export interface CreateChampionshipMongoDto {
   _id?: string
+  code: string
   name: string
   description?: string
   platform: string

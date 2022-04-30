@@ -121,7 +121,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
       }
     }
 
-    for (const driver of championship.drivers) {
+    for (const driver of championship!.drivers) {
       if (driver.bonifications.length > 0) {
         const points = driver.bonifications.reduce((acc, currentValue) => {
           return acc + (currentValue.bonification as Bonification).points
@@ -166,7 +166,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
       })
 
     const driverStandings = await this.driverStandingsRepository.update(
-      (championship.driverStandings as DriverStandings).id,
+      (championship!.driverStandings as DriverStandings).id,
       {
         standings: updateDto
       }

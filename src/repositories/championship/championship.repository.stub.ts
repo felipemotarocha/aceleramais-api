@@ -3,6 +3,7 @@ import { ChampionshipRepositoryAbstract } from './championship.repository'
 
 export const validChampionship: Championship = {
   id: 'valid_id',
+  code: 'valid_code',
   description: 'valid_description',
   name: 'valid_name',
   platform: 'valid_platform',

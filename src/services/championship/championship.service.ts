@@ -10,6 +10,8 @@ import Championship from '../../entities/championship.entity'
 import Penalty from '../../entities/penalty.entity'
 import Race from '../../entities/race.entity'
 import Team from '../../entities/team.entity'
+import GeneralHelpers from '../../helpers/general.helpers'
+// import GeneralHelpers from '../../helpers/general.helpers'
 import { BonificationRepositoryAbstract } from '../../repositories/bonification/bonification.repository'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
@@ -35,7 +37,7 @@ export interface ChampionshipServiceAbstract {
   }: {
     id: string
     fullPopulate?: boolean
-  }): Promise<Championship>
+  }): Promise<Championship | null>
   getAll({
     driver,
     admin
@@ -255,6 +257,19 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     const championshipId = id
     const { name, description, platform, admins } = createChampionshipDto
 
+    const code = GeneralHelpers.generateRandomNumberString(8)
+
+    let codeIsAlreadyInUse = true
+
+    while (codeIsAlreadyInUse) {
+      const championshipWithTheCode = await this.championshipRepository.getOne({
+        code
+      })
+      if (!championshipWithTheCode) {
+        codeIsAlreadyInUse = false
+      }
+    }
+
     const { drivers, teams } = await this.createDriversAndTeams({
       championship: id,
       drivers: createChampionshipDto.drivers,
@@ -300,6 +315,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
 
     const championship = await this.championshipRepository.create({
       _id: championshipId,
+      code,
       name,
       description,
       platform,
@@ -367,7 +383,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
   ): Promise<Championship> {
     const championship = await this.championshipRepository.getOne({ id })
 
-    await this.prepareToUpdate(championship)
+    await this.prepareToUpdate(championship!)
 
     const { drivers, teams } = await this.createDriversAndTeams({
       championship: id,
@@ -386,7 +402,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       scoringSystem: updateChampionshipDto.scoringSystem
     })
 
-    let races = championship.races as string[]
+    let races = championship!.races as string[]
 
     if (updateChampionshipDto.races) {
       races = await (
@@ -422,7 +438,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
   }: {
     id: string
     fullPopulate?: boolean
-  }): Promise<Championship> {
+  }): Promise<Championship | null> {
     const championship = await this.championshipRepository.getOne({
       id,
       fullPopulate

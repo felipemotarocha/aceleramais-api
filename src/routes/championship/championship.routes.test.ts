@@ -21,6 +21,7 @@ describe('Championship Routes', () => {
 
   it('should return a Championship on creation success', async () => {
     const data = {
+      code: 'valid_code',
       description: 'valid_description',
       name: 'valid_name',
       platform: 'valid_platform',
@@ -45,6 +46,7 @@ describe('Championship Routes', () => {
 
   it('should update a Championship', async () => {
     const data = {
+      code: 'valid_code',
       description: 'valid_description',
       name: 'valid_name',
       platform: 'valid_platform',

@@ -26,6 +26,7 @@ import {
 describe('Championship Service', () => {
   const validChampionship: Championship = {
     id: 'valid_id',
+    code: 'valid_code',
     description: 'valid_description',
     name: 'valid_name',
     platform: 'valid_platform',
@@ -122,9 +123,13 @@ describe('Championship Service', () => {
   }
 
   it('should create the Championship Teams', async () => {
-    const { sut, teamRepositoryStub } = makeSut()
+    const { sut, teamRepositoryStub, championshipRepositoryStub } = makeSut()
 
     const createTeamSpy = jest.spyOn(teamRepositoryStub, 'bulkCreate')
+
+    jest
+      .spyOn(championshipRepositoryStub, 'getOne')
+      .mockReturnValueOnce(Promise.resolve(null))
 
     const result = await sut.create({
       id: validChampionship.id,
@@ -146,12 +151,17 @@ describe('Championship Service', () => {
   })
 
   it('should create the Championship Driver Standings', async () => {
-    const { sut, driverStandingsRepositoryStub } = makeSut()
+    const { sut, driverStandingsRepositoryStub, championshipRepositoryStub } =
+      makeSut()
 
     const createDriverStandingsSpy = jest.spyOn(
       driverStandingsRepositoryStub,
       'create'
     )
+
+    jest
+      .spyOn(championshipRepositoryStub, 'getOne')
+      .mockReturnValueOnce(Promise.resolve(null))
 
     const result = await sut.create({
       id: validChampionship.id,
@@ -177,12 +187,17 @@ describe('Championship Service', () => {
   })
 
   it('should create the Championship Team Standings', async () => {
-    const { sut, teamStandingsRepositoryStub } = makeSut()
+    const { sut, teamStandingsRepositoryStub, championshipRepositoryStub } =
+      makeSut()
 
     const createTeamStandingsSpy = jest.spyOn(
       teamStandingsRepositoryStub,
       'create'
     )
+
+    jest
+      .spyOn(championshipRepositoryStub, 'getOne')
+      .mockReturnValueOnce(Promise.resolve(null))
 
     const result = await sut.create({
       id: validChampionship.id,
@@ -208,12 +223,17 @@ describe('Championship Service', () => {
   })
 
   it('should create the Championship Scoring System', async () => {
-    const { sut, scoringSystemRepositoryStub } = makeSut()
+    const { sut, scoringSystemRepositoryStub, championshipRepositoryStub } =
+      makeSut()
 
     const createScoringSystemSpy = jest.spyOn(
       scoringSystemRepositoryStub,
       'create'
     )
+
+    jest
+      .spyOn(championshipRepositoryStub, 'getOne')
+      .mockReturnValueOnce(Promise.resolve(null))
 
     const result = await sut.create({
       id: validChampionship.id,
@@ -239,9 +259,13 @@ describe('Championship Service', () => {
   })
 
   it('should create the Championship Races', async () => {
-    const { sut, raceRepositoryStub } = makeSut()
+    const { sut, raceRepositoryStub, championshipRepositoryStub } = makeSut()
 
     const createScoringSystemSpy = jest.spyOn(raceRepositoryStub, 'create')
+
+    jest
+      .spyOn(championshipRepositoryStub, 'getOne')
+      .mockReturnValueOnce(Promise.resolve(null))
 
     const result = await sut.create({
       id: validChampionship.id,
@@ -268,12 +292,17 @@ describe('Championship Service', () => {
   })
 
   it('should create the Championship Bonifications', async () => {
-    const { sut, bonificationRepositoryStub } = makeSut()
+    const { sut, bonificationRepositoryStub, championshipRepositoryStub } =
+      makeSut()
 
     const createBonificationsSpy = jest.spyOn(
       bonificationRepositoryStub,
       'bulkCreate'
     )
+
+    jest
+      .spyOn(championshipRepositoryStub, 'getOne')
+      .mockReturnValueOnce(Promise.resolve(null))
 
     const result = await sut.create({
       id: validChampionship.id,
@@ -304,9 +333,13 @@ describe('Championship Service', () => {
   })
 
   it('should create the Championship Penalties', async () => {
-    const { sut, penaltyRepositoryStub } = makeSut()
+    const { sut, penaltyRepositoryStub, championshipRepositoryStub } = makeSut()
 
     const createPenaltiesSpy = jest.spyOn(penaltyRepositoryStub, 'bulkCreate')
+
+    jest
+      .spyOn(championshipRepositoryStub, 'getOne')
+      .mockReturnValueOnce(Promise.resolve(null))
 
     const result = await sut.create({
       id: validChampionship.id,
@@ -334,7 +367,7 @@ describe('Championship Service', () => {
   })
 
   it('should call S3 Repository if a avatar image is provided on creation', async () => {
-    const { sut, s3RepositoryStub } = makeSut()
+    const { sut, s3RepositoryStub, championshipRepositoryStub } = makeSut()
 
     const uploadImageSpy = jest.spyOn(s3RepositoryStub, 'uploadImage')
 
@@ -354,6 +387,10 @@ describe('Championship Service', () => {
       }
     }
 
+    jest
+      .spyOn(championshipRepositoryStub, 'getOne')
+      .mockReturnValueOnce(Promise.resolve(null))
+
     await sut.create(dto as any)
 
     expect(uploadImageSpy).toHaveBeenCalledWith({
@@ -364,7 +401,11 @@ describe('Championship Service', () => {
   })
 
   it('should create the Championship', async () => {
-    const { sut } = makeSut()
+    const { sut, championshipRepositoryStub } = makeSut()
+
+    jest
+      .spyOn(championshipRepositoryStub, 'getOne')
+      .mockReturnValueOnce(Promise.resolve(null))
 
     const result = await sut.create({
       id: validChampionship.id,

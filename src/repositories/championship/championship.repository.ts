@@ -13,11 +13,13 @@ export interface ChampionshipRepositoryAbstract {
   ): Promise<Championship>
   getOne({
     id,
+    code,
     fullPopulate
   }: {
-    id: string
+    id?: string
+    code?: string
     fullPopulate?: boolean
-  }): Promise<Championship>
+  }): Promise<Championship | null>
   getAll({
     driver,
     admin
@@ -51,16 +53,30 @@ implements ChampionshipRepositoryAbstract {
 
   async getOne({
     id,
+    code,
     fullPopulate
   }: {
     id: string
+    code?: string
     fullPopulate?: boolean
-  }): Promise<Championship> {
-    const championship = await this.championshipModel
-      .findById(id)
-      .populate(
-        ChampionshipRepositoryHelpers.handlePopulate(fullPopulate || false)
-      )
+  }): Promise<Championship | null> {
+    let championship: any
+
+    if (code) {
+      championship = await this.championshipModel
+        .findOne({ code })
+        .populate(
+          ChampionshipRepositoryHelpers.handlePopulate(fullPopulate || false)
+        )
+    } else if (id) {
+      championship = await this.championshipModel
+        .findById(id)
+        .populate(
+          ChampionshipRepositoryHelpers.handlePopulate(fullPopulate || false)
+        )
+    }
+
+    if (!championship) return null
 
     const _championship = championship.toJSON()
 

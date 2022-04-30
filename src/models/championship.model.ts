@@ -106,6 +106,10 @@ const driversSchema = new Schema(
 
 const championshipSchema = new Schema(
   {
+    code: {
+      type: String,
+      required: false
+    },
     name: {
       type: String,
       required: true

@@ -32,6 +32,7 @@ export interface ChampionshipAdmin {
 
 interface Championship {
   id: string
+  code: string
   avatarImageUrl: string
   name: string
   description: string

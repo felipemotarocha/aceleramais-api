@@ -82,7 +82,7 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
     })
 
     const raceClassifications = await this.raceClassificationRepository.getAll(
-      _championship.races as string[]
+      _championship!.races as string[]
     )
 
     // Normalize championship drivers
@@ -90,7 +90,7 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
       [driver: string]: { team: string; isRemoved: boolean }
     } = {}
 
-    for (const driver of _championship.drivers) {
+    for (const driver of _championship!.drivers) {
       driverTeams = {
         ...driverTeams,
         [driver?.id || (driver?.user as any)?.id]: {

@@ -14,6 +14,7 @@ import { MongoChampionshipRepository } from './championship.repository'
 
 describe('Mongo Driver Standings Repository', () => {
   const validDto = {
+    code: 'valid_code',
     description: 'valid_description',
     name: 'valid_name',
     platform: 'valid_platform',
@@ -78,6 +79,7 @@ describe('Mongo Driver Standings Repository', () => {
     const createChampionshipSpy = jest.spyOn(ChampionshipModel, 'create')
 
     const dto = {
+      code: 'valid_code',
       description: 'valid_description',
       name: 'valid_name',
       platform: 'valid_platform',
@@ -122,6 +124,7 @@ describe('Mongo Driver Standings Repository', () => {
 
     const dto = {
       id: new Types.ObjectId(),
+      code: 'valid_code',
       description: 'valid_description',
       name: 'valid_name',
       platform: 'valid_platform',
@@ -147,15 +150,15 @@ describe('Mongo Driver Standings Repository', () => {
 
     const result = await sut.getOne({ id: dto.id as any })
 
-    expect(result.id).toBeTruthy()
-    expect(result.description).toStrictEqual(dto.description)
-    expect(result.name).toStrictEqual(dto.name)
-    expect(result.platform).toStrictEqual(dto.platform)
-    expect(result.avatarImageUrl).toStrictEqual(dto.avatarImageUrl)
-    expect(result.races).toStrictEqual(dto.races)
-    expect(result.teams).toStrictEqual(dto.teams)
-    expect(result.drivers).toStrictEqual([{ ...dto.drivers[0], user: null }])
-    expect(result.scoringSystem).toStrictEqual(dto.scoringSystem)
+    expect(result!.id).toBeTruthy()
+    expect(result!.description).toStrictEqual(dto.description)
+    expect(result!.name).toStrictEqual(dto.name)
+    expect(result!.platform).toStrictEqual(dto.platform)
+    expect(result!.avatarImageUrl).toStrictEqual(dto.avatarImageUrl)
+    expect(result!.races).toStrictEqual(dto.races)
+    expect(result!.teams).toStrictEqual(dto.teams)
+    expect(result!.drivers).toStrictEqual([{ ...dto.drivers[0], user: null }])
+    expect(result!.scoringSystem).toStrictEqual(dto.scoringSystem)
   })
 
   it('should call ChampionshipModel findById method with correct values', async () => {
@@ -164,6 +167,7 @@ describe('Mongo Driver Standings Repository', () => {
     const getOneChampionshipSpy = jest.spyOn(ChampionshipModel, 'findById')
 
     const dto = {
+      code: 'valid_code',
       id: new Types.ObjectId(),
       description: 'valid_description',
       name: 'valid_name',
@@ -190,6 +194,7 @@ describe('Mongo Driver Standings Repository', () => {
 
     const dto = {
       id: new Types.ObjectId(),
+      code: 'valid_code',
       description: 'valid_description',
       name: 'valid_name',
       platform: 'valid_platform',
@@ -231,6 +236,7 @@ describe('Mongo Driver Standings Repository', () => {
 
     const dto = {
       id: new Types.ObjectId(),
+      code: 'valid_code',
       description: 'valid_description',
       name: 'valid_name',
       platform: 'valid_platform',

@@ -16,6 +16,7 @@ import { ChampionshipController } from './championship.controller'
 describe('Championship Controller', () => {
   const validChampionship: Championship = {
     id: 'valid_id',
+    code: 'valid_code',
     description: 'valid_description',
     name: 'valid_name',
     platform: 'valid_platform',

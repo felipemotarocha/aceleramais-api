@@ -35,9 +35,11 @@ export class TeamStandingsService implements TeamStandingsServiceAbstract {
       })
     }
 
-    const teams = await (
-      await this.championshipRepository.getOne({ id: championship })
-    ).teams
+    const _championship = await this.championshipRepository.getOne({
+      id: championship
+    })
+
+    const teams = await _championship!.teams
 
     // Normalize data
     const driversPerTeam: { [team: string]: DriverStandings['standings'] } = {}
