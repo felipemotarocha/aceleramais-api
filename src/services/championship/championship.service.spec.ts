@@ -600,4 +600,12 @@ describe('Championship Service', () => {
 
     expect(result).toStrictEqual([validChampionship])
   })
+
+  it('should get Championships by Name or Code', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ nameOrCode: 'valid_name_or_code' })
+
+    expect(result).toStrictEqual([validChampionship])
+  })
 })

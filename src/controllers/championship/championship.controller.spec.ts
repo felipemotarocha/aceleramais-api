@@ -602,14 +602,35 @@ describe('Championship Controller', () => {
     expect(result.statusCode).toBe(200)
     expect(result.body).toStrictEqual([validChampionship])
   })
-
-  it('should return 400 when getting Championships without providing a Driver', async () => {
+  it('should return 200 on getting Championships by Admin', async () => {
     const { sut } = makeSut()
 
-    const result = await sut.getAll({ query: { driver: null as any } })
+    const result = await sut.getAll({
+      query: { admin: 'valid_admin' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual([validChampionship])
+  })
+
+  it('should return 200 on getting Championships by Name or Code', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({
+      query: { nameOrCode: 'valid_name_or_code' }
+    })
+
+    expect(result.statusCode).toBe(200)
+    expect(result.body).toStrictEqual([validChampionship])
+  })
+
+  it('should return 400 when getting Championships without providing a query', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.getAll({ query: undefined })
 
     expect(result.statusCode).toBe(400)
-    expect(result.body).toStrictEqual(new MissingParamError('driver'))
+    expect(result.body).toStrictEqual(new MissingParamError('query'))
   })
 
   it('should return 500 if DriverStandingsService getAll method throws', async () => {
