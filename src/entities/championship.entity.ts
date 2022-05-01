@@ -30,6 +30,11 @@ export interface ChampionshipAdmin {
   isCreator: boolean
 }
 
+export interface ChampionshipPendentDriver {
+  user: string | User
+  team?: string | Team
+}
+
 interface Championship {
   id: string
   code: string
@@ -41,6 +46,7 @@ interface Championship {
   races: string[] | Race[]
   teams: string[] | Team[]
   drivers: ChampionshipDriver[]
+  pendentDrivers: ChampionshipPendentDriver[]
   driverStandings: string | DriverStandings
   teamStandings: string | TeamStandings
   scoringSystem: string | ScoringSystem

@@ -10,6 +10,7 @@ export const validChampionship: Championship = {
   avatarImageUrl: 'valid_url',
   races: ['valid_race'],
   teams: ['valid_team'],
+  pendentDrivers: [],
   drivers: [
     {
       user: 'valid_user',

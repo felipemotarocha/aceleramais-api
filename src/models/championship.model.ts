@@ -104,6 +104,26 @@ const driversSchema = new Schema(
   { _id: false }
 )
 
+const pendentDriverSchema = new Schema(
+  {
+    user: {
+      type: Types.ObjectId,
+      required: true,
+      ref: 'User',
+      autopopulate: {
+        select: ['id', 'firstName', 'lastName', 'profileImageUrl', 'userName']
+      }
+    },
+    team: {
+      type: Types.ObjectId,
+      required: false,
+      ref: 'Team',
+      autopopulate: { select: ['id', 'name', 'color'] }
+    }
+  },
+  { _id: false }
+)
+
 const championshipSchema = new Schema(
   {
     code: {
@@ -134,6 +154,10 @@ const championshipSchema = new Schema(
     admins: {
       type: [adminSchema],
       required: true
+    },
+    pendentDrivers: {
+      type: [pendentDriverSchema],
+      required: false
     },
     drivers: {
       type: [driversSchema],
