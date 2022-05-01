@@ -21,6 +21,7 @@ const championships = [
         isCreator: true
       }
     ],
+    pendentDrivers: [],
     drivers: [
       {
         user: 'ohYViVrxyCakFXTrUdlS981v8Pf2',

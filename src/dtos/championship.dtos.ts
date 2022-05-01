@@ -19,6 +19,10 @@ export interface CreateChampionshipDto {
     name: string
     color?: string
   }[]
+  pendentDrivers?: {
+    user: string
+    team?: string
+  }[]
   drivers?: {
     user?: string
     id?: string
@@ -54,6 +58,10 @@ export interface CreateChampionshipMongoDto {
   }[]
   races: string[]
   teams?: string[]
+  pendentDrivers: {
+    user: string
+    team?: string
+  }[]
   drivers?: {
     user?: string
     userName?: string
