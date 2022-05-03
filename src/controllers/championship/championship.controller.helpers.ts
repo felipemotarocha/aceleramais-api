@@ -63,6 +63,16 @@ const ChampionshipControllerHelper = {
         return badRequest(new InvalidFieldError('drivers'))
       }
     }
+
+    if (dto.drivers && dto.pendentDrivers) {
+      const somePendentDriverIsInvalid = dto.pendentDrivers.some((item) =>
+        dto.drivers!.some((driver) => driver?.user === item.user)
+      )
+
+      if (somePendentDriverIsInvalid) {
+        return badRequest(new InvalidFieldError('pendentDrivers'))
+      }
+    }
   }
 }
 
