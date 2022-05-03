@@ -142,6 +142,7 @@ describe('Championship Service', () => {
         races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
         teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
         drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
+        pendentDrivers: [],
         admins: [],
         scoringSystem: { 1: 25 }
       }
@@ -174,6 +175,7 @@ describe('Championship Service', () => {
         races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
         teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
         drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
+        pendentDrivers: [],
         admins: [],
         scoringSystem: { 1: 25 }
       }
@@ -210,6 +212,7 @@ describe('Championship Service', () => {
         races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
         teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
         drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
+        pendentDrivers: [],
         admins: [],
         scoringSystem: { 1: 25 }
       }
@@ -246,6 +249,7 @@ describe('Championship Service', () => {
         races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
         teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
         drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
+        pendentDrivers: [],
         admins: [],
         scoringSystem: { 1: 25 }
       }
@@ -282,6 +286,7 @@ describe('Championship Service', () => {
         ],
         teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
         drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
+        pendentDrivers: [],
         admins: [],
         scoringSystem: { 1: 25 }
       }
@@ -319,6 +324,7 @@ describe('Championship Service', () => {
         ],
         teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
         drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
+        pendentDrivers: [],
         admins: [],
         scoringSystem: { 1: 25 },
         bonifications: [
@@ -356,6 +362,7 @@ describe('Championship Service', () => {
         ],
         teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
         drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
+        pendentDrivers: [],
         admins: [],
         scoringSystem: { 1: 25 },
         penalties: [{ name: 'Colisão', points: 1 }]
@@ -382,6 +389,7 @@ describe('Championship Service', () => {
         races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
         teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
         drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
+        pendentDrivers: [],
         admins: [],
         scoringSystem: { 1: 25 },
         avatarImage: 'avatar_image'
@@ -477,6 +485,7 @@ describe('Championship Service', () => {
       validChampionship.id,
       {
         drivers: [],
+        pendentDrivers: [],
         teams: [],
         penalties: [],
         bonifications: [],

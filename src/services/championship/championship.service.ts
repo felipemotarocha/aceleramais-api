@@ -330,7 +330,8 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       bonifications: bonifications.map((item) => item.id),
       penalties: penalties.map((item) => item.id),
       races,
-      drivers
+      drivers,
+      pendentDrivers: createChampionshipDto.pendentDrivers || []
     })
 
     return championship
@@ -346,6 +347,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
 
     await this.championshipRepository.update(championship.id, {
       drivers: [],
+      pendentDrivers: [],
       bonifications: [],
       penalties: [],
       teams: [],

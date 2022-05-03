@@ -89,6 +89,10 @@ export interface UpdateChampionshipDto {
     isRegistered: boolean
     isRemoved: boolean
   }[]
+  pendentDrivers?: {
+    user: string
+    team?: string
+  }[]
   teams: {
     id: string
     name: string
@@ -118,6 +122,10 @@ export interface UpdateChampionshipMongoDto {
     team?: string
     isRegistered: boolean
     isRemoved: boolean
+  }[]
+  pendentDrivers?: {
+    user: string
+    team?: string
   }[]
   races?: string[]
   scoringSystem: string

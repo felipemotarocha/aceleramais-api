@@ -31,6 +31,7 @@ describe('Championship Routes', () => {
       drivers: [
         { user: new Types.ObjectId(), isRegistered: true, isRemoved: false }
       ],
+      pendentDrivers: [],
       bonifications: [{ name: 'valid_bonifcation', points: 1 }],
       penalties: [{ name: 'valid_penalty', points: 1 }],
       scoringSystem: { 1: 25, 2: 20 },
@@ -56,6 +57,7 @@ describe('Championship Routes', () => {
       drivers: [
         { user: new Types.ObjectId(), isRegistered: true, isRemoved: false }
       ],
+      pendentDrivers: [],
       bonifications: [{ name: 'valid_bonifcation', points: 1 }],
       penalties: [{ name: 'valid_penalty', points: 1 }],
       scoringSystem: { 1: 25, 2: 20 },
@@ -91,6 +93,7 @@ describe('Championship Routes', () => {
               isRegistered: false
             }
           ],
+          pendentDrivers: [],
           races: [
             {
               startDate: '2022-02-19T19:51:04.029Z',
@@ -121,6 +124,7 @@ describe('Championship Routes', () => {
       drivers: [
         { user: new Types.ObjectId(), isRegistered: true, isRemoved: false }
       ],
+      pendentDrivers: [],
       bonifications: [{ name: 'valid_bonifcation', points: 1 }],
       penalties: [{ name: 'valid_penalty', points: 1 }],
       scoringSystem: { 1: 25, 2: 20 },
@@ -146,6 +150,7 @@ describe('Championship Routes', () => {
       drivers: [
         { user: new Types.ObjectId(), isRegistered: true, isRemoved: false }
       ],
+      pendentDrivers: [],
       bonifications: [{ name: 'valid_bonifcation', points: 1 }],
       penalties: [{ name: 'valid_penalty', points: 1 }],
       scoringSystem: { 1: 25, 2: 20 },

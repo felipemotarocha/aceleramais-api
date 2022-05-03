@@ -30,6 +30,7 @@ describe('Mongo Driver Standings Repository', () => {
         penalties: []
       }
     ],
+    pendentDrivers: [],
     scoringSystem: new Types.ObjectId() as any,
     admins: [{ user: 'valid_user', isCreator: true }],
     teamStandings: new Types.ObjectId() as any,
@@ -87,6 +88,7 @@ describe('Mongo Driver Standings Repository', () => {
       races: [new Types.ObjectId() as any],
       teams: [new Types.ObjectId() as any],
       drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
+      pendentDrivers: [],
       teamStandings: new Types.ObjectId() as any,
       driverStandings: new Types.ObjectId() as any,
       scoringSystem: new Types.ObjectId() as any,
@@ -109,6 +111,7 @@ describe('Mongo Driver Standings Repository', () => {
       bonifications,
       penalties: [],
       drivers: [],
+      pendentDrivers: [],
       teams: [],
       scoringSystem: new Types.ObjectId() as any
     })
@@ -140,6 +143,7 @@ describe('Mongo Driver Standings Repository', () => {
           penalties: []
         }
       ],
+      pendentDrivers: [],
       scoringSystem: new Types.ObjectId() as any,
       admins: [{ user: 'valid_user', isCreator: true }],
       teamStandings: new Types.ObjectId() as any,
@@ -176,6 +180,7 @@ describe('Mongo Driver Standings Repository', () => {
       races: [new Types.ObjectId() as any],
       teams: [new Types.ObjectId() as any],
       drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
+      pendentDrivers: [],
       scoringSystem: new Types.ObjectId() as any,
       admins: [{ user: 'valid_user', isCreator: true }],
       teamStandings: new Types.ObjectId() as any,
@@ -210,6 +215,7 @@ describe('Mongo Driver Standings Repository', () => {
           penalties: []
         }
       ],
+      pendentDrivers: [],
       scoringSystem: new Types.ObjectId() as any,
       admins: [{ user: 'valid_user', isCreator: true }],
       teamStandings: new Types.ObjectId() as any,
@@ -252,6 +258,7 @@ describe('Mongo Driver Standings Repository', () => {
           penalties: []
         }
       ],
+      pendentDrivers: [],
       scoringSystem: new Types.ObjectId() as any,
       admins: [{ user: 'valid_user', isCreator: true }],
       teamStandings: new Types.ObjectId() as any,
@@ -294,6 +301,7 @@ describe('Mongo Driver Standings Repository', () => {
           penalties: []
         }
       ],
+      pendentDrivers: [],
       scoringSystem: new Types.ObjectId() as any,
       admins: [{ user: 'valid_user', isCreator: true }],
       teamStandings: new Types.ObjectId() as any,
