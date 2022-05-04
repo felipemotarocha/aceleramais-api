@@ -77,6 +77,9 @@ export interface CreateChampionshipMongoDto {
 }
 
 export interface UpdateChampionshipDto {
+  name?: string
+  description?: string
+  platform?: string
   races?: {
     id?: string
     startDate: string
@@ -99,12 +102,12 @@ export interface UpdateChampionshipDto {
     color?: string
   }[]
   bonifications: {
-    race: string
+    id: string
     name: string
     points: number
   }[]
   penalties: {
-    race: string
+    id: string
     name: string
     points: number
   }[]
@@ -116,6 +119,9 @@ export interface UpdateChampionshipDto {
 }
 
 export interface UpdateChampionshipMongoDto {
+  name?: string
+  description?: string
+  platform?: string
   drivers: {
     user?: string
     userName?: string

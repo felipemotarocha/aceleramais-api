@@ -426,7 +426,11 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     }
 
     return await this.championshipRepository.update(id, {
+      description: updateChampionshipDto?.description,
+      name: updateChampionshipDto?.name,
+      platform: updateChampionshipDto?.platform,
       drivers,
+      pendentDrivers: updateChampionshipDto.pendentDrivers,
       scoringSystem: scoringSystem.id,
       teams: teams.map((item) => item.id),
       bonifications: bonifications.map((item) => item.id),
