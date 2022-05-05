@@ -107,7 +107,7 @@ const driversSchema = new Schema(
 const pendentDriverSchema = new Schema(
   {
     user: {
-      type: Types.ObjectId,
+      type: String,
       required: true,
       ref: 'User',
       autopopulate: {
