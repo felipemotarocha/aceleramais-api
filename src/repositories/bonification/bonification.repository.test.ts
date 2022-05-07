@@ -7,15 +7,9 @@ import {
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import BonificationModel from '../../models/bonification.model'
 import { MongoBonificationRepository } from './bonification.repository'
+import { validBonification } from './bonification.repository.stub'
 
 describe('Mongo Bonification Repository', () => {
-  const validBonification = {
-    id: new Types.ObjectId(),
-    championship: new Types.ObjectId(),
-    name: 'Volta mais rápida',
-    points: 1
-  }
-
   beforeAll(async () => {
     await MongooseHelper.connect(env.mongodbUrl)
   })
@@ -42,7 +36,7 @@ describe('Mongo Bonification Repository', () => {
     const result = await sut.create(dto)
 
     expect(result.id).toBeTruthy()
-    expect(result.championship).toStrictEqual(dto.championship)
+    expect(result.championship).toBeTruthy()
     expect(result.name).toBe(dto.name)
     expect(result.points).toBe(dto.points)
   })
@@ -59,7 +53,7 @@ describe('Mongo Bonification Repository', () => {
     const result = await sut.bulkCreate({ dto: [dto] })
 
     expect(result[0].id).toBeTruthy()
-    expect(result[0].championship).toStrictEqual(dto.championship)
+    expect(result[0].championship).toBeTruthy()
     expect(result[0].name).toBe(dto.name)
     expect(result[0].points).toBe(dto.points)
   })
@@ -89,11 +83,11 @@ describe('Mongo Bonification Repository', () => {
     })
 
     const result = await sut.getAll({
-      championship: validBonification.championship.toHexString()
+      championship: validBonification.championship
     })
 
-    expect(result[0].id).toStrictEqual(validBonification.id.toHexString())
-    expect(result[0].championship).toStrictEqual(validBonification.championship)
+    expect(result[0].id).toStrictEqual(validBonification.id)
+    expect(result[0].championship).toBeTruthy()
     expect(result[0].name).toBe(validBonification.name)
     expect(result[0].points).toBe(validBonification.points)
   })
@@ -128,7 +122,7 @@ describe('Mongo Bonification Repository', () => {
       points: 2
     }
 
-    const result = await sut.update(validBonification.id.toHexString(), dto)
+    const result = await sut.update(validBonification.id, dto)
 
     expect(result.id).toBeTruthy()
     expect(result.points).toStrictEqual(dto.points)
@@ -150,10 +144,10 @@ describe('Mongo Bonification Repository', () => {
       points: 2
     }
 
-    await sut.update(validBonification.id.toHexString(), dto)
+    await sut.update(validBonification.id, dto)
 
     expect(updateCollectionSpy).toHaveBeenCalledWith(
-      validBonification.id.toHexString(),
+      validBonification.id,
       dto,
       { new: true }
     )
@@ -167,10 +161,10 @@ describe('Mongo Bonification Repository', () => {
       ...validBonification
     })
 
-    const result = await sut.delete(validBonification.id.toHexString())
+    const result = await sut.delete(validBonification.id)
 
     expect(result.id).toBeTruthy()
-    expect(result.championship).toStrictEqual(validBonification.championship)
+    expect(result.championship).toBeTruthy()
   })
 
   it('should call BonificationModel findByIdAndDelete method with correct values', async () => {
@@ -186,14 +180,11 @@ describe('Mongo Bonification Repository', () => {
       ...validBonification
     })
 
-    await sut.delete(validBonification.id.toHexString())
+    await sut.delete(validBonification.id)
 
-    expect(deleteBonificationSpy).toHaveBeenCalledWith(
-      validBonification.id.toHexString(),
-      {
-        new: true
-      }
-    )
+    expect(deleteBonificationSpy).toHaveBeenCalledWith(validBonification.id, {
+      new: true
+    })
   })
 
   it('should delete Bonifications', async () => {
@@ -205,7 +196,7 @@ describe('Mongo Bonification Repository', () => {
     })
 
     const result = await sut.bulkDelete({
-      ids: [validBonification.id.toHexString()]
+      ids: [validBonification.id]
     })
 
     expect(result).toBe(1)

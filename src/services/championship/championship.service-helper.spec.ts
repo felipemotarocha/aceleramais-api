@@ -1,7 +1,8 @@
-import { ChampionshipServiceSutFactory, validChampionship } from '.'
+import { validChampionship } from '.'
+import ChampionshipServiceHelperSutFactory from '../../factories/suts/championship/championship.service-helper-sut.factory'
 
 describe('Championship Service Helper', () => {
-  const makeSut = ChampionshipServiceSutFactory.make
+  const makeSut = ChampionshipServiceHelperSutFactory.make
 
   it('should prepare to update', async () => {
     const {
@@ -31,7 +32,7 @@ describe('Championship Service Helper', () => {
       'update'
     )
 
-    await sut.prepareToUpdate(validChampionship)
+    await sut.prepareToUpdate({ championship: validChampionship })
 
     expect(bulkDeleteTeamsSpy).toHaveBeenCalledWith({
       ids: validChampionship.teams
@@ -55,6 +56,50 @@ describe('Championship Service Helper', () => {
         bonifications: [],
         scoringSystem: validChampionship.scoringSystem
       }
+    })
+  })
+
+  it('should update races', async () => {
+    const { sut, raceRepositoryStub, raceClassificationRepositoryStub } =
+      makeSut()
+
+    const raceRepositoryBulkDeleteSpy = jest.spyOn(
+      raceRepositoryStub,
+      'bulkDelete'
+    )
+    const raceClassificationRepositoryBulkDeleteSpy = jest.spyOn(
+      raceClassificationRepositoryStub,
+      'bulkDelete'
+    )
+    const createRacesSpy = jest.spyOn(sut, 'createRaces' as any)
+
+    await sut.updateRaces({
+      championship: validChampionship.id,
+      races: [
+        {
+          startDate: 'valid_start_date',
+          track: 'valid_track',
+          id: 'valid_race'
+        },
+        { startDate: 'valid_start_date', track: 'valid_track' }
+      ]
+    })
+
+    expect(raceRepositoryBulkDeleteSpy).toHaveBeenCalledWith({
+      ids: ['valid_id']
+    })
+    expect(raceClassificationRepositoryBulkDeleteSpy).toHaveBeenCalledWith({
+      ids: ['valid_classification_id']
+    })
+    expect(createRacesSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      races: [
+        {
+          id: 'valid_race',
+          startDate: 'valid_start_date',
+          track: 'valid_track'
+        }
+      ]
     })
   })
 })

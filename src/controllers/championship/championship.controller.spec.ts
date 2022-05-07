@@ -1,83 +1,20 @@
 import { UpdateChampionshipDto } from '../../dtos/championship.dtos'
-import Championship from '../../entities/championship.entity'
-import Race from '../../entities/race.entity'
 import {
   InvalidFieldError,
   MissingParamError,
   ServerError
 } from '../../errors/controllers.errors'
-import { ChampionshipServiceAbstract } from '../../services/championship/championship.service'
+import {
+  ChampionshipServiceStub,
+  validChampionship
+} from '../../services/championship/championship.service.stub'
 import DriverStandingsServiceStub from '../../services/driver-standings/driver-standings.service.stub'
 import RaceClassificationServiceStub from '../../services/race-classification/race-classification.service.stub'
-import { validRace } from '../../services/race/race.service.stub'
 import TeamStandingsServiceStub from '../../services/team-standings/team-standings.service.stub'
 import { ChampionshipController } from './championship.controller'
 
 describe('Championship Controller', () => {
-  const validChampionship: Championship = {
-    id: 'valid_id',
-    code: 'valid_code',
-    description: 'valid_description',
-    name: 'valid_name',
-    platform: 'valid_platform',
-    avatarImageUrl: 'valid_url',
-    races: ['valid_race'],
-    teams: ['valid_team'],
-    pendentDrivers: [],
-    drivers: [
-      {
-        user: 'valid_user',
-        isRegistered: true,
-        isRemoved: false,
-        bonifications: [],
-        penalties: []
-      }
-    ],
-    scoringSystem: 'valid_scoring_system',
-    teamStandings: 'valid_team_standings',
-    driverStandings: 'valid_driver_standings',
-    admins: [{ user: 'valid_user', isCreator: true }],
-    bonifications: ['valid_bonification'],
-    penalties: ['valid_penalty']
-  }
-
   const makeSut = () => {
-    class ChampionshipServiceStub implements ChampionshipServiceAbstract {
-      async create(): Promise<Championship> {
-        return validChampionship
-      }
-
-      async getOne(): Promise<Championship> {
-        return validChampionship
-      }
-
-      async getAll(): Promise<Championship[]> {
-        return [validChampionship]
-      }
-
-      async update(): Promise<Championship> {
-        return validChampionship
-      }
-
-      async prepareToUpdate(): Promise<void> {}
-
-      async updateRaces(): Promise<Race[]> {
-        return [validRace]
-      }
-
-      async createDriversAndTeams() {
-        return { drivers: [], teams: [] }
-      }
-
-      async createPenaltiesAndBonifications() {
-        return { bonifications: [], penalties: [] }
-      }
-
-      async delete(): Promise<Championship> {
-        return validChampionship
-      }
-    }
-
     const championshipServicestub = new ChampionshipServiceStub()
     const driverStandingsServiceStub = new DriverStandingsServiceStub()
     const teamStandingsServiceStub = new TeamStandingsServiceStub()
@@ -146,7 +83,7 @@ describe('Championship Controller', () => {
     await sut.create({ body: { data: JSON.stringify(dto) } })
 
     expect(createChampionshipSpy).toHaveBeenCalledWith({
-      createChampionshipDto: dto
+      dto
     })
   })
 

@@ -1,13 +1,9 @@
 import { PenaltyRepositoryAbstract } from '../../repositories/penalty/penalty.repository'
-import { PenaltyRepositoryStub } from '../../repositories/penalty/penalty.repository.stub'
+import {
+  PenaltyRepositoryStub,
+  validPenalty
+} from '../../repositories/penalty/penalty.repository.stub'
 import { PenaltyService, PenaltyServiceAbstract } from './penalty.service'
-
-export const validPenalty = {
-  id: 'valid_id',
-  championship: 'valid_championship',
-  name: 'Volta mais rápida',
-  points: 1
-}
 
 describe('Penalty Service', () => {
   interface SutTypes {

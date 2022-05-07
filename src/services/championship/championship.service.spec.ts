@@ -4,10 +4,8 @@ import { ChampionshipServiceSutFactory, validChampionship } from '.'
 describe('Championship Service', () => {
   const makeSut = ChampionshipServiceSutFactory.make
 
-  it('should create the Championship Teams', async () => {
-    const { sut, teamRepositoryStub, championshipRepositoryStub } = makeSut()
-
-    const createTeamSpy = jest.spyOn(teamRepositoryStub, 'bulkCreate')
+  it('should create the Championship', async () => {
+    const { sut, championshipRepositoryStub } = makeSut()
 
     jest
       .spyOn(championshipRepositoryStub, 'getOne')
@@ -15,22 +13,115 @@ describe('Championship Service', () => {
 
     const result = await sut.create({
       id: validChampionship.id,
-      createChampionshipDto: {
+      dto: {
         description: 'valid_description',
         name: 'valid_name',
         platform: 'valid_platform',
         avatarImageUrl: 'valid_url',
         races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
         teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
-        drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
-        pendentDrivers: [],
+        drivers: [
+          {
+            user: 'valid_user',
+            isRegistered: true,
+            isRemoved: false,
+            team: 'valid_id'
+          }
+        ],
         admins: [],
         scoringSystem: { 1: 25 }
       }
     })
 
-    expect(createTeamSpy).toHaveReturned()
-    expect(result.teams).toStrictEqual(['valid_team'])
+    expect(result).toStrictEqual(validChampionship)
+  })
+
+  it('should update a Championship', async () => {
+    const { sut, championshipServiceHelperStub } = makeSut()
+
+    const session = {
+      startTransaction: jest.fn(),
+      commitTransaction: jest.fn(),
+      endSession: jest.fn()
+    }
+
+    jest.spyOn(mongoose, 'startSession').mockImplementationOnce(() => session)
+
+    const prepareToUpdateSpy = jest.spyOn(
+      championshipServiceHelperStub,
+      'prepareToUpdate'
+    )
+    const createDriversAndTeamsSpy = jest.spyOn(
+      championshipServiceHelperStub,
+      'createDriversAndTeams'
+    )
+    const createPenaltiesAndBonificationsSpy = jest.spyOn(
+      championshipServiceHelperStub,
+      'createPenaltiesAndBonifications'
+    )
+    const updateRacesSpy = jest.spyOn(
+      championshipServiceHelperStub,
+      'updateRaces'
+    )
+
+    const result = await sut.update({
+      id: validChampionship.id,
+      dto: {
+        bonifications: [
+          { name: 'valid_bonification', points: 1, id: 'valid_id' }
+        ],
+        drivers: [
+          {
+            isRegistered: true,
+            isRemoved: false,
+            team: '1',
+            user: 'valid_user'
+          }
+        ],
+        penalties: [{ name: 'valid_penalty', points: 1, id: 'valid_id' }],
+        teams: [{ id: '1', name: 'Mercedes', color: 'color' }],
+        scoringSystem: { 1: 25 },
+        races: [
+          {
+            startDate: 'valid_start_date',
+            track: 'valid_track',
+            id: 'valid_id'
+          },
+          { startDate: 'valid_start_date', track: 'valid_track' }
+        ]
+      }
+    })
+
+    expect(prepareToUpdateSpy).toHaveBeenCalledWith({
+      championship: validChampionship,
+      session
+    })
+    expect(createDriversAndTeamsSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      drivers: [
+        { isRegistered: true, isRemoved: false, team: '1', user: 'valid_user' }
+      ],
+      teams: [{ id: '1', name: 'Mercedes', color: 'color' }],
+      session
+    })
+    expect(createPenaltiesAndBonificationsSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      penalties: [{ name: 'valid_penalty', points: 1, id: 'valid_id' }],
+      bonifications: [
+        { name: 'valid_bonification', points: 1, id: 'valid_id' }
+      ],
+      session
+    })
+    expect(updateRacesSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      races: [
+        { startDate: 'valid_start_date', track: 'valid_track', id: 'valid_id' },
+        { startDate: 'valid_start_date', track: 'valid_track' }
+      ],
+      session
+    })
+
+    expect(result).toStrictEqual(validChampionship)
   })
 
   it('should create the Championship Driver Standings', async () => {
@@ -48,7 +139,7 @@ describe('Championship Service', () => {
 
     const result = await sut.create({
       id: validChampionship.id,
-      createChampionshipDto: {
+      dto: {
         description: 'valid_description',
         name: 'valid_name',
         platform: 'valid_platform',
@@ -85,7 +176,7 @@ describe('Championship Service', () => {
 
     const result = await sut.create({
       id: validChampionship.id,
-      createChampionshipDto: {
+      dto: {
         description: 'valid_description',
         name: 'valid_name',
         platform: 'valid_platform',
@@ -122,7 +213,7 @@ describe('Championship Service', () => {
 
     const result = await sut.create({
       id: validChampionship.id,
-      createChampionshipDto: {
+      dto: {
         description: 'valid_description',
         name: 'valid_name',
         platform: 'valid_platform',
@@ -146,10 +237,14 @@ describe('Championship Service', () => {
     expect(result.scoringSystem).toBe('valid_scoring_system')
   })
 
-  it('should create the Championship Races', async () => {
-    const { sut, raceRepositoryStub, championshipRepositoryStub } = makeSut()
+  it('should call helper createRaces method with correct values', async () => {
+    const { sut, championshipServiceHelperStub, championshipRepositoryStub } =
+      makeSut()
 
-    const createScoringSystemSpy = jest.spyOn(raceRepositoryStub, 'create')
+    const createRacesSpy = jest.spyOn(
+      championshipServiceHelperStub,
+      'createRaces'
+    )
 
     jest
       .spyOn(championshipRepositoryStub, 'getOne')
@@ -157,7 +252,7 @@ describe('Championship Service', () => {
 
     const result = await sut.create({
       id: validChampionship.id,
-      createChampionshipDto: {
+      dto: {
         description: 'valid_description',
         name: 'valid_name',
         platform: 'valid_platform',
@@ -175,18 +270,25 @@ describe('Championship Service', () => {
       }
     })
 
-    expect(createScoringSystemSpy).toHaveBeenCalledTimes(3)
-    expect(createScoringSystemSpy).toHaveReturnedTimes(3)
+    expect(createRacesSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      races: [
+        { track: 'valid_track', startDate: 'valid_start_date' },
+        { track: 'valid_track', startDate: 'valid_start_date' },
+        { track: 'valid_track', startDate: 'valid_start_date' }
+      ]
+    })
+    expect(createRacesSpy).toHaveReturned()
     expect(result.races).toStrictEqual(['valid_race'])
   })
 
-  it('should create the Championship Bonifications', async () => {
-    const { sut, bonificationRepositoryStub, championshipRepositoryStub } =
+  it('should call helper createDriversAndTeams method with correct values', async () => {
+    const { sut, championshipServiceHelperStub, championshipRepositoryStub } =
       makeSut()
 
-    const createBonificationsSpy = jest.spyOn(
-      bonificationRepositoryStub,
-      'bulkCreate'
+    const createDriversAndTeamsSpy = jest.spyOn(
+      championshipServiceHelperStub,
+      'createDriversAndTeams'
     )
 
     jest
@@ -195,66 +297,35 @@ describe('Championship Service', () => {
 
     const result = await sut.create({
       id: validChampionship.id,
-      createChampionshipDto: {
+      dto: {
         description: 'valid_description',
         name: 'valid_name',
         platform: 'valid_platform',
         avatarImageUrl: 'valid_url',
-        races: [
-          { track: 'valid_track', startDate: 'valid_start_date' },
-          { track: 'valid_track', startDate: 'valid_start_date' },
-          { track: 'valid_track', startDate: 'valid_start_date' }
-        ],
+        races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
         teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
         drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
         pendentDrivers: [],
         admins: [],
-        scoringSystem: { 1: 25 },
-        bonifications: [
-          { name: 'Volta mais rápida', points: 1 },
-          { name: 'Pole Position', points: 1 }
-        ]
+        scoringSystem: { 1: 25 }
       }
     })
 
-    expect(createBonificationsSpy).toHaveBeenCalledTimes(1)
-    expect(createBonificationsSpy).toHaveReturnedTimes(1)
-    expect(result.bonifications).toStrictEqual(['valid_bonification'])
-  })
-
-  it('should create the Championship Penalties', async () => {
-    const { sut, penaltyRepositoryStub, championshipRepositoryStub } = makeSut()
-
-    const createPenaltiesSpy = jest.spyOn(penaltyRepositoryStub, 'bulkCreate')
-
-    jest
-      .spyOn(championshipRepositoryStub, 'getOne')
-      .mockReturnValueOnce(Promise.resolve(null))
-
-    const result = await sut.create({
-      id: validChampionship.id,
-      createChampionshipDto: {
-        description: 'valid_description',
-        name: 'valid_name',
-        platform: 'valid_platform',
-        avatarImageUrl: 'valid_url',
-        races: [
-          { track: 'valid_track', startDate: 'valid_start_date' },
-          { track: 'valid_track', startDate: 'valid_start_date' },
-          { track: 'valid_track', startDate: 'valid_start_date' }
-        ],
-        teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
-        drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
-        pendentDrivers: [],
-        admins: [],
-        scoringSystem: { 1: 25 },
-        penalties: [{ name: 'Colisão', points: 1 }]
-      }
+    expect(createDriversAndTeamsSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }]
     })
-
-    expect(createPenaltiesSpy).toHaveBeenCalledTimes(1)
-    expect(createPenaltiesSpy).toHaveReturnedTimes(1)
-    expect(result.penalties).toStrictEqual(['valid_penalty'])
+    expect(result.teams).toStrictEqual(['valid_team'])
+    expect(result.drivers).toStrictEqual([
+      {
+        user: 'valid_user',
+        isRegistered: true,
+        isRemoved: false,
+        penalties: [],
+        bonifications: []
+      }
+    ])
   })
 
   it('should call S3 Repository if a avatar image is provided on creation', async () => {
@@ -264,7 +335,7 @@ describe('Championship Service', () => {
 
     const dto = {
       id: validChampionship.id,
-      createChampionshipDto: {
+      dto: {
         description: 'valid_description',
         name: 'valid_name',
         platform: 'valid_platform',
@@ -290,159 +361,6 @@ describe('Championship Service', () => {
       fileName: validChampionship.id,
       folderName: 'championship-images'
     })
-  })
-
-  it('should create the Championship', async () => {
-    const { sut, championshipRepositoryStub } = makeSut()
-
-    jest
-      .spyOn(championshipRepositoryStub, 'getOne')
-      .mockReturnValueOnce(Promise.resolve(null))
-
-    const result = await sut.create({
-      id: validChampionship.id,
-      createChampionshipDto: {
-        description: 'valid_description',
-        name: 'valid_name',
-        platform: 'valid_platform',
-        avatarImageUrl: 'valid_url',
-        races: [{ track: 'valid_track', startDate: 'valid_start_date' }],
-        teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
-        drivers: [
-          {
-            user: 'valid_user',
-            isRegistered: true,
-            isRemoved: false,
-            team: 'valid_id'
-          }
-        ],
-        admins: [],
-        scoringSystem: { 1: 25 }
-      }
-    })
-
-    expect(result).toStrictEqual(validChampionship)
-  })
-
-  // it('should create the bonifications and penalties', async () => {
-  //   const { sut, bonificationRepositoryStub, penaltyRepositoryStub } = makeSut()
-
-  //   const result = await sut.createDriversAndTeams({
-  //     drives: validChampionship.drivers,
-  //     teams: validChampionship.teams,
-  //     championship: validChampionship.id
-  //   })
-  // })
-
-  it('should update races', async () => {
-    const { sut, raceRepositoryStub, raceClassificationRepositoryStub } =
-      makeSut()
-
-    const raceRepositoryBulkDeleteSpy = jest.spyOn(
-      raceRepositoryStub,
-      'bulkDelete'
-    )
-    const raceClassificationRepositoryBulkDeleteSpy = jest.spyOn(
-      raceClassificationRepositoryStub,
-      'bulkDelete'
-    )
-    const createRacesSpy = jest.spyOn(sut, 'createRaces' as any)
-
-    await sut.updateRaces({
-      championship: validChampionship.id,
-      races: [
-        {
-          startDate: 'valid_start_date',
-          track: 'valid_track',
-          id: 'valid_race'
-        },
-        { startDate: 'valid_start_date', track: 'valid_track' }
-      ]
-    })
-
-    expect(raceRepositoryBulkDeleteSpy).toHaveBeenCalledWith({
-      ids: ['valid_id']
-    })
-    expect(raceClassificationRepositoryBulkDeleteSpy).toHaveBeenCalledWith({
-      ids: ['valid_classification_id']
-    })
-    expect(createRacesSpy).toHaveBeenCalledWith({
-      championship: validChampionship.id,
-      races: [
-        {
-          id: 'valid_race',
-          startDate: 'valid_start_date',
-          track: 'valid_track'
-        }
-      ]
-    })
-  })
-
-  it('should update a Championship', async () => {
-    const { sut } = makeSut()
-
-    const session = {
-      startTransaction: jest.fn(),
-      commitTransaction: jest.fn(),
-      endSession: jest.fn()
-    }
-
-    jest.spyOn(mongoose, 'startSession').mockImplementationOnce(() => session)
-
-    const prepareToUpdateSpy = jest.spyOn(sut, 'prepareToUpdate')
-    const createDriversAndTeamsSpy = jest.spyOn(
-      sut,
-      'createDriversAndTeams' as any
-    )
-    const createPenaltiesAndBonificationsSpy = jest.spyOn(
-      sut,
-      'createPenaltiesAndBonifications' as any
-    )
-    const updateRacesSpy = jest.spyOn(sut, 'updateRaces' as any)
-
-    const result = await sut.update(validChampionship.id, {
-      bonifications: [
-        { name: 'valid_bonification', points: 1, id: 'valid_id' }
-      ],
-      drivers: [
-        { isRegistered: true, isRemoved: false, team: '1', user: 'valid_user' }
-      ],
-      penalties: [{ name: 'valid_penalty', points: 1, id: 'valid_id' }],
-      teams: [{ id: '1', name: 'Mercedes', color: 'color' }],
-      scoringSystem: { 1: 25 },
-      races: [
-        { startDate: 'valid_start_date', track: 'valid_track', id: 'valid_id' },
-        { startDate: 'valid_start_date', track: 'valid_track' }
-      ]
-    })
-
-    expect(prepareToUpdateSpy).toHaveBeenCalledWith(validChampionship, session)
-    expect(createDriversAndTeamsSpy).toHaveBeenCalledWith({
-      championship: validChampionship.id,
-      drivers: [
-        { isRegistered: true, isRemoved: false, team: '1', user: 'valid_user' }
-      ],
-      teams: [{ id: '1', name: 'Mercedes', color: 'color' }],
-      session
-    })
-    expect(createPenaltiesAndBonificationsSpy).toHaveBeenCalledWith({
-      championship: validChampionship.id,
-      penalties: [{ name: 'valid_penalty', points: 1, id: 'valid_id' }],
-      bonifications: [
-        { name: 'valid_bonification', points: 1, id: 'valid_id' }
-      ],
-      session
-    })
-    expect(updateRacesSpy).toHaveBeenCalledWith({
-      championship: validChampionship.id,
-      races: [
-        { startDate: 'valid_start_date', track: 'valid_track', id: 'valid_id' },
-        { startDate: 'valid_start_date', track: 'valid_track' }
-      ],
-      session
-    })
-
-    expect(result).toStrictEqual(validChampionship)
   })
 
   it('should get a Championship by ID', async () => {

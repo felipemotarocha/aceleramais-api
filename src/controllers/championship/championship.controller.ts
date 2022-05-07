@@ -10,7 +10,7 @@ import {
   HttpRequest,
   HttpResponse
 } from '../../protocols/controllers.protocols'
-import { ChampionshipServiceAbstract } from '../../services/championship/championship.service'
+import { ChampionshipServiceAbstract } from '../../services/championship/championship.service.types'
 import { DriverStandingsServiceAbstract } from '../../services/driver-standings/driver-standings.service'
 import { RaceClassificationServiceAbstract } from '../../services/race-classification/race-classification.service'
 import { TeamStandingsServiceAbstract } from '../../services/team-standings/team-standings.service'
@@ -43,7 +43,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       if (errorResponse) return errorResponse
 
       const championship = await this.championshipService.create({
-        createChampionshipDto: { ...body, avatarImage: httpRequest.file }
+        dto: { ...body, avatarImage: httpRequest.file }
       })
 
       return created(championship)
@@ -74,10 +74,10 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
 
       if (errorResponse) return errorResponse
 
-      const championship = await this.championshipService.update(
-        httpRequest.params.id,
-        { ...body, avatarImage: httpRequest.file }
-      )
+      const championship = await this.championshipService.update({
+        id: httpRequest.params.id,
+        dto: { ...body, avatarImage: httpRequest.file }
+      })
 
       await this.raceClassificationService.refresh(httpRequest.params.id)
       await this.driverStandingsService.refresh(httpRequest.params.id)

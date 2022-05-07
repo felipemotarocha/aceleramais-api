@@ -8,7 +8,6 @@ import Championship from '../../entities/championship.entity'
 import Penalty from '../../entities/penalty.entity'
 import Race from '../../entities/race.entity'
 import Team from '../../entities/team.entity'
-import User from '../../entities/user.entity'
 
 export interface PrepareToUpdateParams {
   championship: Championship
@@ -35,6 +34,12 @@ export interface CreateDriversAndTeamsParams {
   session?: ClientSession
 }
 
+export interface CreateRacesParams {
+  championship: string
+  races: CreateChampionshipDto['races']
+  session?: ClientSession
+}
+
 export interface ChampionshipServiceHelperAbstract {
   prepareToUpdate(params: PrepareToUpdateParams): Promise<void>
   updateRaces(params: UpdateRacesParams): Promise<Race[]>
@@ -46,5 +51,6 @@ export interface ChampionshipServiceHelperAbstract {
   }>
   createDriversAndTeams(
     params: CreateDriversAndTeamsParams
-  ): Promise<{ drivers: User[]; teams: Team[] }>
+  ): Promise<{ drivers: CreateChampionshipDto['drivers']; teams: Team[] }>
+  createRaces(params: CreateRacesParams): Promise<Race[]>
 }

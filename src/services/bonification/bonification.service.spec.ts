@@ -1,16 +1,12 @@
 import { BonificationRepositoryAbstract } from '../../repositories/bonification/bonification.repository'
-import { BonificationRepositoryStub } from '../../repositories/bonification/bonification.repository.stub'
+import {
+  BonificationRepositoryStub,
+  validBonification
+} from '../../repositories/bonification/bonification.repository.stub'
 import {
   BonificationService,
   BonificationServiceAbstract
 } from './bonification.service'
-
-export const validBonification = {
-  id: 'valid_id',
-  championship: 'valid_championship',
-  name: 'Volta mais rápida',
-  points: 1
-}
 
 describe('Bonification Service', () => {
   interface SutTypes {

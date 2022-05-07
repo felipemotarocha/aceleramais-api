@@ -25,53 +25,83 @@ import { S3Repository } from '../repositories/s3/s3.repository'
 
 // Services
 import { ChampionshipService } from '../services/championship/championship.service'
+import { ChampionshipServiceHelperAbstract } from '../services/championship/championship.service-helper.types'
+import ChampionshipServiceHelper from '../services/championship/championship.service-helper'
 
 // Factories
 import { makeDriverStandingsService } from './driver-standings.factory'
 import { makeTeamStandingsService } from './team-standings.factory'
 import { makeRaceClassificationService } from './race-classification.factory'
 
-const makeChampionshipController = (): ChampionshipController => {
+const makeChampionshipServiceHelper = (): ChampionshipServiceHelperAbstract => {
   const championshipRepository = new MongoChampionshipRepository(
     ChampionshipModel
   )
   const teamRepository = new MongoTeamRepository(TeamModel)
-  const driverStandingsRepository = new MongoDriverStandingsRepository(
-    DriverStandingsModel
-  )
-  const teamStandingsRepository = new MongoTeamStandingsRepository(
-    TeamStandingsModel
-  )
+
   const scoringSystemRepository = new MongoScoringSystemRepository(
     ScoringSystemModel
   )
   const raceRepository = new MongoRaceRepository(RaceModel)
+
   const raceClassificationRepository = new MongoRaceClassificationRepository(
     RaceClassificationModel
   )
+
   const bonificationRepository = new MongoBonificationRepository(
     BonificationModel
   )
+
   const penaltyRepository = new MongoPenaltyRepository(PenaltyModel)
+
+  return new ChampionshipServiceHelper(
+    championshipRepository,
+    teamRepository,
+    scoringSystemRepository,
+    bonificationRepository,
+    penaltyRepository,
+    raceRepository,
+    raceClassificationRepository
+  )
+}
+
+const makeChampionshipService = () => {
+  const championshipRepository = new MongoChampionshipRepository(
+    ChampionshipModel
+  )
+
+  const driverStandingsRepository = new MongoDriverStandingsRepository(
+    DriverStandingsModel
+  )
+
+  const teamStandingsRepository = new MongoTeamStandingsRepository(
+    TeamStandingsModel
+  )
+
+  const scoringSystemRepository = new MongoScoringSystemRepository(
+    ScoringSystemModel
+  )
 
   const s3Repository = new S3Repository()
 
-  const championshipService = new ChampionshipService(
+  const championshipServiceHelper = makeChampionshipServiceHelper()
+
+  return new ChampionshipService(
+    championshipServiceHelper,
     championshipRepository,
-    teamRepository,
     driverStandingsRepository,
     teamStandingsRepository,
     scoringSystemRepository,
-    raceRepository,
-    raceClassificationRepository,
-    bonificationRepository,
-    penaltyRepository,
     s3Repository
   )
+}
 
+const makeChampionshipController = (): ChampionshipController => {
   const raceClassificationService = makeRaceClassificationService()
   const driverStandingsService = makeDriverStandingsService()
   const teamStandingsService = makeTeamStandingsService()
+
+  const championshipService = makeChampionshipService()
 
   return new ChampionshipController(
     championshipService,

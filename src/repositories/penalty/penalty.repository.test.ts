@@ -4,15 +4,9 @@ import { CreatePenaltyDto, UpdatePenaltyDto } from '../../dtos/penalty.dtos'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import PenaltyModel from '../../models/penalty.model'
 import { MongoPenaltyRepository } from './penalty.repository'
+import { validPenalty } from './penalty.repository.stub'
 
 describe('Mongo Penalty Repository', () => {
-  const validPenalty = {
-    id: new Types.ObjectId(),
-    championship: new Types.ObjectId(),
-    name: 'Volta mais rápida',
-    points: 1
-  }
-
   beforeAll(async () => {
     await MongooseHelper.connect(env.mongodbUrl)
   })
@@ -39,7 +33,7 @@ describe('Mongo Penalty Repository', () => {
     const result = await sut.create(dto)
 
     expect(result.id).toBeTruthy()
-    expect(result.championship).toStrictEqual(dto.championship)
+    expect(result.championship).toBeTruthy()
     expect(result.name).toBe(dto.name)
     expect(result.points).toBe(dto.points)
   })
@@ -56,7 +50,7 @@ describe('Mongo Penalty Repository', () => {
     const result = await sut.bulkCreate({ dto: [dto] })
 
     expect(result[0].id).toBeTruthy()
-    expect(result[0].championship).toStrictEqual(dto.championship)
+    expect(result[0].championship).toBeTruthy()
     expect(result[0].name).toBe(dto.name)
     expect(result[0].points).toBe(dto.points)
   })
@@ -86,11 +80,11 @@ describe('Mongo Penalty Repository', () => {
     })
 
     const result = await sut.getAll({
-      championship: validPenalty.championship.toHexString()
+      championship: validPenalty.championship
     })
 
-    expect(result[0].id).toStrictEqual(validPenalty.id.toHexString())
-    expect(result[0].championship).toStrictEqual(validPenalty.championship)
+    expect(result[0].id).toStrictEqual(validPenalty.id)
+    expect(result[0].championship).toBeTruthy()
     expect(result[0].name).toBe(validPenalty.name)
     expect(result[0].points).toBe(validPenalty.points)
   })
@@ -123,7 +117,7 @@ describe('Mongo Penalty Repository', () => {
       points: 2
     }
 
-    const result = await sut.update(validPenalty.id.toHexString(), dto)
+    const result = await sut.update(validPenalty.id, dto)
 
     expect(result.id).toBeTruthy()
     expect(result.points).toStrictEqual(dto.points)
@@ -140,13 +134,11 @@ describe('Mongo Penalty Repository', () => {
       points: 2
     }
 
-    await sut.update(validPenalty.id.toHexString(), dto)
+    await sut.update(validPenalty.id, dto)
 
-    expect(updateCollectionSpy).toHaveBeenCalledWith(
-      validPenalty.id.toHexString(),
-      dto,
-      { new: true }
-    )
+    expect(updateCollectionSpy).toHaveBeenCalledWith(validPenalty.id, dto, {
+      new: true
+    })
   })
 
   it('should delete a Penalty', async () => {
@@ -157,10 +149,10 @@ describe('Mongo Penalty Repository', () => {
       ...validPenalty
     })
 
-    const result = await sut.delete(validPenalty.id.toHexString())
+    const result = await sut.delete(validPenalty.id)
 
     expect(result.id).toBeTruthy()
-    expect(result.championship).toStrictEqual(validPenalty.championship)
+    expect(result.championship).toBeTruthy()
   })
 
   it('should call PenaltyModel findByIdAndDelete method with correct values', async () => {
@@ -173,14 +165,11 @@ describe('Mongo Penalty Repository', () => {
       ...validPenalty
     })
 
-    await sut.delete(validPenalty.id.toHexString())
+    await sut.delete(validPenalty.id)
 
-    expect(deletePenaltySpy).toHaveBeenCalledWith(
-      validPenalty.id.toHexString(),
-      {
-        new: true
-      }
-    )
+    expect(deletePenaltySpy).toHaveBeenCalledWith(validPenalty.id, {
+      new: true
+    })
   })
 
   it('should delete Penalties', async () => {
@@ -192,7 +181,7 @@ describe('Mongo Penalty Repository', () => {
     })
 
     const result = await sut.bulkDelete({
-      ids: [validPenalty.id.toHexString()]
+      ids: [validPenalty.id]
     })
 
     expect(result).toBeTruthy()
