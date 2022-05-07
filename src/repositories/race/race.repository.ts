@@ -46,7 +46,7 @@ class MongoRaceRepository implements RaceRepositoryAbstract {
   ): Promise<Race[]> {
     const races = await this.RaceModel.find(params.dto || {}, null, {
       session: params?.session
-    }).clone()
+    })
 
     return races.map((race) => MongooseHelper.map<Race>(race.toJSON()))
   }

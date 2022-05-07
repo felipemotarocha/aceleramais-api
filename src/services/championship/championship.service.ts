@@ -14,8 +14,8 @@ import {
   ScoringSystemRepositoryAbstract,
   startSession,
   TeamStandingsRepositoryAbstract,
-  Types,
-  UpdateParams
+  UpdateParams,
+  Types
 } from '.'
 
 export class ChampionshipService implements ChampionshipServiceAbstract {
