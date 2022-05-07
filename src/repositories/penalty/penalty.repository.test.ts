@@ -53,7 +53,7 @@ describe('Mongo Penalty Repository', () => {
       points: 1
     }
 
-    const result = await sut.bulkCreate([dto])
+    const result = await sut.bulkCreate({ dto: [dto] })
 
     expect(result[0].id).toBeTruthy()
     expect(result[0].championship).toStrictEqual(dto.championship)
@@ -191,7 +191,9 @@ describe('Mongo Penalty Repository', () => {
       ...validPenalty
     })
 
-    const result = await sut.bulkDelete([validPenalty.id.toHexString()])
+    const result = await sut.bulkDelete({
+      ids: [validPenalty.id.toHexString()]
+    })
 
     expect(result).toBeTruthy()
   })

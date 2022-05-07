@@ -45,7 +45,7 @@ describe('Mongo Race Repository', () => {
       startDate: 'valid_start_date'
     }
 
-    const result = await sut.create(dto)
+    const result = await sut.create({ dto })
 
     expect(result.id).toBeTruthy()
     expect(result.championship).toStrictEqual(dto.championship)
@@ -66,9 +66,11 @@ describe('Mongo Race Repository', () => {
       startDate: 'valid_start_date'
     }
 
-    await sut.create(dto)
+    await sut.create({ dto })
 
-    expect(createCollectionSpy).toHaveBeenCalledWith(dto)
+    expect(createCollectionSpy).toHaveBeenCalledWith([dto], {
+      session: undefined
+    })
   })
 
   it('should get a Race by ID', async () => {
@@ -126,7 +128,7 @@ describe('Mongo Race Repository', () => {
 
     await RaceModel.create([{ _id: dto.id, ...dto }])
 
-    const result = await sut.getAll({ championship: dto.championship })
+    const result = await sut.getAll({ dto: { championship: dto.championship } })
 
     expect(result[0].id).toBeTruthy()
     expect(result[0].championship).toStrictEqual(dto.championship)
@@ -150,11 +152,15 @@ describe('Mongo Race Repository', () => {
 
     await RaceModel.create([{ _id: dto.id, ...dto }])
 
-    await sut.getAll({ championship: dto.championship })
+    await sut.getAll({ dto: { championship: dto.championship } })
 
-    expect(createCollectionSpy).toHaveBeenCalledWith({
-      championship: dto.championship
-    })
+    expect(createCollectionSpy).toHaveBeenCalledWith(
+      {
+        championship: dto.championship
+      },
+      null,
+      { session: undefined }
+    )
   })
 
   it('should update a Race', async () => {
@@ -212,7 +218,7 @@ describe('Mongo Race Repository', () => {
 
     await RaceModel.create([{ _id: dto.id, ...dto }])
 
-    const result = await sut.bulkDelete([dto.id as any])
+    const result = await sut.bulkDelete({ ids: [dto.id as any] })
 
     expect(result).toBe(1)
   })

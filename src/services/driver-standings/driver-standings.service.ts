@@ -68,7 +68,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
     })
 
     const races = await this.raceRepository.getAll({
-      championship: _championship
+      dto: { championship: _championship }
     })
 
     const _raceClassifications = await this.raceClassificationRepository.getAll(

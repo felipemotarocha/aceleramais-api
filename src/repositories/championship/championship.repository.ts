@@ -5,21 +5,20 @@ import {
 import Championship from '../../entities/championship.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import ChampionshipModel from '../../models/championship.model'
+import { BaseRepositoryParams } from '../base.repository'
 import ChampionshipRepositoryHelpers from './championship.repository.helpers'
 
 export interface ChampionshipRepositoryAbstract {
   create(
     createChampionshipDto: CreateChampionshipMongoDto
   ): Promise<Championship>
-  getOne({
-    id,
-    code,
-    fullPopulate
-  }: {
-    id?: string
-    code?: string
-    fullPopulate?: boolean
-  }): Promise<Championship | null>
+  getOne(
+    params: BaseRepositoryParams & {
+      id?: string
+      code?: string
+      fullPopulate?: boolean
+    }
+  ): Promise<Championship | null>
   getAll({
     driver,
     admin
@@ -29,8 +28,10 @@ export interface ChampionshipRepositoryAbstract {
     nameOrCode?: string
   }): Promise<Championship[]>
   update(
-    id: string,
-    updateChampionshipDto: UpdateChampionshipMongoDto
+    params: BaseRepositoryParams & {
+      id: string
+      dto: UpdateChampionshipMongoDto
+    }
   ): Promise<Championship>
 }
 
@@ -52,26 +53,26 @@ implements ChampionshipRepositoryAbstract {
     return MongooseHelper.map<Championship>(championship.toJSON())
   }
 
-  async getOne({
-    id,
-    code,
-    fullPopulate
-  }: {
-    id: string
-    code?: string
-    fullPopulate?: boolean
-  }): Promise<Championship | null> {
+  async getOne(
+    params: BaseRepositoryParams & {
+      id?: string
+      code?: string
+      fullPopulate?: boolean
+    }
+  ): Promise<Championship | null> {
+    const { id, code, fullPopulate, session } = params
+
     let championship: any
 
     if (code) {
       championship = await this.championshipModel
-        .findOne({ code })
+        .findOne({ code }, null, { session })
         .populate(
           ChampionshipRepositoryHelpers.handlePopulate(fullPopulate || false)
         )
     } else if (id) {
       championship = await this.championshipModel
-        .findById(id)
+        .findById(id, null, { session })
         .populate(
           ChampionshipRepositoryHelpers.handlePopulate(fullPopulate || false)
         )
@@ -141,11 +142,16 @@ implements ChampionshipRepositoryAbstract {
     return []
   }
 
-  async update(id: string, updateChampionshipDto: UpdateChampionshipMongoDto) {
+  async update(
+    params: BaseRepositoryParams & {
+      id: string
+      dto: UpdateChampionshipMongoDto
+    }
+  ) {
     return await this.championshipModel.findByIdAndUpdate(
-      id,
-      updateChampionshipDto,
-      { new: true }
+      params.id,
+      params.dto,
+      { new: true, session: params?.session }
     )
   }
 }

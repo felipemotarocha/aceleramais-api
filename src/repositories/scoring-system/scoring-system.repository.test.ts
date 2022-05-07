@@ -37,7 +37,7 @@ describe('Mongo Scoring System Repository', () => {
       scoringSystem: { 1: 25, 2: 20 }
     }
 
-    const result = await sut.create(dto)
+    const result = await sut.create({ dto })
 
     expect(result.id).toBeTruthy()
     expect(result.championship).toStrictEqual(dto.championship)
@@ -54,9 +54,11 @@ describe('Mongo Scoring System Repository', () => {
       scoringSystem: { 1: 25, 2: 20 }
     }
 
-    await sut.create(dto)
+    await sut.create({ dto })
 
-    expect(createScoringSystemSpy).toHaveBeenCalledWith(dto)
+    expect(createScoringSystemSpy).toHaveBeenCalledWith([dto], {
+      session: undefined
+    })
   })
 
   it('should get a Scoring System by Championship', async () => {
@@ -145,7 +147,7 @@ describe('Mongo Scoring System Repository', () => {
       ...validScoringSystem
     })
 
-    const result = await sut.delete(validScoringSystem.id.toHexString())
+    const result = await sut.delete({ id: validScoringSystem.id.toHexString() })
 
     expect(result.id).toBeTruthy()
     expect(result.championship).toStrictEqual(validScoringSystem.championship)
@@ -165,7 +167,7 @@ describe('Mongo Scoring System Repository', () => {
       ...validScoringSystem
     })
 
-    await sut.delete(validScoringSystem.id.toHexString())
+    await sut.delete({ id: validScoringSystem.id.toHexString() })
 
     expect(deleteScoringSystemSpy).toHaveBeenCalledWith(
       validScoringSystem.id.toHexString(),

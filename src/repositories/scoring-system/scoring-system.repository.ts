@@ -5,15 +5,22 @@ import {
 import ScoringSystem from '../../entities/scoring-system.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import ScoringSystemModel from '../../models/scoring-system.model'
+import { BaseRepositoryParams } from '../base.repository'
 
 export interface ScoringSystemRepositoryAbstract {
-  create(createScoringSystemDto: CreateScoringSystemDto): Promise<ScoringSystem>
+  create(
+    params: BaseRepositoryParams & { dto: CreateScoringSystemDto }
+  ): Promise<ScoringSystem>
   getOne({ championship }: { championship: string }): Promise<ScoringSystem>
   update(
     id: string,
     updateScoringSystemDto: UpdateScoringSystemDto
   ): Promise<ScoringSystem>
-  delete(id: string): Promise<ScoringSystem>
+  delete(
+    params: BaseRepositoryParams & {
+      id: string
+    }
+  ): Promise<ScoringSystem>
 }
 
 export class MongoScoringSystemRepository
@@ -25,13 +32,13 @@ implements ScoringSystemRepositoryAbstract {
   }
 
   async create(
-    createScoringSystemDto: CreateScoringSystemDto
+    params: BaseRepositoryParams & { dto: CreateScoringSystemDto }
   ): Promise<ScoringSystem> {
-    const scoringSystem = await this.scoringSystemModel.create(
-      createScoringSystemDto
-    )
+    const scoringSystem = await this.scoringSystemModel.create([params.dto], {
+      session: params?.session
+    })
 
-    return MongooseHelper.map<ScoringSystem>(scoringSystem.toJSON())
+    return MongooseHelper.map<ScoringSystem>(scoringSystem[0].toJSON())
   }
 
   async getOne({
@@ -59,10 +66,17 @@ implements ScoringSystemRepositoryAbstract {
     return MongooseHelper.map<ScoringSystem>(scoringSystem.toJSON())
   }
 
-  async delete(id: string): Promise<ScoringSystem> {
-    const scoringSystem = await this.scoringSystemModel.findByIdAndDelete(id, {
-      new: true
-    })
+  async delete(
+    params: BaseRepositoryParams & { id: string }
+  ): Promise<ScoringSystem> {
+    const scoringSystem = await this.scoringSystemModel
+      .findByIdAndDelete(params.id, {
+        new: true,
+        session: params?.session
+      })
+      .session(params.session!)
+
+    if (!scoringSystem) return null as any
 
     return MongooseHelper.map<ScoringSystem>(scoringSystem.toJSON())
   }

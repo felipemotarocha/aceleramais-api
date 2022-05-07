@@ -107,13 +107,16 @@ describe('Mongo Driver Standings Repository', () => {
 
     const bonifications: any[] = [new Types.ObjectId()]
 
-    const result = await sut.update(championship.id, {
-      bonifications,
-      penalties: [],
-      drivers: [],
-      pendentDrivers: [],
-      teams: [],
-      scoringSystem: new Types.ObjectId() as any
+    const result = await sut.update({
+      id: championship.id,
+      dto: {
+        bonifications,
+        penalties: [],
+        drivers: [],
+        pendentDrivers: [],
+        teams: [],
+        scoringSystem: new Types.ObjectId() as any
+      }
     })
 
     expect(result.bonifications).toStrictEqual(bonifications)
@@ -191,7 +194,9 @@ describe('Mongo Driver Standings Repository', () => {
 
     await sut.getOne({ id: dto.id as any })
 
-    expect(getOneChampionshipSpy).toHaveBeenCalledWith(dto.id)
+    expect(getOneChampionshipSpy).toHaveBeenCalledWith(dto.id, null, {
+      session: undefined
+    })
   })
 
   it('should get a Championship by Drivers', async () => {

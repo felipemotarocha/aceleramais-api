@@ -27,11 +27,13 @@ class RaceService implements RaceServiceAbstract {
   }
 
   async create(createRaceDto: CreateRaceDto): Promise<Race> {
-    const race = await this.raceRepository.create(createRaceDto)
+    const race = await this.raceRepository.create({ dto: createRaceDto })
 
     const raceClassification = await this.raceClassificationRepository.create({
-      race: race.id,
-      classification: []
+      dto: {
+        race: race.id,
+        classification: []
+      }
     })
 
     return await this.raceRepository.update(race.id, {
@@ -44,7 +46,7 @@ class RaceService implements RaceServiceAbstract {
   }
 
   async getAll(getAllRacesDto: GetAllRacesDto): Promise<Race[]> {
-    return await this.raceRepository.getAll(getAllRacesDto)
+    return await this.raceRepository.getAll({ dto: getAllRacesDto })
   }
 
   async update(id: string, updateRaceDto: UpdateRaceDto): Promise<Race> {

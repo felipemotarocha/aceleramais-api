@@ -1,3 +1,4 @@
+import { ClientSession } from 'mongoose'
 import {
   CreateBonificationDto,
   UpdateBonificationDto
@@ -5,19 +6,23 @@ import {
 import Bonification from '../../entities/bonification.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import BonificationModel from '../../models/bonification.model'
+import { BaseRepositoryParams } from '../base.repository'
 
 export interface BonificationRepositoryAbstract {
   getAll({ championship }: { championship: string }): Promise<Bonification[]>
   create(createBonificationDto: CreateBonificationDto): Promise<Bonification>
   bulkCreate(
-    bulkCreateBonificationDto: CreateBonificationDto[]
+    params: BaseRepositoryParams & { dto: CreateBonificationDto[] }
   ): Promise<Bonification[]>
   update(
     id: string,
     updateBonificationDto: UpdateBonificationDto
   ): Promise<Bonification>
   delete(id: string): Promise<Bonification>
-  bulkDelete(ids: string[]): Promise<number>
+  bulkDelete(params: {
+    ids: string[]
+    session?: ClientSession
+  }): Promise<number>
 }
 
 export class MongoBonificationRepository
@@ -51,11 +56,11 @@ implements BonificationRepositoryAbstract {
   }
 
   async bulkCreate(
-    bulkCreateBonificationDto: CreateBonificationDto[]
+    params: BaseRepositoryParams & { dto: CreateBonificationDto[] }
   ): Promise<Bonification[]> {
-    const bonifications = await this.bonificationModel.create(
-      bulkCreateBonificationDto
-    )
+    const bonifications = await this.bonificationModel.create(params.dto, {
+      session: params?.session
+    })
 
     return bonifications.map((team) => MongooseHelper.map(team.toJSON()))
   }
@@ -81,10 +86,16 @@ implements BonificationRepositoryAbstract {
     return MongooseHelper.map<Bonification>(bonification.toJSON())
   }
 
-  async bulkDelete(ids: string[]): Promise<number> {
-    const { deletedCount } = await this.bonificationModel.deleteMany({
-      _id: ids
-    })
+  async bulkDelete(params: {
+    ids: string[]
+    session?: ClientSession
+  }): Promise<number> {
+    const { deletedCount } = await this.bonificationModel.deleteMany(
+      {
+        _id: params.ids
+      },
+      { session: params?.session }
+    )
 
     return deletedCount
   }

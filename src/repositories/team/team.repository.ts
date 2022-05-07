@@ -1,15 +1,22 @@
+import { ClientSession } from 'mongoose'
 import { CreateTeamDto, UpdateTeamDto } from '../../dtos/team.dtos'
 import Team from '../../entities/team.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import _TeamModel from '../../models/team.model'
+import { BaseRepositoryParams } from '../base.repository'
 
 export interface TeamRepositoryAbstract {
   create(createTeamDto: CreateTeamDto): Promise<Team>
-  bulkCreate(bulkCreateTeamDto: CreateTeamDto[]): Promise<Team[]>
+  bulkCreate(
+    params: BaseRepositoryParams & { dto: CreateTeamDto[] }
+  ): Promise<Team[]>
   getAll({ championship }: { championship: string }): Promise<Team[]>
   update(id: string, updateTeamDto: UpdateTeamDto): Promise<Team>
   delete(id: string): Promise<Team>
-  bulkDelete(ids: string[]): Promise<number>
+  bulkDelete(params: {
+    ids: string[]
+    session?: ClientSession
+  }): Promise<number>
 }
 
 export class MongoTeamRepository implements TeamRepositoryAbstract {
@@ -25,8 +32,12 @@ export class MongoTeamRepository implements TeamRepositoryAbstract {
     return MongooseHelper.map<Team>(team.toJSON())
   }
 
-  async bulkCreate(bulkCreateTeamDto: CreateTeamDto[]): Promise<Team[]> {
-    const teams = await this.TeamModel.create(bulkCreateTeamDto)
+  async bulkCreate(
+    params: BaseRepositoryParams & { dto: CreateTeamDto[] }
+  ): Promise<Team[]> {
+    const teams = await this.TeamModel.create(params.dto, {
+      session: params?.session
+    })
 
     return teams.map((team) => MongooseHelper.map(team.toJSON()))
   }
@@ -51,11 +62,14 @@ export class MongoTeamRepository implements TeamRepositoryAbstract {
     return MongooseHelper.map<Team>(team.toJSON())
   }
 
-  async bulkDelete(ids: string[]): Promise<number> {
+  async bulkDelete(params: {
+    ids: string[]
+    session?: ClientSession
+  }): Promise<number> {
     const { deletedCount } = await this.TeamModel.deleteMany(
-      { _id: ids },
-      { new: true }
-    )
+      { _id: params.ids },
+      { new: true, session: params?.session }
+    ).session(params.session!)
 
     return deletedCount
   }

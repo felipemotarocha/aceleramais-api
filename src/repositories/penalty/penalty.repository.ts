@@ -1,15 +1,22 @@
+import { ClientSession } from 'mongoose'
 import { CreatePenaltyDto, UpdatePenaltyDto } from '../../dtos/penalty.dtos'
 import Penalty from '../../entities/penalty.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import PenaltyModel from '../../models/penalty.model'
+import { BaseRepositoryParams } from '../base.repository'
 
 export interface PenaltyRepositoryAbstract {
   getAll({ championship }: { championship: string }): Promise<Penalty[]>
   create(createPenaltyDto: CreatePenaltyDto): Promise<Penalty>
-  bulkCreate(bulkCreatePenaltyDto: CreatePenaltyDto[]): Promise<Penalty[]>
+  bulkCreate(
+    params: BaseRepositoryParams & { dto: CreatePenaltyDto[] }
+  ): Promise<Penalty[]>
   update(id: string, updatePenaltyDto: UpdatePenaltyDto): Promise<Penalty>
   delete(id: string): Promise<Penalty>
-  bulkDelete(ids: string[]): Promise<number>
+  bulkDelete(params: {
+    ids: string[]
+    session?: ClientSession
+  }): Promise<number>
 }
 
 export class MongoPenaltyRepository implements PenaltyRepositoryAbstract {
@@ -34,9 +41,11 @@ export class MongoPenaltyRepository implements PenaltyRepositoryAbstract {
   }
 
   async bulkCreate(
-    bulkCreatePenaltyDto: CreatePenaltyDto[]
+    params: BaseRepositoryParams & { dto: CreatePenaltyDto[] }
   ): Promise<Penalty[]> {
-    const penalties = await this.penaltyModel.create(bulkCreatePenaltyDto)
+    const penalties = await this.penaltyModel.create(params.dto, {
+      session: params?.session
+    })
 
     return penalties.map((team) => MongooseHelper.map(team.toJSON()))
   }
@@ -62,10 +71,16 @@ export class MongoPenaltyRepository implements PenaltyRepositoryAbstract {
     return MongooseHelper.map<Penalty>(penalty.toJSON())
   }
 
-  async bulkDelete(ids: string[]): Promise<number> {
-    const { deletedCount } = await this.penaltyModel.deleteMany({
-      _id: ids
-    })
+  async bulkDelete(params: {
+    ids: string[]
+    session?: ClientSession
+  }): Promise<number> {
+    const { deletedCount } = await this.penaltyModel.deleteMany(
+      {
+        _id: params.ids
+      },
+      { session: params?.session }
+    )
 
     return deletedCount
   }

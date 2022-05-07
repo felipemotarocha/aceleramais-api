@@ -6,13 +6,16 @@ import {
 import Race from '../../entities/race.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import _RaceModel from '../../models/race.model'
+import { BaseRepositoryParams } from '../base.repository'
 
 export interface RaceRepositoryAbstract {
-  create(createRaceDto: CreateRaceDto): Promise<Race>
+  create(params: BaseRepositoryParams & { dto: CreateRaceDto }): Promise<Race>
   getOne(id: string): Promise<Race>
-  getAll(getAllRacesDto: GetAllRacesDto): Promise<Race[]>
+  getAll(
+    params: BaseRepositoryParams & { dto: GetAllRacesDto }
+  ): Promise<Race[]>
   update(id: string, updateRaceDto: UpdateRaceDto): Promise<Race>
-  bulkDelete(ids: string[]): Promise<number>
+  bulkDelete(params: BaseRepositoryParams & { ids: string[] }): Promise<number>
 }
 
 class MongoRaceRepository implements RaceRepositoryAbstract {
@@ -22,10 +25,14 @@ class MongoRaceRepository implements RaceRepositoryAbstract {
     this.RaceModel = RaceModel
   }
 
-  async create(createRaceDto: CreateRaceDto): Promise<Race> {
-    const race = await this.RaceModel.create(createRaceDto)
+  async create(
+    params: BaseRepositoryParams & { dto: CreateRaceDto }
+  ): Promise<Race> {
+    const race = await this.RaceModel.create([params.dto], {
+      session: params.session
+    })
 
-    return MongooseHelper.map<Race>(race.toJSON())
+    return MongooseHelper.map<Race>(race[0].toJSON())
   }
 
   async getOne(id: string): Promise<Race> {
@@ -34,8 +41,12 @@ class MongoRaceRepository implements RaceRepositoryAbstract {
     return MongooseHelper.map<Race>(race.toJSON())
   }
 
-  async getAll(getAllRacesDto: GetAllRacesDto): Promise<Race[]> {
-    const races = await this.RaceModel.find(getAllRacesDto || {})
+  async getAll(
+    params: BaseRepositoryParams & { dto: GetAllRacesDto }
+  ): Promise<Race[]> {
+    const races = await this.RaceModel.find(params.dto || {}, null, {
+      session: params?.session
+    }).clone()
 
     return races.map((race) => MongooseHelper.map<Race>(race.toJSON()))
   }
@@ -46,8 +57,13 @@ class MongoRaceRepository implements RaceRepositoryAbstract {
     return MongooseHelper.map<Race>(race.toJSON())
   }
 
-  async bulkDelete(ids: string[]): Promise<number> {
-    const { deletedCount } = await this.RaceModel.deleteMany({ _id: ids })
+  async bulkDelete(
+    params: BaseRepositoryParams & { ids: string[] }
+  ): Promise<number> {
+    const { deletedCount } = await this.RaceModel.deleteMany(
+      { _id: params.ids },
+      { session: params?.session }
+    )
 
     return deletedCount
   }

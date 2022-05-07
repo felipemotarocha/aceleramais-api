@@ -5,10 +5,11 @@ import {
 import RaceClassification from '../../entities/race-classification.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import _RaceClassificationModel from '../../models/race-classification.model'
+import { BaseRepositoryParams } from '../base.repository'
 
 export interface RaceClassificationRepositoryAbstract {
   create(
-    createRaceClassificationDto: CreateRaceClassificationDto
+    params: BaseRepositoryParams & { dto: CreateRaceClassificationDto }
   ): Promise<RaceClassification>
   getOne(race: string): Promise<RaceClassification>
   getAll(races: string[]): Promise<RaceClassification[]>
@@ -16,7 +17,7 @@ export interface RaceClassificationRepositoryAbstract {
     id: string,
     updateRaceClassificationDto: UpdateRaceClassificationDto
   ): Promise<RaceClassification>
-  bulkDelete(ids: string[]): Promise<number>
+  bulkDelete(params: BaseRepositoryParams & { ids: string[] }): Promise<number>
 }
 
 export class MongoRaceClassificationRepository
@@ -28,18 +29,19 @@ implements RaceClassificationRepositoryAbstract {
   }
 
   async create(
-    createRaceClassificationDto: CreateRaceClassificationDto
+    params: BaseRepositoryParams & { dto: CreateRaceClassificationDto }
   ): Promise<RaceClassification> {
     const raceClassification = await this.RaceClassificationModel.create(
-      createRaceClassificationDto
+      [params.dto],
+      { session: params?.session }
     )
 
-    const classification = raceClassification.classification.map((item) =>
+    const classification = raceClassification[0].classification.map((item) =>
       item.toJSON()
     )
 
     return {
-      ...MongooseHelper.map<RaceClassification>(raceClassification.toJSON()),
+      ...MongooseHelper.map<RaceClassification>(raceClassification[0].toJSON()),
       classification
     }
   }
@@ -90,10 +92,15 @@ implements RaceClassificationRepositoryAbstract {
     }
   }
 
-  async bulkDelete(ids: string[]): Promise<number> {
-    const { deletedCount } = await this.RaceClassificationModel.deleteMany({
-      _id: ids
-    })
+  async bulkDelete(
+    params: BaseRepositoryParams & { ids: string[] }
+  ): Promise<number> {
+    const { deletedCount } = await this.RaceClassificationModel.deleteMany(
+      {
+        _id: params.ids
+      },
+      { session: params.session }
+    )
 
     return deletedCount
   }

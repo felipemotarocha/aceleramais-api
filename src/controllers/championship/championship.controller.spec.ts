@@ -576,9 +576,9 @@ describe('Championship Controller', () => {
       teams: [{ name: 'valid_name', color: 'valid_color', id: 'valid_id' }],
       drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
       pendentDrivers: [],
-      penalties: [{ name: 'valid_penalty', points: 1, race: 'valid_race' }],
+      penalties: [{ id: 'valid_id', name: 'valid_penalty', points: 1 }],
       bonifications: [
-        { name: 'valid_bonification', points: 1, race: 'valid_race' }
+        { id: 'valid_id', name: 'valid_bonification', points: 1 }
       ],
       scoringSystem: { 1: 25, 2: 20 },
       races: []

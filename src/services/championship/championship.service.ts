@@ -1,5 +1,5 @@
 /* eslint-disable no-useless-constructor */
-import { isValidObjectId, Types } from 'mongoose'
+import { ClientSession, isValidObjectId, startSession, Types } from 'mongoose'
 import {
   CreateChampionshipDto,
   UpdateChampionshipDto
@@ -11,7 +11,6 @@ import Penalty from '../../entities/penalty.entity'
 import Race from '../../entities/race.entity'
 import Team from '../../entities/team.entity'
 import GeneralHelpers from '../../helpers/general.helpers'
-// import GeneralHelpers from '../../helpers/general.helpers'
 import { BonificationRepositoryAbstract } from '../../repositories/bonification/bonification.repository'
 import { ChampionshipRepositoryAbstract } from '../../repositories/championship/championship.repository'
 import { DriverStandingsRepositoryAbstract } from '../../repositories/driver-standings/driver-standings.repository'
@@ -51,11 +50,15 @@ export interface ChampionshipServiceAbstract {
     id: string,
     updateChampionshipDto: UpdateChampionshipDto
   ): Promise<Championship>
-  prepareToUpdate(championship: Championship): Promise<void>
-  updateRaces(
-    championship: string,
+  prepareToUpdate(
+    championship: Championship,
+    session?: ClientSession
+  ): Promise<void>
+  updateRaces(params: {
+    championship: string
     races: UpdateChampionshipDto['races']
-  ): Promise<Race[]>
+    session?: ClientSession
+  }): Promise<Race[]>
   createPenaltiesAndBonifications({
     championship,
     penalties,
@@ -103,15 +106,14 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     private readonly s3Repository: S3RepositoryAbstract
   ) {}
 
-  async createDriversAndTeams({
-    championship,
-    drivers,
-    teams
-  }: {
+  async createDriversAndTeams(params: {
     championship: string
     drivers: CreateChampionshipDto['drivers']
     teams: CreateChampionshipDto['teams']
+    session?: ClientSession
   }) {
+    const { championship, drivers, teams, session } = params
+
     let _teams: Team[] = []
 
     const driversPerTeam = {}
@@ -144,7 +146,10 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
         } as any)
       }
 
-      _teams = await this.teamRepository.bulkCreate(bulkCreatePayload)
+      _teams = await this.teamRepository.bulkCreate({
+        dto: bulkCreatePayload,
+        session
+      })
     }
 
     let _drivers: {
@@ -166,21 +171,20 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     return { drivers: _drivers, teams: _teams }
   }
 
-  async createPenaltiesAndBonifications({
-    championship,
-    penalties,
-    bonifications
-  }: {
+  async createPenaltiesAndBonifications(params: {
     championship: string
     penalties: CreateChampionshipDto['penalties']
     bonifications: CreateChampionshipDto['bonifications']
+    session?: ClientSession
   }) {
+    const { penalties, bonifications, championship, session } = params
+
     let _bonifications: Bonification[] = []
     let _penalties: Penalty[] = []
 
     if (bonifications) {
-      _bonifications = await this.bonificationRepository.bulkCreate(
-        bonifications.map((item) => {
+      _bonifications = await this.bonificationRepository.bulkCreate({
+        dto: bonifications.map((item) => {
           const isBeingUpdated = isValidObjectId((item as any)?.id)
 
           if (isBeingUpdated) {
@@ -195,13 +199,14 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
             ...item,
             championship: championship
           }
-        })
-      )
+        }),
+        session
+      })
     }
 
     if (penalties) {
-      _penalties = await this.penaltyRepository.bulkCreate(
-        penalties.map((item) => {
+      _penalties = await this.penaltyRepository.bulkCreate({
+        dto: penalties.map((item) => {
           const isBeingUpdated = isValidObjectId((item as any)?.id)
 
           if (isBeingUpdated) {
@@ -216,31 +221,38 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
             ...item,
             championship: championship
           }
-        })
-      )
+        }),
+        session
+      })
     }
 
     return { penalties: _penalties, bonifications: _bonifications }
   }
 
-  async createRaces(
-    championship: string,
+  async createRaces(params: {
+    championship: string
     races: CreateChampionshipDto['races']
-  ): Promise<Race[]> {
+    session?: ClientSession
+  }): Promise<Race[]> {
+    const { races, session, championship } = params
+
     const _races: Race[] = []
 
     for (const race of races) {
       const raceId = new Types.ObjectId()
 
       const raceClassification = await this.raceClassificationRepository.create(
-        { race: raceId as any, classification: [] }
+        { dto: { race: raceId as any, classification: [] }, session }
       )
       const result = await this.raceRepository.create({
-        _id: raceId as any,
-        championship,
-        classification: raceClassification.id,
-        startDate: race.startDate,
-        track: race.track
+        dto: {
+          _id: raceId as any,
+          championship,
+          classification: raceClassification.id,
+          startDate: race.startDate,
+          track: race.track
+        },
+        session
       })
 
       _races.push(result)
@@ -289,8 +301,10 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     })
 
     const scoringSystem = await this.scoringSystemRepository.create({
-      championship: championshipId,
-      scoringSystem: createChampionshipDto.scoringSystem
+      dto: {
+        championship: championshipId,
+        scoringSystem: createChampionshipDto.scoringSystem
+      }
     })
 
     const { bonifications, penalties } =
@@ -301,7 +315,10 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       })
 
     const races = (
-      await this.createRaces(championshipId, createChampionshipDto.races)
+      await this.createRaces({
+        championship: championshipId,
+        races: createChampionshipDto.races
+      })
     ).map((race) => race.id)
 
     // eslint-disable-next-line no-undef-init
@@ -337,46 +354,70 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     return championship
   }
 
-  async prepareToUpdate(championship: Championship) {
+  async prepareToUpdate(championship: Championship, session: ClientSession) {
     const { teams, bonifications, penalties, scoringSystem } = championship
 
-    await this.teamRepository.bulkDelete(teams as string[])
-    await this.bonificationRepository.bulkDelete(bonifications as string[])
-    await this.penaltyRepository.bulkDelete(penalties as string[])
-    await this.scoringSystemRepository.delete(scoringSystem as string)
+    await this.teamRepository.bulkDelete({ ids: teams as string[], session })
+    await this.bonificationRepository.bulkDelete({
+      ids: bonifications as string[],
+      session
+    })
+    await this.penaltyRepository.bulkDelete({
+      ids: penalties as string[],
+      session
+    })
+    await this.scoringSystemRepository.delete({
+      id: scoringSystem as string,
+      session
+    })
 
-    await this.championshipRepository.update(championship.id, {
-      drivers: [],
-      pendentDrivers: [],
-      bonifications: [],
-      penalties: [],
-      teams: [],
-      scoringSystem: scoringSystem as string
+    await this.championshipRepository.update({
+      id: championship.id,
+      dto: {
+        drivers: [],
+        pendentDrivers: [],
+        bonifications: [],
+        penalties: [],
+        teams: [],
+        scoringSystem: scoringSystem as string
+      },
+      session
     })
   }
 
-  async updateRaces(
-    championship: string,
+  async updateRaces(params: {
+    championship: string
     races: UpdateChampionshipDto['races']
-  ) {
+    session: ClientSession
+  }) {
+    const { races, championship, session } = params
+
     const existingRaces = races!.filter((race) => isValidObjectId(race.id))
     const newRaces = races!.filter((race) => !isValidObjectId(race.id))
 
-    const championshipRaces = await this.raceRepository.getAll({ championship })
+    const championshipRaces = await this.raceRepository.getAll({
+      dto: { championship },
+      session
+    })
 
     const racesToDelete = championshipRaces.filter((race) =>
       existingRaces.every((_race) => _race.id !== race.id)
     )
 
-    await this.raceRepository.bulkDelete(racesToDelete.map((race) => race.id))
-    await this.raceClassificationRepository.bulkDelete(
-      racesToDelete.map((race) => race.classification)
-    )
+    await this.raceRepository.bulkDelete({
+      ids: racesToDelete.map((race) => race.id),
+      session
+    })
+    await this.raceClassificationRepository.bulkDelete({
+      ids: racesToDelete.map((race) => race.classification),
+      session
+    })
 
-    const createdRaces = await this.createRaces(
+    const createdRaces = await this.createRaces({
       championship,
-      newRaces as CreateChampionshipDto['races']
-    )
+      races: newRaces as CreateChampionshipDto['races'],
+      session
+    })
 
     return [...createdRaces, ...existingRaces] as Race[]
   }
@@ -385,59 +426,87 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     id: string,
     updateChampionshipDto: UpdateChampionshipDto
   ): Promise<Championship> {
-    const championship = await this.championshipRepository.getOne({ id })
+    const session = await startSession()
+    try {
+      const championship = await this.championshipRepository.getOne({
+        id
+      })
 
-    await this.prepareToUpdate(championship!)
+      await session.startTransaction()
 
-    const { drivers, teams } = await this.createDriversAndTeams({
-      championship: id,
-      drivers: updateChampionshipDto.drivers,
-      teams: updateChampionshipDto.teams
-    })
-    const { penalties, bonifications } =
-      await this.createPenaltiesAndBonifications({
+      await this.prepareToUpdate(championship!, session)
+
+      const { drivers, teams } = await this.createDriversAndTeams({
         championship: id,
-        bonifications: updateChampionshipDto.bonifications,
-        penalties: updateChampionshipDto.penalties
+        drivers: updateChampionshipDto.drivers,
+        teams: updateChampionshipDto.teams,
+        session
+      })
+      const { penalties, bonifications } =
+        await this.createPenaltiesAndBonifications({
+          championship: id,
+          bonifications: updateChampionshipDto.bonifications,
+          penalties: updateChampionshipDto.penalties,
+          session
+        })
+
+      const scoringSystem = await this.scoringSystemRepository.create({
+        dto: {
+          championship: id,
+          scoringSystem: updateChampionshipDto.scoringSystem
+        },
+        session
       })
 
-    const scoringSystem = await this.scoringSystemRepository.create({
-      championship: id,
-      scoringSystem: updateChampionshipDto.scoringSystem
-    })
+      let races = championship!.races as string[]
 
-    let races = championship!.races as string[]
+      if (updateChampionshipDto.races) {
+        races = await (
+          await this.updateRaces({
+            championship: id,
+            races: updateChampionshipDto.races,
+            session
+          })
+        ).map((race) => race.id!)
+      }
 
-    if (updateChampionshipDto.races) {
-      races = await (
-        await this.updateRaces(id, updateChampionshipDto.races)
-      ).map((race) => race.id!)
-    }
+      // eslint-disable-next-line no-undef-init
+      let avatarImageUrl: string | undefined = championship?.avatarImageUrl
 
-    // eslint-disable-next-line no-undef-init
-    let avatarImageUrl: string | undefined = championship?.avatarImageUrl
+      if (updateChampionshipDto.avatarImage) {
+        avatarImageUrl = await this.s3Repository.uploadImage({
+          folderName: 'championship-images',
+          fileName: id,
+          file: updateChampionshipDto.avatarImage!
+        })
+      }
 
-    if (updateChampionshipDto.avatarImage) {
-      avatarImageUrl = await this.s3Repository.uploadImage({
-        folderName: 'championship-images',
-        fileName: id,
-        file: updateChampionshipDto.avatarImage!
+      const createdChampionship = await this.championshipRepository.update({
+        id: id,
+        dto: {
+          description: updateChampionshipDto?.description,
+          name: updateChampionshipDto?.name,
+          platform: updateChampionshipDto?.platform,
+          drivers,
+          pendentDrivers: updateChampionshipDto.pendentDrivers,
+          scoringSystem: scoringSystem.id,
+          teams: teams.map((item) => item.id),
+          bonifications: bonifications.map((item) => item.id),
+          penalties: penalties.map((item) => item.id),
+          races,
+          avatarImageUrl
+        },
+        session
       })
-    }
 
-    return await this.championshipRepository.update(id, {
-      description: updateChampionshipDto?.description,
-      name: updateChampionshipDto?.name,
-      platform: updateChampionshipDto?.platform,
-      drivers,
-      pendentDrivers: updateChampionshipDto.pendentDrivers,
-      scoringSystem: scoringSystem.id,
-      teams: teams.map((item) => item.id),
-      bonifications: bonifications.map((item) => item.id),
-      penalties: penalties.map((item) => item.id),
-      races,
-      avatarImageUrl
-    })
+      await session.commitTransaction()
+      await session.endSession()
+
+      return createdChampionship
+    } catch (error) {
+      await session.endSession()
+      throw error
+    }
   }
 
   async getOne({

@@ -22,6 +22,7 @@ import {
   ChampionshipServiceAbstract,
   ChampionshipService
 } from './championship.service'
+import mongoose from 'mongoose'
 
 describe('Championship Service', () => {
   const validChampionship: Championship = {
@@ -256,8 +257,10 @@ describe('Championship Service', () => {
     })
 
     expect(createScoringSystemSpy).toHaveBeenCalledWith({
-      championship: validChampionship.id,
-      scoringSystem: { 1: 25 }
+      dto: {
+        championship: validChampionship.id,
+        scoringSystem: { 1: 25 }
+      }
     })
     expect(createScoringSystemSpy).toHaveReturned()
     expect(result.scoringSystem).toBe('valid_scoring_system')
@@ -460,7 +463,7 @@ describe('Championship Service', () => {
       penaltyRepositoryStub,
       'bulkDelete'
     )
-    const bulkDeleteScoringSystemSpy = jest.spyOn(
+    const deleteScoringSystemSpy = jest.spyOn(
       scoringSystemRepositoryStub,
       'delete'
     )
@@ -471,19 +474,21 @@ describe('Championship Service', () => {
 
     await sut.prepareToUpdate(validChampionship)
 
-    expect(bulkDeleteTeamsSpy).toHaveBeenCalledWith(validChampionship.teams)
-    expect(bulkDeleteBonificationsSpy).toHaveBeenCalledWith(
-      validChampionship.bonifications
-    )
-    expect(bulkDeletePenaltiesSpy).toHaveBeenCalledWith(
-      validChampionship.penalties
-    )
-    expect(bulkDeleteScoringSystemSpy).toHaveBeenCalledWith(
-      validChampionship.scoringSystem
-    )
-    expect(bulkUpdateChampionshipSpy).toHaveBeenCalledWith(
-      validChampionship.id,
-      {
+    expect(bulkDeleteTeamsSpy).toHaveBeenCalledWith({
+      ids: validChampionship.teams
+    })
+    expect(bulkDeleteBonificationsSpy).toHaveBeenCalledWith({
+      ids: validChampionship.bonifications
+    })
+    expect(bulkDeletePenaltiesSpy).toHaveBeenCalledWith({
+      ids: validChampionship.penalties
+    })
+    expect(deleteScoringSystemSpy).toHaveBeenCalledWith({
+      id: validChampionship.scoringSystem
+    })
+    expect(bulkUpdateChampionshipSpy).toHaveBeenCalledWith({
+      id: validChampionship.id,
+      dto: {
         drivers: [],
         pendentDrivers: [],
         teams: [],
@@ -491,7 +496,7 @@ describe('Championship Service', () => {
         bonifications: [],
         scoringSystem: validChampionship.scoringSystem
       }
-    )
+    })
   })
 
   // it('should create the bonifications and penalties', async () => {
@@ -518,22 +523,46 @@ describe('Championship Service', () => {
     )
     const createRacesSpy = jest.spyOn(sut, 'createRaces' as any)
 
-    await sut.updateRaces(validChampionship.id, [
-      { startDate: 'valid_start_date', track: 'valid_track', id: 'valid_race' },
-      { startDate: 'valid_start_date', track: 'valid_track' }
-    ])
+    await sut.updateRaces({
+      championship: validChampionship.id,
+      races: [
+        {
+          startDate: 'valid_start_date',
+          track: 'valid_track',
+          id: 'valid_race'
+        },
+        { startDate: 'valid_start_date', track: 'valid_track' }
+      ]
+    })
 
-    expect(raceRepositoryBulkDeleteSpy).toHaveBeenCalledWith(['valid_id'])
-    expect(raceClassificationRepositoryBulkDeleteSpy).toHaveBeenCalledWith([
-      'valid_classification_id'
-    ])
-    expect(createRacesSpy).toHaveBeenCalledWith(validChampionship.id, [
-      { id: 'valid_race', startDate: 'valid_start_date', track: 'valid_track' }
-    ])
+    expect(raceRepositoryBulkDeleteSpy).toHaveBeenCalledWith({
+      ids: ['valid_id']
+    })
+    expect(raceClassificationRepositoryBulkDeleteSpy).toHaveBeenCalledWith({
+      ids: ['valid_classification_id']
+    })
+    expect(createRacesSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      races: [
+        {
+          id: 'valid_race',
+          startDate: 'valid_start_date',
+          track: 'valid_track'
+        }
+      ]
+    })
   })
 
   it('should update a Championship', async () => {
     const { sut } = makeSut()
+
+    const session = {
+      startTransaction: jest.fn(),
+      commitTransaction: jest.fn(),
+      endSession: jest.fn()
+    }
+
+    jest.spyOn(mongoose, 'startSession').mockImplementationOnce(() => session)
 
     const prepareToUpdateSpy = jest.spyOn(sut, 'prepareToUpdate')
     const createDriversAndTeamsSpy = jest.spyOn(
@@ -548,12 +577,12 @@ describe('Championship Service', () => {
 
     const result = await sut.update(validChampionship.id, {
       bonifications: [
-        { name: 'valid_bonification', points: 1, race: 'valid_race' }
+        { name: 'valid_bonification', points: 1, id: 'valid_id' }
       ],
       drivers: [
         { isRegistered: true, isRemoved: false, team: '1', user: 'valid_user' }
       ],
-      penalties: [{ name: 'valid_penalty', points: 1, race: 'valid_race' }],
+      penalties: [{ name: 'valid_penalty', points: 1, id: 'valid_id' }],
       teams: [{ id: '1', name: 'Mercedes', color: 'color' }],
       scoringSystem: { 1: 25 },
       races: [
@@ -562,25 +591,31 @@ describe('Championship Service', () => {
       ]
     })
 
-    expect(prepareToUpdateSpy).toHaveBeenCalledWith(validChampionship)
+    expect(prepareToUpdateSpy).toHaveBeenCalledWith(validChampionship, session)
     expect(createDriversAndTeamsSpy).toHaveBeenCalledWith({
       championship: validChampionship.id,
       drivers: [
         { isRegistered: true, isRemoved: false, team: '1', user: 'valid_user' }
       ],
-      teams: [{ id: '1', name: 'Mercedes', color: 'color' }]
+      teams: [{ id: '1', name: 'Mercedes', color: 'color' }],
+      session
     })
     expect(createPenaltiesAndBonificationsSpy).toHaveBeenCalledWith({
       championship: validChampionship.id,
-      penalties: [{ name: 'valid_penalty', points: 1, race: 'valid_race' }],
+      penalties: [{ name: 'valid_penalty', points: 1, id: 'valid_id' }],
       bonifications: [
-        { name: 'valid_bonification', points: 1, race: 'valid_race' }
-      ]
+        { name: 'valid_bonification', points: 1, id: 'valid_id' }
+      ],
+      session
     })
-    expect(updateRacesSpy).toHaveBeenCalledWith(validChampionship.id, [
-      { startDate: 'valid_start_date', track: 'valid_track', id: 'valid_id' },
-      { startDate: 'valid_start_date', track: 'valid_track' }
-    ])
+    expect(updateRacesSpy).toHaveBeenCalledWith({
+      championship: validChampionship.id,
+      races: [
+        { startDate: 'valid_start_date', track: 'valid_track', id: 'valid_id' },
+        { startDate: 'valid_start_date', track: 'valid_track' }
+      ],
+      session
+    })
 
     expect(result).toStrictEqual(validChampionship)
   })

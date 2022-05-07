@@ -15,8 +15,7 @@ import users from './data/users'
 const main = async () => {
   try {
     const config = {
-      database:
-        'mongodb://root:password@localhost:27017/sim-racer?authSource=admin&readPreference=primary&appname=MongoDB%20Compass&directConnection=true&ssl=false',
+      database: process.env.MONGO_URL,
 
       dropDatabase: true
     }

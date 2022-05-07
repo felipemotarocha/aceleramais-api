@@ -55,7 +55,7 @@ describe('Mongo Team Repository', () => {
       color: '#fff'
     }
 
-    const result = await sut.bulkCreate([dto])
+    const result = await sut.bulkCreate({ dto: [dto] })
 
     expect(result[0].id).toBeTruthy()
     expect(result[0].championship).toStrictEqual(dto.championship)
@@ -159,7 +159,7 @@ describe('Mongo Team Repository', () => {
 
     await TeamModel.create({ _id: validTeam.id, ...validTeam })
 
-    const result = await sut.bulkDelete([validTeam.id])
+    const result = await sut.bulkDelete({ ids: [validTeam.id] })
 
     expect(result).toBe(1)
   })

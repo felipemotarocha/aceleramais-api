@@ -1,7 +1,7 @@
+import 'dotenv/config'
+
 import { env } from './config/env.config'
 import MongooseHelper from './helpers/mongoose.helpers'
-
-import 'dotenv/config'
 
 MongooseHelper.connect(env.mongodbUrl)
   .then(async () => {

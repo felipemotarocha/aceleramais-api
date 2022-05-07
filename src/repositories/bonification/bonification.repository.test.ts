@@ -56,7 +56,7 @@ describe('Mongo Bonification Repository', () => {
       points: 1
     }
 
-    const result = await sut.bulkCreate([dto])
+    const result = await sut.bulkCreate({ dto: [dto] })
 
     expect(result[0].id).toBeTruthy()
     expect(result[0].championship).toStrictEqual(dto.championship)
@@ -204,7 +204,9 @@ describe('Mongo Bonification Repository', () => {
       ...validBonification
     })
 
-    const result = await sut.bulkDelete([validBonification.id.toHexString()])
+    const result = await sut.bulkDelete({
+      ids: [validBonification.id.toHexString()]
+    })
 
     expect(result).toBe(1)
   })

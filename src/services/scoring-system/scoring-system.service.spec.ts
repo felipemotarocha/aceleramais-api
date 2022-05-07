@@ -52,7 +52,7 @@ describe('Scoring System Service', () => {
 
     await sut.create(dto)
 
-    expect(createScoringSystemSpy).toHaveBeenCalledWith(dto)
+    expect(createScoringSystemSpy).toHaveBeenCalledWith({ dto })
   })
 
   it('should throws if ScoringSystemRepository create method throws', async () => {
@@ -172,7 +172,7 @@ describe('Scoring System Service', () => {
 
     await sut.delete('valid_id')
 
-    expect(deleteScoringSystemSpy).toHaveBeenCalledWith('valid_id')
+    expect(deleteScoringSystemSpy).toHaveBeenCalledWith({ id: 'valid_id' })
   })
 
   it('should throws if ScoringSystemRepository delete method throws', async () => {

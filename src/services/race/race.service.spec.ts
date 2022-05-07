@@ -53,9 +53,7 @@ describe('Race Service', () => {
   }
 
   it('should create a race', async () => {
-    const { sut, raceRepositoryStub } = makeSut()
-
-    const updateRaceSpy = jest.spyOn(raceRepositoryStub, 'update')
+    const { sut } = makeSut()
 
     const dto = {
       track: 'valid_track_id',
@@ -66,10 +64,6 @@ describe('Race Service', () => {
     }
 
     const result = await sut.create(dto)
-
-    expect(updateRaceSpy).toHaveBeenCalledWith(result.id, {
-      classification: validRaceClassification.id
-    })
 
     expect(result).toStrictEqual(validRace)
   })
@@ -89,7 +83,7 @@ describe('Race Service', () => {
 
     await sut.create(dto)
 
-    expect(createRaceSpy).toHaveBeenCalledWith(dto)
+    expect(createRaceSpy).toHaveBeenCalledWith({ dto })
   })
 
   it('should get a race by id', async () => {
@@ -126,7 +120,9 @@ describe('Race Service', () => {
     await sut.getAll({ championship: 'valid_championship_id' })
 
     expect(getAllRacesSpy).toHaveBeenCalledWith({
-      championship: 'valid_championship_id'
+      dto: {
+        championship: 'valid_championship_id'
+      }
     })
   })
 

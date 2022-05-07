@@ -27,7 +27,7 @@ export class RaceRepositoryStub implements RaceRepositoryAbstract {
     return validRace
   }
 
-  async bulkDelete(ids: string[]): Promise<number> {
+  async bulkDelete(): Promise<number> {
     return 1
   }
 }

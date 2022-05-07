@@ -25,7 +25,9 @@ export class ScoringSystemService implements ScoringSystemServiceAbstract {
   async create(
     createScoringSystemDto: CreateScoringSystemDto
   ): Promise<ScoringSystem> {
-    return await this.scoringSystemRepository.create(createScoringSystemDto)
+    return await this.scoringSystemRepository.create({
+      dto: createScoringSystemDto
+    })
   }
 
   async getOne({
@@ -44,6 +46,6 @@ export class ScoringSystemService implements ScoringSystemServiceAbstract {
   }
 
   async delete(id: string): Promise<ScoringSystem> {
-    return await this.scoringSystemRepository.delete(id)
+    return await this.scoringSystemRepository.delete({ id })
   }
 }

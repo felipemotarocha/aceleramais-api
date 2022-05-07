@@ -50,7 +50,7 @@ describe('Mongo Race Classification Repository', () => {
   it('should create a Race Classification', async () => {
     const sut = makeSut()
 
-    const result = await sut.create(validRaceClassification as any)
+    const result = await sut.create({ dto: validRaceClassification as any })
 
     expect(result.classification[0].position).toBe(
       validRaceClassification.classification[0].position
@@ -121,7 +121,9 @@ describe('Mongo Race Classification Repository', () => {
   it('should update a Race Classification', async () => {
     const sut = makeSut()
 
-    const raceClassification = await sut.create(validRaceClassification as any)
+    const raceClassification = await sut.create({
+      dto: validRaceClassification as any
+    })
 
     const dto: UpdateRaceClassificationDto = {
       classification: [
@@ -161,9 +163,11 @@ describe('Mongo Race Classification Repository', () => {
   it('should bulk delete Race Classifications', async () => {
     const sut = makeSut()
 
-    const raceClassification = await sut.create(validRaceClassification as any)
+    const raceClassification = await sut.create({
+      dto: validRaceClassification as any
+    })
 
-    const result = await sut.bulkDelete([raceClassification.id])
+    const result = await sut.bulkDelete({ ids: [raceClassification.id] })
 
     expect(result).toBe(1)
   })

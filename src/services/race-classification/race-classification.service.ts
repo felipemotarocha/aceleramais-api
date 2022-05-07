@@ -34,9 +34,9 @@ class RaceClassificationService implements RaceClassificationServiceAbstract {
   async create(
     createRaceClassificationDto: CreateRaceClassificationDto
   ): Promise<RaceClassification> {
-    return await this.raceClassificationRepository.create(
-      createRaceClassificationDto
-    )
+    return await this.raceClassificationRepository.create({
+      dto: createRaceClassificationDto
+    })
   }
 
   async getOne(race: string): Promise<RaceClassification> {
