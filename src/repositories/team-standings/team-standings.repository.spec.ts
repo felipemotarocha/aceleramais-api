@@ -61,7 +61,7 @@ describe('Mongo Team Standings Repository', () => {
       ]
     }
 
-    const result = await sut.create(dto)
+    const result = await sut.create({ dto })
 
     expect(result.id).toBeTruthy()
     expect(result.championship).toStrictEqual(dto.championship)
@@ -85,9 +85,11 @@ describe('Mongo Team Standings Repository', () => {
       ]
     }
 
-    await sut.create(dto)
+    await sut.create({ dto })
 
-    expect(createTeamStandingsSpy).toHaveBeenCalledWith(dto)
+    expect(createTeamStandingsSpy).toHaveBeenCalledWith([dto], {
+      session: undefined
+    })
   })
 
   it('should get a Team Standings by Championship', async () => {

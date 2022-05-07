@@ -41,7 +41,9 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
   async create(
     createDriverStandingsDto: CreateDriverStandingsDto
   ): Promise<DriverStandings> {
-    return await this.driverStandingsRepository.create(createDriverStandingsDto)
+    return await this.driverStandingsRepository.create({
+      dto: createDriverStandingsDto
+    })
   }
 
   async update(

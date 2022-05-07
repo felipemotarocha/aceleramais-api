@@ -5,10 +5,13 @@ import {
 import DriverStandings from '../../entities/driver-standings.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import DriverStandingsModel from '../../models/driver-standings.model'
+import { BaseRepositoryParams } from '../base.repository'
 
 export interface DriverStandingsRepositoryAbstract {
   create(
-    createDriverStandingsDto: CreateDriverStandingsDto
+    params: BaseRepositoryParams & {
+      dto: CreateDriverStandingsDto
+    }
   ): Promise<DriverStandings>
   update(
     id: string,
@@ -26,13 +29,14 @@ implements DriverStandingsRepositoryAbstract {
   }
 
   async create(
-    createDriverStandingsDto: CreateDriverStandingsDto
+    params: BaseRepositoryParams & { dto: CreateDriverStandingsDto }
   ): Promise<DriverStandings> {
     const driverStandings = await this.driverStandingsModel.create(
-      createDriverStandingsDto
+      [params.dto],
+      { session: params?.session }
     )
 
-    return MongooseHelper.map<DriverStandings>(driverStandings.toJSON())
+    return MongooseHelper.map<DriverStandings>(driverStandings[0].toJSON())
   }
 
   async update(

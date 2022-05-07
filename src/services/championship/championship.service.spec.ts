@@ -4,6 +4,14 @@ import { ChampionshipServiceSutFactory, validChampionship } from '.'
 describe('Championship Service', () => {
   const makeSut = ChampionshipServiceSutFactory.make
 
+  const session = {
+    startTransaction: jest.fn(),
+    commitTransaction: jest.fn(),
+    endSession: jest.fn()
+  }
+
+  jest.spyOn(mongoose, 'startSession').mockImplementation(() => session)
+
   it('should create the Championship', async () => {
     const { sut, championshipRepositoryStub } = makeSut()
 
@@ -115,7 +123,11 @@ describe('Championship Service', () => {
     expect(updateRacesSpy).toHaveBeenCalledWith({
       championship: validChampionship.id,
       races: [
-        { startDate: 'valid_start_date', track: 'valid_track', id: 'valid_id' },
+        {
+          startDate: 'valid_start_date',
+          track: 'valid_track',
+          id: 'valid_id'
+        },
         { startDate: 'valid_start_date', track: 'valid_track' }
       ],
       session
@@ -154,8 +166,11 @@ describe('Championship Service', () => {
     })
 
     expect(createDriverStandingsSpy).toHaveBeenCalledWith({
-      championship: validChampionship.id,
-      standings: []
+      dto: {
+        championship: validChampionship.id,
+        standings: []
+      },
+      session
     })
     expect(createDriverStandingsSpy).toHaveReturned()
     expect(result.driverStandings).toBe('valid_driver_standings')
@@ -191,8 +206,11 @@ describe('Championship Service', () => {
     })
 
     expect(createTeamStandingsSpy).toHaveBeenCalledWith({
-      championship: validChampionship.id,
-      standings: []
+      dto: {
+        championship: validChampionship.id,
+        standings: []
+      },
+      session
     })
     expect(createTeamStandingsSpy).toHaveReturned()
     expect(result.teamStandings).toBe('valid_team_standings')
@@ -231,7 +249,8 @@ describe('Championship Service', () => {
       dto: {
         championship: validChampionship.id,
         scoringSystem: { 1: 25 }
-      }
+      },
+      session
     })
     expect(createScoringSystemSpy).toHaveReturned()
     expect(result.scoringSystem).toBe('valid_scoring_system')
@@ -276,7 +295,8 @@ describe('Championship Service', () => {
         { track: 'valid_track', startDate: 'valid_start_date' },
         { track: 'valid_track', startDate: 'valid_start_date' },
         { track: 'valid_track', startDate: 'valid_start_date' }
-      ]
+      ],
+      session
     })
     expect(createRacesSpy).toHaveReturned()
     expect(result.races).toStrictEqual(['valid_race'])
@@ -314,7 +334,8 @@ describe('Championship Service', () => {
     expect(createDriversAndTeamsSpy).toHaveBeenCalledWith({
       championship: validChampionship.id,
       teams: [{ id: 'valid_id', name: 'valid_name', color: 'valid_color' }],
-      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }]
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
+      session
     })
     expect(result.teams).toStrictEqual(['valid_team'])
     expect(result.drivers).toStrictEqual([

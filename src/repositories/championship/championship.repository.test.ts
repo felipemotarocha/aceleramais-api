@@ -61,7 +61,7 @@ describe('Mongo Driver Standings Repository', () => {
   it('should create a Championship', async () => {
     const sut = makeSut()
 
-    const result = await sut.create(validDto)
+    const result = await sut.create({ dto: validDto })
 
     expect(result.id).toBeTruthy()
     expect(result.description).toStrictEqual(validDto.description)
@@ -95,15 +95,17 @@ describe('Mongo Driver Standings Repository', () => {
       admins: [{ user: 'valid_user', isCreator: true }]
     }
 
-    await sut.create(dto)
+    await sut.create({ dto })
 
-    expect(createChampionshipSpy).toHaveBeenCalledWith(dto)
+    expect(createChampionshipSpy).toHaveBeenCalledWith([dto], {
+      session: undefined
+    })
   })
 
   it('should update a championship', async () => {
     const sut = makeSut()
 
-    const championship = await sut.create(validDto)
+    const championship = await sut.create({ dto: validDto })
 
     const bonifications: any[] = [new Types.ObjectId()]
 

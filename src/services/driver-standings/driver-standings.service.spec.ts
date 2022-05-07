@@ -130,7 +130,7 @@ describe('Driver Standings Service', () => {
 
     await sut.create(dto)
 
-    expect(createDriverStandingsSpy).toHaveBeenCalledWith(dto)
+    expect(createDriverStandingsSpy).toHaveBeenCalledWith({ dto })
   })
 
   it('should throws if DriverStandingsRepository create method throws', async () => {

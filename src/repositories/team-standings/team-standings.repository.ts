@@ -5,9 +5,14 @@ import {
 import TeamStandings from '../../entities/team-standings.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import TeamStandingsModel from '../../models/team-standings.model'
+import { BaseRepositoryParams } from '../base.repository'
 
 export interface TeamStandingsRepositoryAbstract {
-  create(createTeamStandingsDto: CreateTeamStandingsDto): Promise<TeamStandings>
+  create(
+    params: BaseRepositoryParams & {
+      dto: CreateTeamStandingsDto
+    }
+  ): Promise<TeamStandings>
   update(
     id: string,
     updateTeamStandingsDto: UpdateTeamStandingsDto
@@ -24,13 +29,13 @@ implements TeamStandingsRepositoryAbstract {
   }
 
   async create(
-    createTeamStandingsDto: CreateTeamStandingsDto
+    params: BaseRepositoryParams & { dto: CreateTeamStandingsDto }
   ): Promise<TeamStandings> {
-    const teamStandings = await this.teamStandingsModel.create(
-      createTeamStandingsDto
-    )
+    const teamStandings = await this.teamStandingsModel.create([params.dto], {
+      session: params?.session
+    })
 
-    return MongooseHelper.map<TeamStandings>(teamStandings.toJSON())
+    return MongooseHelper.map<TeamStandings>(teamStandings[0].toJSON())
   }
 
   async update(

@@ -10,7 +10,9 @@ import ChampionshipRepositoryHelpers from './championship.repository.helpers'
 
 export interface ChampionshipRepositoryAbstract {
   create(
-    createChampionshipDto: CreateChampionshipMongoDto
+    params: BaseRepositoryParams & {
+      dto: CreateChampionshipMongoDto
+    }
   ): Promise<Championship>
   getOne(
     params: BaseRepositoryParams & {
@@ -44,13 +46,15 @@ implements ChampionshipRepositoryAbstract {
   }
 
   async create(
-    createChampionshipDto: CreateChampionshipMongoDto
+    params: BaseRepositoryParams & {
+      dto: CreateChampionshipMongoDto
+    }
   ): Promise<Championship> {
-    const championship = await this.championshipModel.create(
-      createChampionshipDto
-    )
+    const championship = await this.championshipModel.create([params.dto], {
+      session: params?.session
+    })
 
-    return MongooseHelper.map<Championship>(championship.toJSON())
+    return MongooseHelper.map<Championship>(championship[0].toJSON())
   }
 
   async getOne(

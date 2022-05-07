@@ -32,91 +32,117 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     id = new Types.ObjectId() as any,
     dto
   }: CreateParams): Promise<Championship> {
-    const championshipId = id
-    const { name, description, platform, admins } = dto
+    const session = await startSession()
 
-    const code = GeneralHelpers.generateRandomNumberString(8)
+    try {
+      const championshipId = id
+      const { name, description, platform, admins } = dto
 
-    let codeIsAlreadyInUse = true
+      const code = GeneralHelpers.generateRandomNumberString(8)
 
-    while (codeIsAlreadyInUse) {
-      const championshipWithTheCode = await this.championshipRepository.getOne({
-        code
-      })
-      if (!championshipWithTheCode) {
-        codeIsAlreadyInUse = false
+      let codeIsAlreadyInUse = true
+
+      while (codeIsAlreadyInUse) {
+        const championshipWithTheCode =
+          await this.championshipRepository.getOne({
+            code
+          })
+        if (!championshipWithTheCode) {
+          codeIsAlreadyInUse = false
+        }
       }
-    }
 
-    const { drivers, teams } =
-      await this.championshipServiceHelper.createDriversAndTeams({
-        championship: id,
-        drivers: dto.drivers,
-        teams: dto.teams
+      await session.startTransaction()
+
+      const { drivers, teams } =
+        await this.championshipServiceHelper.createDriversAndTeams({
+          championship: id,
+          drivers: dto.drivers,
+          teams: dto.teams,
+          session
+        })
+
+      const driverStandings = await this.driverStandingsRepository.create({
+        dto: {
+          championship: championshipId,
+          standings: []
+        },
+        session
       })
 
-    const driverStandings = await this.driverStandingsRepository.create({
-      championship: championshipId,
-      standings: []
-    })
+      const teamStandings = await this.teamStandingsRepository.create({
+        dto: {
+          championship: championshipId,
+          standings: []
+        },
+        session
+      })
 
-    const teamStandings = await this.teamStandingsRepository.create({
-      championship: championshipId,
-      standings: []
-    })
+      const scoringSystem = await this.scoringSystemRepository.create({
+        dto: {
+          championship: championshipId,
+          scoringSystem: dto.scoringSystem
+        },
+        session
+      })
 
-    const scoringSystem = await this.scoringSystemRepository.create({
-      dto: {
-        championship: championshipId,
-        scoringSystem: dto.scoringSystem
+      const { bonifications, penalties } =
+        await this.championshipServiceHelper.createPenaltiesAndBonifications({
+          championship: id,
+          bonifications: dto.bonifications,
+          penalties: dto.penalties,
+          session
+        })
+
+      const races = (
+        await this.championshipServiceHelper.createRaces({
+          championship: championshipId,
+          races: dto.races,
+          session
+        })
+      ).map((race) => race.id)
+
+      // eslint-disable-next-line no-undef-init
+      let avatarImageUrl: string | undefined = undefined
+
+      if (dto.avatarImage) {
+        avatarImageUrl = await this.s3Repository.uploadImage({
+          folderName: 'championship-images',
+          fileName: championshipId,
+          file: dto.avatarImage
+        })
       }
-    })
 
-    const { bonifications, penalties } =
-      await this.championshipServiceHelper.createPenaltiesAndBonifications({
-        championship: id,
-        bonifications: dto.bonifications,
-        penalties: dto.penalties
+      const championship = await this.championshipRepository.create({
+        dto: {
+          _id: championshipId,
+          code,
+          name,
+          description,
+          platform,
+          admins,
+          avatarImageUrl,
+          scoringSystem: scoringSystem.id,
+          driverStandings: driverStandings.id,
+          teamStandings: teamStandings.id,
+          teams: teams.map((item) => item.id),
+          bonifications: bonifications.map((item) => item.id),
+          penalties: penalties.map((item) => item.id),
+          races,
+          drivers,
+          pendentDrivers: dto.pendentDrivers || []
+        },
+        session
       })
 
-    const races = (
-      await this.championshipServiceHelper.createRaces({
-        championship: championshipId,
-        races: dto.races
-      })
-    ).map((race) => race.id)
+      await session.commitTransaction()
+      await session.endSession()
 
-    // eslint-disable-next-line no-undef-init
-    let avatarImageUrl: string | undefined = undefined
-
-    if (dto.avatarImage) {
-      avatarImageUrl = await this.s3Repository.uploadImage({
-        folderName: 'championship-images',
-        fileName: championshipId,
-        file: dto.avatarImage
-      })
+      return championship
+    } catch (err) {
+      await session.endSession()
+      throw err
     }
-
-    const championship = await this.championshipRepository.create({
-      _id: championshipId,
-      code,
-      name,
-      description,
-      platform,
-      admins,
-      avatarImageUrl,
-      scoringSystem: scoringSystem.id,
-      driverStandings: driverStandings.id,
-      teamStandings: teamStandings.id,
-      teams: teams.map((item) => item.id),
-      bonifications: bonifications.map((item) => item.id),
-      penalties: penalties.map((item) => item.id),
-      races,
-      drivers,
-      pendentDrivers: dto.pendentDrivers || []
-    })
-
-    return championship
   }
 
   async update({ id, dto }: UpdateParams): Promise<Championship> {
