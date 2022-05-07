@@ -388,7 +388,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
   async updateRaces(params: {
     championship: string
     races: UpdateChampionshipDto['races']
-    session: ClientSession
+    session?: ClientSession
   }) {
     const { races, championship, session } = params
 
