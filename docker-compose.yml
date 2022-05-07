@@ -1,11 +1,53 @@
+version: '3.8'
+
 services:
-  mongodb:
-    image: mongo
-    ports:
-      - '27017:27017'
-    restart: always
+  mongo1:
+    container_name: mongo1
+    image: mongo:4.4
+    volumes:
+      - ~/mongos/data1:/data/db
+      - ./src/scripts/rs-init.sh:/scripts/rs-init.sh
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - mongos-network
+    ports:
+      - 27021:27017
+    links:
+      - mongo2
+      - mongo3
+    restart: always
+    entrypoint: ['/usr/bin/mongod', '--bind_ip_all', '--replSet', 'dbrs']
+  mongo2:
+    container_name: mongo2
+    image: mongo:4.4
     volumes:
-      - ~/mongo/data:/data/db
+      - ~/mongos/data2:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - mongos-network
+    ports:
+      - 27022:27017
+    restart: always
+    entrypoint: ['/usr/bin/mongod', '--bind_ip_all', '--replSet', 'dbrs']
+  mongo3:
+    container_name: mongo3
+    image: mongo:4.4
+    volumes:
+      - ~/mongos/data3:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - mongos-network
+    ports:
+      - 27023:27017
+    restart: always
+    entrypoint: ['/usr/bin/mongod', '--bind_ip_all', '--replSet', 'dbrs']
+
+networks:
+  mongos-network:
+    driver: bridge
