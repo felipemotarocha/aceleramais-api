@@ -1,6 +1,8 @@
 import { env } from '../../config/env.config'
 import { CreateUserDto } from '../../dtos/user.dtos'
 import MongooseHelper from '../../helpers/mongoose.helpers'
+import DriverStandingsModel from '../../models/driver-standings.model'
+import RaceClassificationModel from '../../models/race-classification.model'
 import UserModel from '../../models/user.model'
 import { MongoUserRepository } from './user.repository'
 
@@ -17,7 +19,12 @@ describe('User Repository', () => {
     await MongooseHelper.disconnect()
   })
 
-  const makeSut = () => new MongoUserRepository(UserModel)
+  const makeSut = () =>
+    new MongoUserRepository(
+      UserModel,
+      DriverStandingsModel,
+      RaceClassificationModel
+    )
 
   it('should create an User', async () => {
     const sut = makeSut()
