@@ -91,6 +91,8 @@ export interface UpdateChampionshipDto {
     team?: string
     isRegistered: boolean
     isRemoved: boolean
+    bonifications?: { bonification: string; race: string }[]
+    penalties?: { penalty: string; race: string }[]
   }[]
   pendentDrivers?: {
     user: string

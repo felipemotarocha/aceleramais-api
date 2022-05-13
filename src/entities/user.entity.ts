@@ -5,6 +5,10 @@ interface User {
   userName: string
   email: string
   provider: string
+  biography?: string
+  wins: number
+  podiums: number
+  titles: number
   profileImageUrl?: string
 }
 

@@ -11,7 +11,10 @@ describe('User Service', () => {
     firstName: 'valid_first_name',
     lastName: 'valid_last_name',
     provider: 'valid_provider',
-    userName: 'valid_user_name'
+    userName: 'valid_user_name',
+    wins: 0,
+    podiums: 0,
+    titles: 0
   }
 
   interface SutTypes {

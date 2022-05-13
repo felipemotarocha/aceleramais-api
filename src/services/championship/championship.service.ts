@@ -205,7 +205,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
         })
       }
 
-      const createdChampionship = await this.championshipRepository.update({
+      const updatedChampionship = await this.championshipRepository.update({
         id: id,
         dto: {
           description: dto?.description,
@@ -226,7 +226,7 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
       await session.commitTransaction()
       await session.endSession()
 
-      return createdChampionship
+      return updatedChampionship
     } catch (error) {
       await session.endSession()
       throw error

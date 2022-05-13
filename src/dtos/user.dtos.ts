@@ -7,6 +7,7 @@ export interface CreateUserDto {
   lastName: string
   userName: string
   provider: string
+  biography?: string
   profileImage?: Express.Multer.File
   profileImageUrl?: string
 }
@@ -15,4 +16,5 @@ export interface UpdateUserDto {
   firstName?: string
   lastName?: string
   userName?: string
+  biography?: string
 }

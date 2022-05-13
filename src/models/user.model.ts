@@ -22,6 +22,10 @@ const userSchema = new Schema(
       type: String,
       required: true
     },
+    biography: {
+      type: String,
+      required: false
+    },
     profileImageUrl: {
       type: String,
       required: false
