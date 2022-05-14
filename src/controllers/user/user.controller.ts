@@ -104,10 +104,10 @@ export class UserController implements UserControllerAbstract {
         return badRequest(new NotAllowedFieldsError())
       }
 
-      const user = await this.userService.update(
-        httpRequest.params.id,
-        httpRequest.body
-      )
+      const user = await this.userService.update(httpRequest.params.id, {
+        ...httpRequest.body,
+        profileImage: httpRequest.file
+      })
 
       return ok(user)
     } catch (_) {

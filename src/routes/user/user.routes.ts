@@ -15,7 +15,11 @@ const userRoutes = (router: Router): void => {
   )
   router.get('/user', adaptRoute(makeUserController(), 'getOne'))
   router.get('/user/all', adaptRoute(makeUserController(), 'getAll'))
-  router.patch('/user/:id', adaptRoute(makeUserController(), 'update'))
+  router.patch(
+    '/user/:id',
+    upload.single('profileImage'),
+    adaptRoute(makeUserController(), 'update')
+  )
 }
 
 export default userRoutes
