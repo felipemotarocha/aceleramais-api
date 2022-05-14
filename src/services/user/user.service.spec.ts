@@ -209,7 +209,7 @@ describe('User Service', () => {
     expect(promise).rejects.toThrow()
   })
 
-  it('should Update an User', async () => {
+  it('should update an User', async () => {
     const { sut } = makeSut()
 
     const dto: UpdateUserDto = {
@@ -219,6 +219,49 @@ describe('User Service', () => {
     const result = await sut.update('valid_id', dto)
 
     expect(result).toStrictEqual(validUser)
+  })
+
+  it('should call S3 Repository if a profile image is provided on update', async () => {
+    const { sut, s3RepositoryStub } = makeSut()
+
+    const uploadImageSpy = jest.spyOn(s3RepositoryStub, 'uploadImage')
+
+    const dto = {
+      id: 'valid_id',
+      email: 'valid_email',
+      firstName: 'valid_first_name',
+      lastName: 'valid_last_name',
+      userName: 'valid_user_name',
+      profileImage: 'profile_image' as any
+    }
+
+    await sut.update('valid_id', dto)
+
+    expect(uploadImageSpy).toHaveBeenCalledWith({
+      file: 'profile_image',
+      fileName: 'valid_id',
+      folderName: 'profile-images'
+    })
+  })
+
+  it('should not call S3 Repository if a profile image url is provided', async () => {
+    const { sut, s3RepositoryStub } = makeSut()
+
+    const uploadImageSpy = jest.spyOn(s3RepositoryStub, 'uploadImage')
+
+    const dto = {
+      id: 'valid_id',
+      email: 'valid_email',
+      firstName: 'valid_first_name',
+      lastName: 'valid_last_name',
+      provider: 'valid_provider',
+      userName: 'valid_user_name',
+      profileImageUrl: 'profile_image_url'
+    }
+
+    await sut.update('valid_id', dto)
+
+    expect(uploadImageSpy).not.toHaveBeenCalled()
   })
 
   it('should call UserRepository update method with correct values', async () => {
