@@ -1,5 +1,9 @@
 /* eslint-disable no-useless-constructor */
-import { CreateUserDto, UpdateUserDto } from '../../dtos/user.dtos'
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  UpdateUserMongoDto
+} from '../../dtos/user.dtos'
 import User from '../../entities/user.entity'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import DriverStandingsModel from '../../models/driver-standings.model'
@@ -15,7 +19,7 @@ export interface UserRepositoryAbstract {
     id?: string
     userName?: string
   }): Promise<User | null>
-  update(id: string, updateUserDto: UpdateUserDto): Promise<User>
+  update(id: string, updateUserDto: UpdateUserMongoDto): Promise<User>
   getAll({ userName }: { userName?: string }): Promise<User[]>
 }
 

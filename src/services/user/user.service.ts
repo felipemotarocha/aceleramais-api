@@ -56,7 +56,20 @@ export class UserService implements UserServiceAbstract {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
-    return await this.userRepository.update(id, updateUserDto)
+    if (!updateUserDto.profileImage) {
+      return await this.userRepository.update(id, updateUserDto)
+    }
+
+    const profileImageUrl = await this.s3Repository.uploadImage({
+      folderName: 'profile-images',
+      fileName: id,
+      file: updateUserDto.profileImage
+    })
+
+    return await this.userRepository.update(id, {
+      ...updateUserDto,
+      profileImageUrl
+    })
   }
 
   async getAll({

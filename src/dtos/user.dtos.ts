@@ -17,4 +17,13 @@ export interface UpdateUserDto {
   lastName?: string
   userName?: string
   biography?: string
+  profileImage?: Express.Multer.File
+}
+
+export interface UpdateUserMongoDto {
+  firstName?: string
+  lastName?: string
+  userName?: string
+  biography?: string
+  profileImageUrl?: string
 }
