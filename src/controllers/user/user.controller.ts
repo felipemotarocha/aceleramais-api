@@ -94,7 +94,7 @@ export class UserController implements UserControllerAbstract {
         return badRequest(new MissingParamError('id'))
       }
 
-      const allowedUpdates = ['firstName', 'lastName', 'userName']
+      const allowedUpdates = ['firstName', 'lastName', 'userName', 'biography']
 
       const someReceivedUpdateIsNotAllowed = Object.keys(httpRequest.body).some(
         (update) => !allowedUpdates.includes(update)
