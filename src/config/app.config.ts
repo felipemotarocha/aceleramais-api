@@ -1,5 +1,7 @@
 import express from 'express'
 
+import './firebase.config'
+
 import setupMiddlewares from './middlewares.config'
 import setupRoutes from './routes.config'
 
