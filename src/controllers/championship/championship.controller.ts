@@ -3,8 +3,10 @@ import { MissingParamError } from '../../errors/controllers.errors'
 import {
   badRequest,
   created,
+  notFound,
   ok,
-  serverError
+  serverError,
+  unauthorized
 } from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
@@ -73,6 +75,22 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       })
 
       if (errorResponse) return errorResponse
+
+      const championshipBeingUpdated = await this.championshipService.getOne({
+        id: httpRequest.params.id
+      })
+
+      if (!championshipBeingUpdated) {
+        return notFound()
+      }
+
+      const userIsNotChampionshipAdmin = championshipBeingUpdated.admins.every(
+        (a) => a.user !== httpRequest.user
+      )
+
+      if (userIsNotChampionshipAdmin) {
+        return unauthorized()
+      }
 
       const championship = await this.championshipService.update({
         id: httpRequest.params.id,
