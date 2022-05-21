@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import cache from '../../config/cache.config'
 import { auth as firebaseAuth } from '../../config/firebase-admin.config'
 
 const auth = async (req: Request, res: Response, next: NextFunction) => {
@@ -13,7 +14,18 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
   }
 
   try {
+    const cachedDecodedToken = cache.get(authToken)
+
+    if (cachedDecodedToken) {
+      // @ts-ignore
+      req.user = cachedDecodedToken.uid
+
+      return next()
+    }
+
     const decodedToken = await firebaseAuth.verifyIdToken(authToken!)
+
+    cache.set(authToken, decodedToken.uid, 1800)
 
     // @ts-ignore
     req.user = decodedToken.uid
