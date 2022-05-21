@@ -659,4 +659,116 @@ describe('Championship Controller', () => {
     expect(result.statusCode).toBe(500)
     expect(result.body).toStrictEqual(new ServerError())
   })
+
+  it('should return 200 on requesting an entry', async () => {
+    const { sut } = makeSut()
+
+    const body = {
+      driver: 'valid_driver',
+      team: 'valid_team'
+    }
+
+    const result = await sut.requestEntry({
+      params: { id: validChampionship.id },
+      body
+    })
+
+    expect(result.statusCode).toBe(200)
+  })
+
+  it('should return 400 on requesting an entry without a driver', async () => {
+    const { sut } = makeSut()
+
+    const body = {
+      team: 'valid_team'
+    }
+
+    const result = await sut.requestEntry({
+      params: { id: validChampionship.id },
+      body
+    })
+
+    expect(result.statusCode).toBe(400)
+  })
+
+  it('should return 400 on requesting an entry without providing a championship', async () => {
+    const { sut } = makeSut()
+
+    const body = {
+      driver: 'valid_driver',
+      team: 'valid_team'
+    }
+
+    const result = await sut.requestEntry({
+      body
+    })
+
+    expect(result.statusCode).toBe(400)
+  })
+
+  it('should return 404 on requesting an entry with an invalid championship', async () => {
+    const { sut, championshipServicestub } = makeSut()
+
+    jest
+      .spyOn(championshipServicestub, 'getOne')
+      .mockReturnValueOnce(Promise.resolve(null) as any)
+
+    const body = {
+      driver: 'valid_driver',
+      team: 'valid_team'
+    }
+
+    const result = await sut.requestEntry({
+      params: { id: 'invalid_championship' },
+      body
+    })
+
+    expect(result.statusCode).toBe(404)
+  })
+
+  it('should return 400 on requesting an entry with a driver that is already pendent', async () => {
+    const { sut, championshipServicestub } = makeSut()
+
+    jest.spyOn(championshipServicestub, 'getOne').mockReturnValueOnce(
+      Promise.resolve({
+        ...validChampionship,
+        pendentDrivers: [{ user: { id: 'valid_driver' } }]
+      } as any)
+    )
+
+    const body = {
+      driver: 'valid_driver',
+      team: 'valid_team'
+    }
+
+    const result = await sut.requestEntry({
+      params: { id: 'valid_championship' },
+      body
+    })
+
+    expect(result.statusCode).toBe(400)
+  })
+
+  it('should return 400 on requesting an entry with a driver that is already on the championship', async () => {
+    const { sut, championshipServicestub } = makeSut()
+
+    jest.spyOn(championshipServicestub, 'getOne').mockReturnValueOnce(
+      Promise.resolve({
+        ...validChampionship,
+        drivers: [{ user: { id: 'valid_driver' } }]
+      } as any)
+    )
+
+    const body = {
+      driver: 'valid_driver',
+      team: 'valid_team'
+    }
+
+    const result = await sut.requestEntry({
+      params: { id: 'valid_championship' },
+      body
+    })
+
+    expect(result.statusCode).toBe(400)
+  })
 })
