@@ -29,3 +29,9 @@ export class InvalidFieldError extends Error {
     super(`The ${field} is invalid.`)
   }
 }
+
+export class UnauthorizedError extends Error {
+  constructor() {
+    super('Unauthorized.')
+  }
+}
