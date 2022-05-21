@@ -3,8 +3,10 @@ import {
   InvalidFieldError,
   MissingParamError,
   NotAllowedFieldsError,
-  ServerError
+  ServerError,
+  UnauthorizedError
 } from '../../errors/controllers.errors'
+import { ChampionshipServiceStub } from '../../services/championship/championship.service.stub'
 import { DriverStandingsServiceAbstract } from '../../services/driver-standings/driver-standings.service'
 import DriverStandingsServiceStub from '../../services/driver-standings/driver-standings.service.stub'
 
@@ -34,12 +36,14 @@ describe('Race Classification Controller', () => {
     const teamStandingsServiceStub = new TeamStandingsServiceStub()
     const driverStandingsServiceStub = new DriverStandingsServiceStub()
     const raceServiceStub = new RaceServiceStub()
+    const championshipServiceStub = new ChampionshipServiceStub()
 
     const sut = new RaceClassificationController(
       raceClassificationServiceStub,
       driverStandingsServiceStub,
       teamStandingsServiceStub,
-      raceServiceStub
+      raceServiceStub,
+      championshipServiceStub
     )
 
     return {
@@ -128,7 +132,8 @@ describe('Race Classification Controller', () => {
 
     const result = await sut.update({
       query: { race: 'valid_id' },
-      body: dto
+      body: dto,
+      user: 'valid_user'
     })
 
     expect(raceClassificationTeamsSpy).toHaveBeenCalledWith(
@@ -219,9 +224,7 @@ describe('Race Classification Controller', () => {
 
     jest
       .spyOn(raceClassificationServiceStub, 'update')
-      .mockReturnValueOnce(
-        new Promise((_resolve, reject) => reject(new Error()))
-      )
+      .mockImplementationOnce(() => Promise.reject(new Error()))
 
     const dto: UpdateRaceClassificationDto = {
       classification: [
@@ -240,10 +243,39 @@ describe('Race Classification Controller', () => {
 
     const result = await sut.update({
       query: { race: 'valid_id' },
-      body: dto
+      body: dto,
+      user: 'valid_user'
     })
     expect(result.statusCode).toBe(400)
     expect(result.body).toStrictEqual(new ServerError())
+  })
+
+  it("should return 401 on update if user is not the race classification's championshop admin", async () => {
+    const { sut } = makeSut()
+
+    const dto: UpdateRaceClassificationDto = {
+      classification: [
+        {
+          position: 1,
+          user: 'valid_id',
+          team: 'valid_id',
+          isRegistered: true,
+          isRemoved: false,
+          hasFastestLap: true,
+          hasPolePosition: true,
+          scores: true
+        }
+      ]
+    }
+
+    const result = await sut.update({
+      query: { race: 'valid_id' },
+      body: dto,
+      user: 'invalid_user'
+    })
+
+    expect(result.statusCode).toBe(401)
+    expect(result.body).toStrictEqual(new UnauthorizedError())
   })
 
   it('should return 400 if user is null and isRegistered is true', async () => {
