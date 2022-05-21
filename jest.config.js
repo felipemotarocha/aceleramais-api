@@ -16,5 +16,6 @@ module.exports = {
     '.+\\.ts$': 'ts-jest'
   },
   watchPathIgnorePatterns: ['globalConfig', '<rootDir>/dist/'],
-  testPathIgnorePatterns: ['<rootDir>/dist/']
+  testPathIgnorePatterns: ['<rootDir>/dist/'],
+  setupFilesAfterEnv: ['<rootDir>/jest-setup-env.js']
 }
