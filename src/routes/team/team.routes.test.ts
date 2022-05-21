@@ -30,6 +30,7 @@ describe('Team Routes', () => {
   it('should get all Teams by Championship', async () => {
     await request(app)
       .get(`/api/team?championship=${validTeam.championship}`)
+      .set('authorization', 'Bearer valid_token')
       .expect(200)
   })
 })

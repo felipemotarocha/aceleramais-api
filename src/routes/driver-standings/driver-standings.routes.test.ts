@@ -61,6 +61,7 @@ describe('Driver Standings Routes', () => {
       .get(
         `/api/driverStandings?championship=${validDriverStandings.championship}`
       )
+      .set('authorization', 'Bearer valid_token')
       .expect(200)
   })
 })

@@ -58,6 +58,7 @@ describe('Race Classification Routes', () => {
   it('should get a Race Classification by Race ID', async () => {
     await request(app)
       .get(`/api/raceClassification?race=${validRace.id}`)
+      .set('authorization', 'Bearer valid_token')
       .expect(200)
   })
 })

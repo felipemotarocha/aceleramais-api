@@ -19,6 +19,9 @@ describe('Track Routes', () => {
   })
 
   it('should return all Tracks on success', async () => {
-    await request(app).get('/api/track').expect(200)
+    await request(app)
+      .get('/api/track')
+      .set('authorization', 'Bearer valid_token')
+      .expect(200)
   })
 })

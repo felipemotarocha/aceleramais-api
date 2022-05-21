@@ -48,6 +48,7 @@ describe('Race Routes', () => {
   it('should get a Race by Championship ID', async () => {
     await request(app)
       .get(`/api/race?championship=${validRace.championship}`)
+      .set('authorization', 'Bearer valid_token')
       .expect(200)
   })
 })

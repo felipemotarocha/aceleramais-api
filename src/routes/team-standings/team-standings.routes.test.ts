@@ -52,6 +52,7 @@ describe('Team Standings Routes', () => {
   it('should get a Team Standings by Championship', async () => {
     await request(app)
       .get(`/api/teamStandings?championship=${validTeamStandings.championship}`)
+      .set('authorization', 'Bearer valid_token')
       .expect(200)
   })
 })

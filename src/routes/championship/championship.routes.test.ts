@@ -40,6 +40,7 @@ describe('Championship Routes', () => {
 
     await request(app)
       .post('/api/championship')
+      .set('authorization', 'Bearer valid_token')
       .accept('application/json')
       .field('data', JSON.stringify(data))
       .expect(201)
@@ -66,12 +67,14 @@ describe('Championship Routes', () => {
 
     const { body } = await request(app)
       .post('/api/championship')
+      .set('authorization', 'Bearer valid_token')
       .accept('application/json')
       .field('data', JSON.stringify(data))
       .expect(201)
 
     await request(app)
       .put(`/api/championship/${body.id}`)
+      .set('authorization', 'Bearer valid_token')
       .accept('application/json')
       .field(
         'data',
@@ -133,10 +136,16 @@ describe('Championship Routes', () => {
 
     const { body } = await request(app)
       .post('/api/championship')
-      .set('Content-type', 'multipart/form-data')
+      .set({
+        'Content-type': 'multipart/form-data',
+        authorization: 'Bearer valid_token'
+      })
       .field('data', JSON.stringify(data))
 
-    await request(app).get(`/api/championship/${body.id}`).expect(200)
+    await request(app)
+      .get(`/api/championship/${body.id}`)
+      .set('authorization', 'Bearer valid_token')
+      .expect(200)
   })
 
   it('should get Championships by Driver', async () => {
@@ -159,11 +168,15 @@ describe('Championship Routes', () => {
 
     await request(app)
       .post('/api/championship')
-      .set('Content-type', 'multipart/form-data')
+      .set({
+        'Content-type': 'multipart/form-data',
+        authorization: 'Bearer valid_token'
+      })
       .field('data', JSON.stringify(data))
 
     await request(app)
       .get(`/api/championship?driver=${data.drivers[0].user}`)
+      .set('authorization', 'Bearer valid_token')
       .expect(200)
   })
 })

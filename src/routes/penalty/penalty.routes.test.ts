@@ -30,6 +30,7 @@ describe('Penalty Routes', () => {
   it('should get all Penalties by Championship', async () => {
     await request(app)
       .get(`/api/penalty?championship=${validPenalty.championship}`)
+      .set('authorization', 'Bearer valid_token')
       .expect(200)
   })
 })

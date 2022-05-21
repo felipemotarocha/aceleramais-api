@@ -8,7 +8,10 @@ describe('Content Type Middleware', () => {
       res.send('')
     })
 
-    await request(app).get('/test_content_type').expect('content-type', /json/)
+    await request(app)
+      .get('/test_content_type')
+      .set('authorization', 'Bearer valid_token')
+      .expect('content-type', /json/)
   })
 
   it('should return xml content type when forced', async () => {
@@ -19,6 +22,7 @@ describe('Content Type Middleware', () => {
 
     await request(app)
       .get('/test_content_type_xml')
+      .set('authorization', 'Bearer valid_token')
       .expect('content-type', /xml/)
   })
 })

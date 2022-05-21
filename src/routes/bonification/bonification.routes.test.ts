@@ -30,6 +30,7 @@ describe('Bonification Routes', () => {
   it('should get all Bonifications by Championship', async () => {
     await request(app)
       .get(`/api/bonification?championship=${validBonification.championship}`)
+      .set('authorization', 'Bearer valid_token')
       .expect(200)
   })
 })

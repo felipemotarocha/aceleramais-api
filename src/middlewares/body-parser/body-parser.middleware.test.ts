@@ -9,6 +9,7 @@ describe('Body Parser Middleware', () => {
 
     await request(app)
       .post('/test_body_parser')
+      .set('authorization', 'Bearer valid_token')
       .send({ name: 'Felipe' })
       .expect({ name: 'Felipe' })
   })

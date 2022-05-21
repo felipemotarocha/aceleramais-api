@@ -20,6 +20,7 @@ describe('User Routes', () => {
   it('should return an User on success', async () => {
     await request(app)
       .post('/api/user')
+      .set('authorization', 'Bearer valid_token')
       .send({
         id: 'valid_id',
         email: 'valid_email',
@@ -32,58 +33,78 @@ describe('User Routes', () => {
   })
 
   it('should get an User by ID', async () => {
-    const { body } = await request(app).post('/api/user').send({
-      id: 'valid_id',
-      email: 'valid_email',
-      firstName: 'valid_first_name',
-      lastName: 'valid_last_name',
-      provider: 'valid_provider',
-      userName: 'valid_user_name'
-    })
+    const { body } = await request(app)
+      .post('/api/user')
+      .set('authorization', 'Bearer valid_token')
+      .send({
+        id: 'valid_id',
+        email: 'valid_email',
+        firstName: 'valid_first_name',
+        lastName: 'valid_last_name',
+        provider: 'valid_provider',
+        userName: 'valid_user_name'
+      })
 
-    await request(app).get(`/api/user?id=${body.id}`).expect(200)
+    await request(app)
+      .get(`/api/user?id=${body.id}`)
+      .set('authorization', 'Bearer valid_token')
+      .expect(200)
   })
 
   it('should get an User by userName', async () => {
-    const { body } = await request(app).post('/api/user').send({
-      id: 'valid_id',
-      email: 'valid_email',
-      firstName: 'valid_first_name',
-      lastName: 'valid_last_name',
-      provider: 'valid_provider',
-      userName: 'valid_user_name'
-    })
+    const { body } = await request(app)
+      .post('/api/user')
+      .set('authorization', 'Bearer valid_token')
+      .send({
+        id: 'valid_id',
+        email: 'valid_email',
+        firstName: 'valid_first_name',
+        lastName: 'valid_last_name',
+        provider: 'valid_provider',
+        userName: 'valid_user_name'
+      })
 
-    await request(app).get(`/api/user?userName=${body.userName}`).expect(200)
+    await request(app)
+      .get(`/api/user?userName=${body.userName}`)
+      .set('authorization', 'Bearer valid_token')
+      .expect(200)
   })
 
   it('should get all Users by userName', async () => {
-    const { body } = await request(app).post('/api/user').send({
-      id: 'valid_id',
-      email: 'valid_email',
-      firstName: 'valid_first_name',
-      lastName: 'valid_last_name',
-      provider: 'valid_provider',
-      userName: 'valid_user_name'
-    })
+    const { body } = await request(app)
+      .post('/api/user')
+      .set('authorization', 'Bearer valid_token')
+      .send({
+        id: 'valid_id',
+        email: 'valid_email',
+        firstName: 'valid_first_name',
+        lastName: 'valid_last_name',
+        provider: 'valid_provider',
+        userName: 'valid_user_name'
+      })
 
     await request(app)
       .get(`/api/user/all?userName=${body.userName}`)
+      .set('authorization', 'Bearer valid_token')
       .expect(200)
   })
 
   it('should update an User', async () => {
-    const { body } = await request(app).post('/api/user').send({
-      id: 'valid_id',
-      email: 'valid_email',
-      firstName: 'valid_first_name',
-      lastName: 'valid_last_name',
-      provider: 'valid_provider',
-      userName: 'valid_user_name'
-    })
+    const { body } = await request(app)
+      .post('/api/user')
+      .set('authorization', 'Bearer valid_token')
+      .send({
+        id: 'valid_id',
+        email: 'valid_email',
+        firstName: 'valid_first_name',
+        lastName: 'valid_last_name',
+        provider: 'valid_provider',
+        userName: 'valid_user_name'
+      })
 
     await request(app)
       .patch(`/api/user/${body.id}`)
+      .set('authorization', 'Bearer valid_token')
       .send({
         firstName: 'new_first_name'
       })
