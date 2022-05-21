@@ -1,5 +1,6 @@
 import express from 'express'
 
+import './cache.config'
 import './firebase-admin.config'
 import './firebase.config'
 
