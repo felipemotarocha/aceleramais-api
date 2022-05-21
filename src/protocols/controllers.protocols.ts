@@ -5,6 +5,7 @@ export interface HttpRequest {
   params?: { [key: string]: string }
   query?: { [key: string]: string }
   file?: Express.Multer.File
+  user?: string
 }
 
 export interface HttpResponse {
