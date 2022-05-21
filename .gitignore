@@ -4,5 +4,6 @@ coverage
 globalConfig.json
 
 .env
+credentials
 
 dist
