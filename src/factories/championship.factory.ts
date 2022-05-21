@@ -65,7 +65,7 @@ const makeChampionshipServiceHelper = (): ChampionshipServiceHelperAbstract => {
   )
 }
 
-const makeChampionshipService = () => {
+export const makeChampionshipService = () => {
   const championshipRepository = new MongoChampionshipRepository(
     ChampionshipModel
   )

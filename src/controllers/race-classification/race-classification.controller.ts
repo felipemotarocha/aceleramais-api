@@ -4,11 +4,12 @@ import {
   NotAllowedFieldsError,
   ServerError
 } from '../../errors/controllers.errors'
-import { badRequest, ok } from '../../helpers/controllers.helpers'
+import { badRequest, ok, unauthorized } from '../../helpers/controllers.helpers'
 import {
   HttpRequest,
   HttpResponse
 } from '../../protocols/controllers.protocols'
+import { ChampionshipServiceAbstract } from '../../services/championship'
 import { DriverStandingsServiceAbstract } from '../../services/driver-standings/driver-standings.service'
 import { RaceClassificationServiceAbstract } from '../../services/race-classification/race-classification.service'
 import { RaceServiceAbstract } from '../../services/race/race.service'
@@ -26,7 +27,8 @@ implements RaceClassificationControllerAbstract {
     private readonly raceClassificationService: RaceClassificationServiceAbstract,
     private readonly driverStandingsService: DriverStandingsServiceAbstract,
     private readonly teamStandingsService: TeamStandingsServiceAbstract,
-    private readonly raceService: RaceServiceAbstract
+    private readonly raceService: RaceServiceAbstract,
+    private readonly championshipService: ChampionshipServiceAbstract
   ) {}
 
   async getOne(httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -35,11 +37,11 @@ implements RaceClassificationControllerAbstract {
         return badRequest(new MissingParamError('race'))
       }
 
-      const race = await this.raceClassificationService.getOne(
+      const raceClassification = await this.raceClassificationService.getOne(
         httpRequest.query!.race!
       )
 
-      return ok(race)
+      return ok(raceClassification)
     } catch (_e) {
       return badRequest(new ServerError())
     }
@@ -79,6 +81,18 @@ implements RaceClassificationControllerAbstract {
 
       if (!race) {
         return badRequest(new InvalidFieldError('race'))
+      }
+
+      const championship = await this.championshipService.getOne({
+        id: race.championship
+      })
+
+      const userIsNotChampionshipAdmin = championship!.admins.every(
+        (a) => a.user !== httpRequest.user
+      )
+
+      if (userIsNotChampionshipAdmin) {
+        return unauthorized()
       }
 
       const raceClassification = await this.raceClassificationService.update(

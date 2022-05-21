@@ -22,6 +22,7 @@ import RaceClassificationController, {
 import { makeTeamStandingsService } from './team-standings.factory'
 import { makeDriverStandingsService } from './driver-standings.factory'
 import { makeRaceService } from './race.factory'
+import { makeChampionshipService } from './championship.factory'
 
 export const makeRaceClassificationService =
   (): RaceClassificationServiceAbstract => {
@@ -49,13 +50,16 @@ const makeRaceClassificationController =
 
     const raceService = makeRaceService()
 
+    const championshipService = makeChampionshipService()
+
     const raceClassificationService = makeRaceClassificationService()
 
     return new RaceClassificationController(
       raceClassificationService,
       driverStandingsService,
       teamStandingsService,
-      raceService
+      raceService,
+      championshipService
     )
   }
 
