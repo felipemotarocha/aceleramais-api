@@ -1,5 +1,10 @@
 /* eslint-disable no-useless-constructor */
-import { MissingParamError } from '../../errors/controllers.errors'
+import Team from '../../entities/team.entity'
+import User from '../../entities/user.entity'
+import {
+  InvalidFieldError,
+  MissingParamError
+} from '../../errors/controllers.errors'
 import {
   badRequest,
   created,
@@ -19,6 +24,7 @@ import { TeamStandingsServiceAbstract } from '../../services/team-standings/team
 import ChampionshipControllerHelper from './championship.controller.helpers'
 
 export interface ChampionshipControllerAbstract {
+  requestEntry(httpRequest: HttpRequest): Promise<HttpResponse>
   create(httpRequest: HttpRequest): Promise<HttpResponse>
   getOne(httpRequest: HttpRequest): Promise<HttpResponse>
   getAll(httpRequest: HttpRequest): Promise<HttpResponse>
@@ -32,6 +38,63 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
     private readonly driverStandingsService: DriverStandingsServiceAbstract,
     private readonly teamStandingsService: TeamStandingsServiceAbstract
   ) {}
+
+  async requestEntry(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      const championshipId = httpRequest.params?.id
+
+      if (!championshipId) {
+        return badRequest(new MissingParamError('championship'))
+      }
+
+      const requiredFields = ['driver']
+
+      for (const field of requiredFields) {
+        if (!httpRequest.body[field]) {
+          return badRequest(new MissingParamError(field))
+        }
+      }
+
+      const championship = await this.championshipService.getOne({
+        id: championshipId
+      })
+
+      if (!championship) return notFound()
+
+      const driverIsInvalid =
+        championship.pendentDrivers.some(
+          (i) => (i.user as User).id === httpRequest.body.driver
+        ) ||
+        championship.drivers.some(
+          (i) => (i.user as User).id === httpRequest.body.driver
+        )
+
+      if (driverIsInvalid) {
+        return badRequest(new InvalidFieldError('driver'))
+      }
+
+      const result = await this.championshipService.update({
+        id: championshipId,
+        dto: {
+          pendentDrivers: [
+            ...championship.pendentDrivers.map((i) => ({
+              user: (i.user as User).id,
+              team: (i.team as Team)?.id
+            })),
+            {
+              user: httpRequest.body.driver as string,
+              team: httpRequest.body?.team as string
+            }
+          ]
+        } as any
+      })
+
+      return ok(result)
+    } catch (error) {
+      console.error(error)
+      return serverError()
+    }
+  }
 
   async create(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -50,7 +113,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
 
       return created(championship)
     } catch (error) {
-      console.log({ error })
+      console.error(error)
       return serverError()
     }
   }
@@ -103,7 +166,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
 
       return ok(championship)
     } catch (error) {
-      console.log({ error })
+      console.error(error)
       return serverError()
     }
   }
@@ -124,7 +187,8 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       })
 
       return ok(championship)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
       return serverError()
     }
   }
@@ -142,7 +206,8 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       })
 
       return ok(championships)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
       return serverError()
     }
   }
