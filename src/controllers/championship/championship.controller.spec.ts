@@ -523,7 +523,8 @@ describe('Championship Controller', () => {
 
     const result = await sut.update({
       params: { id: validChampionship.id },
-      body: { data: JSON.stringify(dto) }
+      body: { data: JSON.stringify(dto) },
+      user: 'valid_user'
     })
 
     expect(result.statusCode).toBe(200)
@@ -533,6 +534,30 @@ describe('Championship Controller', () => {
     )
     expect(refreshDriverStandingsSpy).toHaveBeenCalledWith(validChampionship.id)
     expect(refreshTeamStandingsSpy).toHaveBeenCalledWith(validChampionship.id)
+  })
+
+  it('should return 401 on update if request user is not an admin', async () => {
+    const { sut } = makeSut()
+
+    const dto: UpdateChampionshipDto = {
+      teams: [{ name: 'valid_name', color: 'valid_color', id: 'valid_id' }],
+      drivers: [{ user: 'valid_user', isRegistered: true, isRemoved: false }],
+      pendentDrivers: [],
+      penalties: [{ id: 'valid_id', name: 'valid_penalty', points: 1 }],
+      bonifications: [
+        { id: 'valid_id', name: 'valid_bonification', points: 1 }
+      ],
+      scoringSystem: { 1: 25, 2: 20 },
+      races: []
+    }
+
+    const result = await sut.update({
+      params: { id: validChampionship.id },
+      body: { data: JSON.stringify(dto) },
+      user: 'invalid_user'
+    })
+
+    expect(result.statusCode).toBe(401)
   })
 
   it('should return 200 on getting a Championship by ID', async () => {
