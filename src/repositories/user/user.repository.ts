@@ -1,4 +1,6 @@
 /* eslint-disable no-useless-constructor */
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '../../config/firebase.config'
 import {
   CreateUserDto,
   UpdateUserDto,
@@ -11,6 +13,7 @@ import RaceClassificationModel from '../../models/race-classification.model'
 import UserModel from '../../models/user.model'
 
 export interface UserRepositoryAbstract {
+  login(email: string, password: string): Promise<{ token: string }>
   create(createUserDto: CreateUserDto): Promise<User>
   getOne({
     id,
@@ -29,6 +32,10 @@ export class MongoUserRepository implements UserRepositoryAbstract {
     private readonly driverStandingsModel: typeof DriverStandingsModel,
     private readonly raceClassificationModel: typeof RaceClassificationModel
   ) {}
+
+  login(): Promise<{ token: string }> {
+    throw new Error('Method not implemented.')
+  }
 
   async getWins(user: User) {
     return await this.raceClassificationModel
@@ -157,5 +164,37 @@ export class MongoUserRepository implements UserRepositoryAbstract {
       .sort({ userName: 1 })
 
     return users.map((user) => MongooseHelper.map<User>(user.toJSON()))
+  }
+}
+
+export class FirebaseUserRepository implements UserRepositoryAbstract {
+  async login(email: string, password: string): Promise<{ token: string }> {
+    const { user } = await signInWithEmailAndPassword(auth, email, password)
+
+    const token = await user.getIdToken()
+
+    return { token }
+  }
+
+  create(createUserDto: CreateUserDto): Promise<User> {
+    throw new Error('Method not implemented.')
+  }
+
+  getOne({
+    id,
+    userName
+  }: {
+    id?: string | undefined
+    userName?: string | undefined
+  }): Promise<User | null> {
+    throw new Error('Method not implemented.')
+  }
+
+  update(id: string, updateUserDto: UpdateUserMongoDto): Promise<User> {
+    throw new Error('Method not implemented.')
+  }
+
+  getAll({ userName }: { userName?: string | undefined }): Promise<User[]> {
+    throw new Error('Method not implemented.')
   }
 }

@@ -29,6 +29,10 @@ describe('User Controller', () => {
 
   const makeSut = (): SutTypes => {
     class UserServiceStub implements UserServiceAbstract {
+      async login(email: string, password: string): Promise<{ token: string }> {
+        return { token: 'valid_token' }
+      }
+
       async create(createUserDto: CreateUserDto): Promise<User> {
         return validUser
       }

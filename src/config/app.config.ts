@@ -1,5 +1,6 @@
 import express from 'express'
 
+import './firebase-admin.config'
 import './firebase.config'
 
 import setupMiddlewares from './middlewares.config'

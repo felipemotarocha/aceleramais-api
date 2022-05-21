@@ -25,6 +25,10 @@ describe('User Service', () => {
 
   const makeSut = (): SutTypes => {
     class UserRepositoryStub implements UserRepositoryAbstract {
+      async login(email: string, password: string): Promise<{ token: string }> {
+        return { token: 'valid_token' }
+      }
+
       async create(): Promise<User> {
         return validUser
       }
@@ -50,7 +54,11 @@ describe('User Service', () => {
 
     const userRepositoryStub = new UserRepositoryStub()
     const s3RepositoryStub = new S3RepositoryStub()
-    const sut = new UserService(userRepositoryStub, s3RepositoryStub)
+    const sut = new UserService(
+      userRepositoryStub,
+      userRepositoryStub,
+      s3RepositoryStub
+    )
 
     return { userRepositoryStub, sut, s3RepositoryStub }
   }

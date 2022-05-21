@@ -16,6 +16,7 @@ import {
 import { UserServiceAbstract } from '../../services/user/user.service'
 
 export interface UserControllerAbstract {
+  login(httpRequest: HttpRequest): Promise<HttpResponse>
   create(httpRequest: HttpRequest): Promise<HttpResponse>
   getOne(httpRequest: HttpRequest): Promise<HttpResponse>
   getAll(httpRequest: HttpRequest): Promise<HttpResponse>
@@ -27,6 +28,29 @@ export class UserController implements UserControllerAbstract {
 
   constructor(userService: UserServiceAbstract) {
     this.userService = userService
+  }
+
+  async login(httpRequest: HttpRequest): Promise<HttpResponse> {
+    try {
+      const requiredFields = ['email', 'password']
+
+      for (const field of requiredFields) {
+        if (!httpRequest.body[field]) {
+          return badRequest(new MissingParamError(field))
+        }
+      }
+
+      const token = await this.userService.login(
+        httpRequest.body.email,
+        httpRequest.body.password
+      )
+
+      return ok(token)
+    } catch (error) {
+      console.error(error)
+
+      return serverError()
+    }
   }
 
   async create(httpRequest: HttpRequest): Promise<HttpResponse> {

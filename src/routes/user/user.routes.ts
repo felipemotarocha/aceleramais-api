@@ -8,6 +8,7 @@ const storage = multer.memoryStorage()
 const upload = multer({ storage })
 
 const userRoutes = (router: Router): void => {
+  router.post('/user/login', adaptRoute(makeUserController(), 'login' as any))
   router.post(
     '/user',
     upload.single('profileImage'),

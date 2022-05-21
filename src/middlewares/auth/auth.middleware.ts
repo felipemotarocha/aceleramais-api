@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
-import { auth as firebaseAuth } from '../../config/firebase.config'
+import { auth as firebaseAuth } from '../../config/firebase-admin.config'
 
 const auth = async (req: Request, res: Response, next: NextFunction) => {
+  if (req.url === '/api/user/login') {
+    return next()
+  }
+
   const authToken = req.headers?.authorization?.split(' ')?.[1]
 
   if (!authToken) {
@@ -18,7 +22,7 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     console.error(error)
 
-    return res.status(401).send('Unauthorized.')
+    return res.status(401).send({ message: 'Unauthorized.' })
   }
 }
 

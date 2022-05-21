@@ -4,6 +4,7 @@ import { S3RepositoryAbstract } from '../../repositories/s3/s3.repository'
 import { UserRepositoryAbstract } from '../../repositories/user/user.repository'
 
 export interface UserServiceAbstract {
+  login(email: string, password: string): Promise<{ token: string }>
   create(createUserDto: CreateUserDto): Promise<User>
   getOne({
     id,
@@ -17,15 +18,14 @@ export interface UserServiceAbstract {
 }
 
 export class UserService implements UserServiceAbstract {
-  private userRepository: UserRepositoryAbstract
-  private s3Repository: S3RepositoryAbstract
-
   constructor(
-    userRepository: UserRepositoryAbstract,
-    s3Repository: S3RepositoryAbstract
-  ) {
-    this.userRepository = userRepository
-    this.s3Repository = s3Repository
+    private readonly userRepository: UserRepositoryAbstract,
+    private readonly userFirebaseRepository: UserRepositoryAbstract,
+    private readonly s3Repository: S3RepositoryAbstract
+  ) {}
+
+  login(email: string, password: string): Promise<{ token: string }> {
+    return this.userFirebaseRepository.login(email, password)
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
