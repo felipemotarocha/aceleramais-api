@@ -18,7 +18,9 @@ const adaptRoute = (controller: any, method: ControllerMethods) => {
     const isError = ![200, 201].includes(httpResponse.statusCode)
 
     if (isError) {
-      return res.status(httpResponse.statusCode).send(httpResponse.body.message)
+      return res
+        .status(httpResponse.statusCode)
+        .send({ message: httpResponse.body.message })
     }
 
     return res.status(httpResponse.statusCode).send(httpResponse.body)
