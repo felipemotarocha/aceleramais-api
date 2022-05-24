@@ -21,7 +21,15 @@ export interface UpdateParams {
   dto: UpdateChampionshipDto
 }
 
+export interface RequestEntryParams {
+  championship: string
+  pendentDrivers: Championship['pendentDrivers']
+  driver: string
+  team?: string
+}
+
 export interface ChampionshipServiceAbstract {
+  requestEntry(params: RequestEntryParams): Promise<Championship>
   create(params: CreateParams): Promise<Championship>
   getOne(params: GetOneParams): Promise<Championship | null>
   getAll(params: GetAllParams): Promise<Championship[]>

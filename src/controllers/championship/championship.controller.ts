@@ -1,5 +1,4 @@
 /* eslint-disable no-useless-constructor */
-import Team from '../../entities/team.entity'
 import User from '../../entities/user.entity'
 import {
   InvalidFieldError,
@@ -66,27 +65,18 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
           (i) => (i.user as User).id === httpRequest.body.driver
         ) ||
         championship.drivers.some(
-          (i) => (i.user as User).id === httpRequest.body.driver
+          (i) => (i?.user as User)?.id === httpRequest.body.driver
         )
 
       if (driverIsInvalid) {
         return badRequest(new InvalidFieldError('driver'))
       }
 
-      const result = await this.championshipService.update({
-        id: championshipId,
-        dto: {
-          pendentDrivers: [
-            ...championship.pendentDrivers.map((i) => ({
-              user: (i.user as User).id,
-              team: (i.team as Team)?.id
-            })),
-            {
-              user: httpRequest.body.driver as string,
-              team: httpRequest.body?.team as string
-            }
-          ]
-        } as any
+      const result = await this.championshipService.requestEntry({
+        championship: championship.id,
+        pendentDrivers: championship.pendentDrivers,
+        driver: httpRequest.body.driver,
+        team: httpRequest.body?.team
       })
 
       return ok(result)

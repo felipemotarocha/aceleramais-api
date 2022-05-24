@@ -15,8 +15,11 @@ import {
   startSession,
   TeamStandingsRepositoryAbstract,
   UpdateParams,
-  Types
+  Types,
+  User,
+  Team
 } from '.'
+import { RequestEntryParams } from './championship.service.types'
 
 export class ChampionshipService implements ChampionshipServiceAbstract {
   constructor(
@@ -27,6 +30,26 @@ export class ChampionshipService implements ChampionshipServiceAbstract {
     private readonly scoringSystemRepository: ScoringSystemRepositoryAbstract,
     private readonly s3Repository: S3RepositoryAbstract
   ) {}
+
+  async requestEntry(params: RequestEntryParams): Promise<Championship> {
+    const { pendentDrivers, driver, team } = params
+
+    return this.championshipRepository.update({
+      id: params.championship,
+      dto: {
+        pendentDrivers: [
+          ...pendentDrivers.map((i) => ({
+            user: (i.user as User).id,
+            team: (i.team as Team)?.id
+          })),
+          {
+            user: driver as string,
+            team: team as string
+          }
+        ]
+      }
+    })
+  }
 
   async create({
     id = new Types.ObjectId() as any,

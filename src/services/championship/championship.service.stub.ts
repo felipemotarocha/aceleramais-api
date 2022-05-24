@@ -29,6 +29,10 @@ export const validChampionship: Championship = {
 }
 
 export class ChampionshipServiceStub implements ChampionshipServiceAbstract {
+  async requestEntry(): Promise<Championship> {
+    return validChampionship
+  }
+
   async create(): Promise<Championship> {
     return validChampionship
   }

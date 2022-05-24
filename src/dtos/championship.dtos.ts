@@ -124,7 +124,7 @@ export interface UpdateChampionshipMongoDto {
   name?: string
   description?: string
   platform?: string
-  drivers: {
+  drivers?: {
     user?: string
     userName?: string
     team?: string
@@ -136,9 +136,9 @@ export interface UpdateChampionshipMongoDto {
     team?: string
   }[]
   races?: string[]
-  scoringSystem: string
-  teams: string[]
-  bonifications: string[]
-  penalties: string[]
+  scoringSystem?: string
+  teams?: string[]
+  bonifications?: string[]
+  penalties?: string[]
   avatarImageUrl?: string
 }
