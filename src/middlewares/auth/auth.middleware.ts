@@ -18,7 +18,7 @@ const auth = async (req: Request, res: Response, next: NextFunction) => {
 
     if (cachedDecodedToken) {
       // @ts-ignore
-      req.user = cachedDecodedToken.uid
+      req.user = cachedDecodedToken
 
       return next()
     }

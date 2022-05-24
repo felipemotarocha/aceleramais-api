@@ -5,10 +5,20 @@ import app from '../../config/app.config'
 import { env } from '../../config/env.config'
 import MongooseHelper from '../../helpers/mongoose.helpers'
 import ChampionshipModel from '../../models/championship.model'
+import UserModel from '../../models/user.model'
 
 describe('Championship Routes', () => {
   beforeAll(async () => {
     await MongooseHelper.connect(env.mongodbUrl)
+
+    await UserModel.create({
+      _id: '6UrOYyinh9TJg9M6n1t5mSJzQPu2',
+      firstName: 'Felipe',
+      lastName: 'Rocha',
+      email: 'felipe@rocha.com',
+      userName: 'felipe.rocha',
+      provider: 'firebase'
+    })
   })
 
   beforeEach(async () => {
@@ -56,13 +66,17 @@ describe('Championship Routes', () => {
       races: [{ startDate: 'valid_start_date', track: new Types.ObjectId() }],
       teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [
-        { user: new Types.ObjectId(), isRegistered: true, isRemoved: false }
+        {
+          user: '6UrOYyinh9TJg9M6n1t5mSJzQPu2',
+          isRegistered: true,
+          isRemoved: false
+        }
       ],
       pendentDrivers: [],
       bonifications: [{ name: 'valid_bonifcation', points: 1 }],
       penalties: [{ name: 'valid_penalty', points: 1 }],
       scoringSystem: { 1: 25, 2: 20 },
-      admins: [{ user: new Types.ObjectId(), isCreator: true }]
+      admins: [{ user: '6UrOYyinh9TJg9M6n1t5mSJzQPu2', isCreator: true }]
     }
 
     const { body } = await request(app)

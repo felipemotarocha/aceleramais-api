@@ -492,7 +492,8 @@ describe('Championship Controller', () => {
       sut,
       driverStandingsServiceStub,
       teamStandingsServiceStub,
-      raceClassificationServiceStub
+      raceClassificationServiceStub,
+      championshipServicestub
     } = makeSut()
 
     const refreshRaceClassificationTeamsSpy = jest.spyOn(
@@ -507,6 +508,20 @@ describe('Championship Controller', () => {
     const refreshTeamStandingsSpy = jest.spyOn(
       teamStandingsServiceStub,
       'refresh'
+    )
+
+    jest.spyOn(championshipServicestub, 'getOne').mockReturnValueOnce(
+      Promise.resolve({
+        ...validChampionship,
+        admins: [
+          {
+            user: {
+              id: 'valid_user'
+            },
+            isCreator: true
+          }
+        ]
+      } as any)
     )
 
     const dto: UpdateChampionshipDto = {
