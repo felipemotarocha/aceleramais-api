@@ -6,7 +6,7 @@ jest.mock('firebase-admin', () => ({
     auth: () => ({
       verifyIdToken: () =>
         Promise.resolve({
-          uid: '123'
+          uid: '6UrOYyinh9TJg9M6n1t5mSJzQPu2'
         })
     })
   })

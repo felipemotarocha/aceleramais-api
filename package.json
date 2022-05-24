@@ -10,6 +10,7 @@
     "test:unit": "yarn test --watch -c jest-unit-config.js",
     "test:unit:verbose": "yarn jest --passWithNoTests --runInBand --watch -c jest-unit-config.js",
     "test:integration": "yarn test --watch -c jest-integration-config.js",
+    "test:integration:verbose": "yarn jest --passWithNoTests --runInBand --watch -c jest-integration-config.js",
     "test:staged": "yarn test --findRelatedTests",
     "test:ci": "yarn test --coverage",
     "mongodb:seed": "ts-node -r dotenv/config seeds/mongodb/mongodb.seed.ts",
