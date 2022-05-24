@@ -417,4 +417,17 @@ describe('Championship Service', () => {
 
     expect(result).toStrictEqual([validChampionship])
   })
+
+  it('should request a entry in a championship', async () => {
+    const { sut } = makeSut()
+
+    const result = await sut.requestEntry({
+      championship: validChampionship.id,
+      pendentDrivers: [],
+      driver: 'valid_driver',
+      team: 'valid_team'
+    })
+
+    expect(result).toStrictEqual(validChampionship)
+  })
 })
