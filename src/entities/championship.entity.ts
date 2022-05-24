@@ -26,7 +26,7 @@ export interface ChampionshipDriver {
 }
 
 export interface ChampionshipAdmin {
-  user: string
+  user: string | User
   isCreator: boolean
 }
 

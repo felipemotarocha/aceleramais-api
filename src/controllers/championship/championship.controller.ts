@@ -138,7 +138,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       }
 
       const userIsNotChampionshipAdmin = championshipBeingUpdated.admins.every(
-        (a) => a.user !== httpRequest.user
+        (a) => (a.user as User).id !== httpRequest.user
       )
 
       if (userIsNotChampionshipAdmin) {
