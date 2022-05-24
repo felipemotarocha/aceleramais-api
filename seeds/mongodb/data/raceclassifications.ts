@@ -7,7 +7,7 @@ const raceClassification = [
     classification: [
       {
         position: 1,
-        user: 'ohYViVrxyCakFXTrUdlS981v8Pf2',
+        user: '6UrOYyinh9TJg9M6n1t5mSJzQPu2',
         team: new ObjectID('6259bf61c5112dc1e32a1e35'),
         isRegistered: true,
         isRemoved: false,
