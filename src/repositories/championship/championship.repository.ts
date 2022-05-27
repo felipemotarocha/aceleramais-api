@@ -110,7 +110,7 @@ implements ChampionshipRepositoryAbstract {
   }): Promise<Championship[]> {
     if (driver) {
       const championships = await this.championshipModel.find({
-        'drivers.user': driver
+        $or: [{ 'drivers.user': driver }, { 'admins.user': driver }]
       })
 
       return championships.map((championship) =>
