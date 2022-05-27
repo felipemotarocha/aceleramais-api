@@ -12,7 +12,7 @@ describe('Championship Routes', () => {
     await MongooseHelper.connect(env.mongodbUrl)
 
     await UserModel.create({
-      _id: '6UrOYyinh9TJg9M6n1t5mSJzQPu2',
+      _id: 'VH96TwI5gmZHeWZR7STTlH9vzTl1',
       firstName: 'Felipe',
       lastName: 'Rocha',
       email: 'felipe@rocha.com',
@@ -67,7 +67,7 @@ describe('Championship Routes', () => {
       teams: [{ name: 'valid_name', color: 'valid_color' }],
       drivers: [
         {
-          user: '6UrOYyinh9TJg9M6n1t5mSJzQPu2',
+          user: 'VH96TwI5gmZHeWZR7STTlH9vzTl1',
           isRegistered: true,
           isRemoved: false
         }
@@ -76,7 +76,7 @@ describe('Championship Routes', () => {
       bonifications: [{ name: 'valid_bonifcation', points: 1 }],
       penalties: [{ name: 'valid_penalty', points: 1 }],
       scoringSystem: { 1: 25, 2: 20 },
-      admins: [{ user: '6UrOYyinh9TJg9M6n1t5mSJzQPu2', isCreator: true }]
+      admins: [{ user: 'VH96TwI5gmZHeWZR7STTlH9vzTl1', isCreator: true }]
     }
 
     const { body } = await request(app)

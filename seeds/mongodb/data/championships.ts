@@ -17,14 +17,14 @@ const championships = [
     ],
     admins: [
       {
-        user: '6UrOYyinh9TJg9M6n1t5mSJzQPu2',
+        user: 'VH96TwI5gmZHeWZR7STTlH9vzTl1',
         isCreator: true
       }
     ],
     pendentDrivers: [],
     drivers: [
       {
-        user: '6UrOYyinh9TJg9M6n1t5mSJzQPu2',
+        user: 'VH96TwI5gmZHeWZR7STTlH9vzTl1',
         team: new ObjectID('6259bf61c5112dc1e32a1e35'),
         isRegistered: true,
         isRemoved: false,
