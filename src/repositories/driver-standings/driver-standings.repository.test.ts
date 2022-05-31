@@ -123,7 +123,8 @@ describe('Mongo Driver Standings Repository', () => {
       id: validUser.id,
       firstName: validUser.firstName,
       lastName: validUser.lastName,
-      userName: validUser.userName
+      userName: validUser.userName,
+      profileImageUrl: `https://${env.cloudFrontUrl}/user-avatars/default.png`
     })
     expect(result.standings[0].isRegistered).toBe(
       validDriverStandings.standings[0].isRegistered

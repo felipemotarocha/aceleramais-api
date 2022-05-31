@@ -1,4 +1,5 @@
 import { model, Schema } from 'mongoose'
+import { env } from '../config/env.config'
 
 const userSchema = new Schema(
   {
@@ -28,7 +29,8 @@ const userSchema = new Schema(
     },
     profileImageUrl: {
       type: String,
-      required: false
+      required: false,
+      default: `https://${env.cloudFrontUrl}/user-avatars/default.png`
     },
     provider: {
       type: String,

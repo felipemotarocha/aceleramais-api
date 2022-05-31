@@ -1,4 +1,5 @@
 import { model, Schema, Types } from 'mongoose'
+import { env } from '../config/env.config'
 
 const adminSchema = new Schema(
   {
@@ -136,7 +137,8 @@ const championshipSchema = new Schema(
     },
     avatarImageUrl: {
       type: String,
-      required: false
+      required: false,
+      default: `https://${env.cloudFrontUrl}/championship-avatars/default.png`
     },
     description: {
       type: String,

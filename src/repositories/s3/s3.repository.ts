@@ -27,7 +27,7 @@ export class S3Repository implements S3RepositoryAbstract {
     fileName: string
     file: Express.Multer.File
   }): Promise<string> {
-    const s3Client = new S3Client({ region: 'sa-east-1' })
+    const s3Client = new S3Client({ region: 'us-east-1' })
 
     const extension = file.mimetype.split('/')[1]
     const key = `${folderName}/${fileName}.${extension}`
@@ -42,6 +42,6 @@ export class S3Repository implements S3RepositoryAbstract {
 
     await s3Client.send(new PutObjectCommand(command))
 
-    return `${process.env.AWS_BUCKET_URL}/${key}`
+    return `https://${process.env.AWS_BUCKET_URL}/${key}`
   }
 }
