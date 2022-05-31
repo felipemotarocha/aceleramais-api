@@ -4,6 +4,7 @@ import {
   PutObjectCommandInput,
   S3Client
 } from '@aws-sdk/client-s3'
+import { env } from '../../config/env.config'
 
 export interface S3RepositoryAbstract {
   uploadImage({
@@ -33,7 +34,7 @@ export class S3Repository implements S3RepositoryAbstract {
     const key = `${folderName}/${fileName}.${extension}`
 
     const command: PutObjectCommandInput = {
-      Bucket: process.env.AWS_BUCKET_NAME,
+      Bucket: env.awsBucketName,
       Key: key,
       Body: file.buffer,
       ContentType: file.mimetype,
@@ -42,6 +43,6 @@ export class S3Repository implements S3RepositoryAbstract {
 
     await s3Client.send(new PutObjectCommand(command))
 
-    return `https://${process.env.AWS_BUCKET_URL}/${key}`
+    return `https://${env.cloudFrontUrl}/${key}`
   }
 }
