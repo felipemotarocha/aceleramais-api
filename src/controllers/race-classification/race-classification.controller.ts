@@ -9,7 +9,7 @@ import {
   HttpRequest,
   HttpResponse
 } from '../../protocols/controllers.protocols'
-import { ChampionshipServiceAbstract } from '../../services/championship'
+import { ChampionshipServiceAbstract, User } from '../../services/championship'
 import { DriverStandingsServiceAbstract } from '../../services/driver-standings/driver-standings.service'
 import { RaceClassificationServiceAbstract } from '../../services/race-classification/race-classification.service'
 import { RaceServiceAbstract } from '../../services/race/race.service'
@@ -88,7 +88,7 @@ implements RaceClassificationControllerAbstract {
       })
 
       const userIsNotChampionshipAdmin = championship!.admins.every(
-        (a) => a.user !== httpRequest.user
+        (a) => (a.user as User).id !== httpRequest.user
       )
 
       if (userIsNotChampionshipAdmin) {

@@ -6,32 +6,21 @@ import {
   ServerError,
   UnauthorizedError
 } from '../../errors/controllers.errors'
-import { ChampionshipServiceStub } from '../../services/championship/championship.service.stub'
-import { DriverStandingsServiceAbstract } from '../../services/driver-standings/driver-standings.service'
+import {
+  ChampionshipServiceStub,
+  validChampionship
+} from '../../services/championship/championship.service.stub'
 import DriverStandingsServiceStub from '../../services/driver-standings/driver-standings.service.stub'
 
-import { RaceClassificationServiceAbstract } from '../../services/race-classification/race-classification.service'
 import RaceClassificationServiceStub, {
   validRaceClassification
 } from '../../services/race-classification/race-classification.service.stub'
-import { RaceServiceAbstract } from '../../services/race/race.service'
 import RaceServiceStub from '../../services/race/race.service.stub'
-import { TeamStandingsServiceAbstract } from '../../services/team-standings/team-standings.service'
 import TeamStandingsServiceStub from '../../services/team-standings/team-standings.service.stub'
-import RaceClassificationController, {
-  RaceClassificationControllerAbstract
-} from './race-classification.controller'
+import RaceClassificationController from './race-classification.controller'
 
 describe('Race Classification Controller', () => {
-  interface SutTypes {
-    sut: RaceClassificationControllerAbstract
-    raceClassificationServiceStub: RaceClassificationServiceAbstract
-    raceServiceStub: RaceServiceAbstract
-    driverStandingsServiceStub: DriverStandingsServiceAbstract
-    teamStandingsServiceStub: TeamStandingsServiceAbstract
-  }
-
-  const makeSut = (): SutTypes => {
+  const makeSut = () => {
     const raceClassificationServiceStub = new RaceClassificationServiceStub()
     const teamStandingsServiceStub = new TeamStandingsServiceStub()
     const driverStandingsServiceStub = new DriverStandingsServiceStub()
@@ -51,7 +40,8 @@ describe('Race Classification Controller', () => {
       raceClassificationServiceStub,
       raceServiceStub,
       driverStandingsServiceStub,
-      teamStandingsServiceStub
+      teamStandingsServiceStub,
+      championshipServiceStub
     }
   }
 
@@ -105,7 +95,8 @@ describe('Race Classification Controller', () => {
       sut,
       driverStandingsServiceStub,
       teamStandingsServiceStub,
-      raceClassificationServiceStub
+      raceClassificationServiceStub,
+      championshipServiceStub
     } = makeSut()
 
     const dto: UpdateRaceClassificationDto = {
@@ -129,6 +120,13 @@ describe('Race Classification Controller', () => {
     )
     const driverStandingsSpy = jest.spyOn(driverStandingsServiceStub, 'refresh')
     const teamStandingsSpy = jest.spyOn(teamStandingsServiceStub, 'refresh')
+
+    jest.spyOn(championshipServiceStub, 'getOne').mockReturnValueOnce(
+      Promise.resolve({
+        ...validChampionship,
+        admins: [{ user: { id: 'valid_user' } }]
+      } as any)
+    )
 
     const result = await sut.update({
       query: { race: 'valid_id' },
@@ -220,7 +218,8 @@ describe('Race Classification Controller', () => {
   })
 
   it('should return 400 if RaceClassificationService update method throws', async () => {
-    const { sut, raceClassificationServiceStub } = makeSut()
+    const { sut, raceClassificationServiceStub, championshipServiceStub } =
+      makeSut()
 
     jest
       .spyOn(raceClassificationServiceStub, 'update')
@@ -240,6 +239,13 @@ describe('Race Classification Controller', () => {
         }
       ]
     }
+
+    jest.spyOn(championshipServiceStub, 'getOne').mockReturnValueOnce(
+      Promise.resolve({
+        ...validChampionship,
+        admins: [{ user: { id: 'valid_user' } }]
+      } as any)
+    )
 
     const result = await sut.update({
       query: { race: 'valid_id' },
