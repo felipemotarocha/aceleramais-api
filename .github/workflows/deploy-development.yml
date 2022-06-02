@@ -14,8 +14,7 @@ jobs:
         with:
           node-version: 16
       - run: npm install
-      - run: npm run test:unit
-      - run: npm run test:integration
+      - run: npm run test:ci
   build:
     needs: test
     runs-on: ubuntu-latest
