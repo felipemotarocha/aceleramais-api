@@ -22,13 +22,25 @@ jobs:
       - uses: actions/checkout@v2
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
-          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: 'aceleramais-development'
           heroku_email: 'felipe@aceleramais.app'
           usedocker: true
+          docker_build_args: |
+            MONGO_URL
+            AWS_SECRET_ACCESS_KEY
+            AWS_CLOUDFRONT_URL
+            AWS_BUCKET_NAME
+            AWS_ACCESS_KEY_ID
+            FIREBASE_PRIVATE_KEY
+            FIREBASE_CLIENT_EMAIL
+            FIREBASE_PROJECT_ID
         env:
-          MONGO_URL: ${{secrets.DEV_MONGO_URL}}
-          AWS_SECRET_ACCESS_KEY: ${{secrets.DEV_AWS_SECRET_ACCESS_KEY}}
-          AWS_CLOUDFRONT_URL: ${{secrets.DEV_AWS_CLOUDFRONT_URL}}
-          AWS_BUCKET_NAME: ${{secrets.DEV_AWS_BUCKET_NAME}}
-          AWS_ACCESS_KEY_ID: ${{secrets.DEV_AWS_ACCESS_KEY_ID}}
+          MONGO_URL: ${{ secrets.DEV_MONGO_URL }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEV_AWS_SECRET_ACCESS_KEY }}
+          AWS_CLOUDFRONT_URL: ${{ secrets.DEV_AWS_CLOUDFRONT_URL }}
+          AWS_BUCKET_NAME: ${{ secrets.DEV_AWS_BUCKET_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEV_AWS_ACCESS_KEY_ID }}
+          FIREBASE_PRIVATE_KEY: ${{ secrets.DEV_FIREBASE_PRIVATE_KEY }}
+          FIREBASE_CLIENT_EMAIL: ${{ secrets.DEV_FIREBASE_CLIENT_EMAIL }}
+          FIREBASE_PROJECT_ID: ${{ secrets.DEV_FIREBASE_PROJECT_ID }}
