@@ -26,3 +26,9 @@ jobs:
           heroku_app_name: 'aceleramais-development'
           heroku_email: 'felipe@aceleramais.app'
           usedocker: true
+        env:
+          MONGO_URL: ${{secrets.DEV_MONGO_URL}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.DEV_AWS_SECRET_ACCESS_KEY}}
+          AWS_CLOUDFRONT_URL: ${{secrets.DEV_AWS_CLOUDFRONT_URL}}
+          AWS_BUCKET_NAME: ${{secrets.DEV_AWS_BUCKET_NAME}}
+          AWS_ACCESS_KEY_ID: ${{secrets.DEV_AWS_ACCESS_KEY_ID}}
