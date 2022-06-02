@@ -15,4 +15,5 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: 'aceleramais-development'
           heroku_email: 'felipe@aceleramais.app'
+          justlogin: true
           usedocker: true
