@@ -1,6 +1,7 @@
 jest.mock('firebase-admin', () => ({
   credential: {
-    applicationDefault: jest.fn()
+    applicationDefault: jest.fn(),
+    cert: jest.fn()
   },
   initializeApp: () => ({
     auth: () => ({
