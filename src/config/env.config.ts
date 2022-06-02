@@ -5,7 +5,7 @@ export const env = {
   port: process.env.PORT || 5050,
   awsBucketName: process.env.AWS_BUCKET_NAME,
   cloudFrontUrl: process.env.AWS_CLOUDFRONT_URL,
-  firebasePrivateKey: process.env.FIREBASE_PRIVATE_KEY,
+  firebasePrivateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
   firebaseClientEmail: process.env.FIREBASE_CLIENT_EMAIL,
   firebaseProjectId: process.env.FIREBASE_PROJECT_ID
 }
