@@ -3,9 +3,9 @@ FROM node:16-alpine
 WORKDIR /app
 
 COPY ./package.json .
-RUN yarn
+RUN npm install
 
 COPY . .
-RUN yarn build
+RUN npm run build
 
 CMD ["node", "dist/server.js"]
