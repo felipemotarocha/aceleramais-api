@@ -1,0 +1,38 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm install
+      - run: npm run test:ci
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
+          heroku_app_name: 'aceleramais-production'
+          heroku_email: 'felipe@aceleramais.app'
+          usedocker: true
+        env:
+          HD_NODE_ENV: production
+          HD_MONGO_URL: ${{ secrets.PRD_MONGO_URL }}
+          HD_AWS_SECRET_ACCESS_KEY: ${{ secrets.PRD_AWS_SECRET_ACCESS_KEY }}
+          HD_AWS_CLOUDFRONT_URL: ${{ secrets.PRD_AWS_CLOUDFRONT_URL }}
+          HD_AWS_BUCKET_NAME: ${{ secrets.PRD_AWS_BUCKET_NAME }}
+          HD_AWS_ACCESS_KEY_ID: ${{ secrets.PRD_AWS_ACCESS_KEY_ID }}
+          HD_FIREBASE_PRIVATE_KEY: ${{ secrets.PRD_FIREBASE_PRIVATE_KEY }}
+          HD_FIREBASE_CLIENT_EMAIL: ${{ secrets.PRD_FIREBASE_CLIENT_EMAIL }}
+          HD_FIREBASE_PROJECT_ID: ${{ secrets.PRD_FIREBASE_PROJECT_ID }}
