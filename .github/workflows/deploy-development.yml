@@ -13,8 +13,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm install
-      - run: npm run test:ci
+          cache: yarn
+      - run: yarn
+      - run: yarn test:ci
   build:
     needs: test
     runs-on: ubuntu-latest
