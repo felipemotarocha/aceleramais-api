@@ -4,6 +4,8 @@ coverage
 globalConfig.json
 
 .env
+.env.production
+
 credentials
 
 dist
