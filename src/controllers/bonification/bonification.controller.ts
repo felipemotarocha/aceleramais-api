@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node'
+
 import {
   MissingParamError,
   NotAllowedFieldsError
@@ -53,7 +55,9 @@ export class BonificationController implements BonificationControllerAbstract {
       })
 
       return ok(bonifications)
-    } catch (_e) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -80,7 +84,9 @@ export class BonificationController implements BonificationControllerAbstract {
       )
 
       return ok(bonification)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -100,7 +106,9 @@ export class BonificationController implements BonificationControllerAbstract {
       )
 
       return ok(bonification)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }

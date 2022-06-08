@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node'
+
 import { MissingParamError } from '../../errors/controllers.errors'
 import { badRequest, ok, serverError } from '../../helpers/controllers.helpers'
 import {
@@ -33,7 +35,9 @@ implements DriverStandingsControllerAbstract {
       })
 
       return ok(driverStandings)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }

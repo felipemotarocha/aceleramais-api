@@ -12,3 +12,7 @@ jest.mock('firebase-admin', () => ({
     })
   })
 }))
+
+jest.mock('@sentry/node', () => ({
+  captureException: jest.fn()
+}))

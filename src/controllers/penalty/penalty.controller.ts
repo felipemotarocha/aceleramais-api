@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node'
+
 import {
   MissingParamError,
   NotAllowedFieldsError
@@ -29,17 +31,23 @@ export class PenaltyController implements PenaltyControllerAbstract {
   }
 
   async create(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const requiredFields = ['championship', 'name', 'points']
+    try {
+      const requiredFields = ['championship', 'name', 'points']
 
-    for (const field of requiredFields) {
-      if (!httpRequest.body[field]) {
-        return badRequest(new MissingParamError(field))
+      for (const field of requiredFields) {
+        if (!httpRequest.body[field]) {
+          return badRequest(new MissingParamError(field))
+        }
       }
+
+      const penalty = await this.penaltyService.create(httpRequest.body)
+
+      return created(penalty)
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
+      return serverError()
     }
-
-    const penalty = await this.penaltyService.create(httpRequest.body)
-
-    return created(penalty)
   }
 
   async getAll(httpRequest: HttpRequest): Promise<HttpResponse> {
@@ -53,7 +61,9 @@ export class PenaltyController implements PenaltyControllerAbstract {
       })
 
       return ok(penalties)
-    } catch (_e) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -80,7 +90,9 @@ export class PenaltyController implements PenaltyControllerAbstract {
       )
 
       return ok(penalty)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -98,7 +110,9 @@ export class PenaltyController implements PenaltyControllerAbstract {
       const penalty = await this.penaltyService.delete(httpRequest.params.id)
 
       return ok(penalty)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }

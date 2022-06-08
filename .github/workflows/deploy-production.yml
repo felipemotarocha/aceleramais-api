@@ -37,3 +37,4 @@ jobs:
           HD_FIREBASE_PRIVATE_KEY: ${{ secrets.PRD_FIREBASE_PRIVATE_KEY }}
           HD_FIREBASE_CLIENT_EMAIL: ${{ secrets.PRD_FIREBASE_CLIENT_EMAIL }}
           HD_FIREBASE_PROJECT_ID: ${{ secrets.PRD_FIREBASE_PROJECT_ID }}
+          HD_SENTRY_DNS: ${{ secrets.PRD_SENTRY_DNS }}

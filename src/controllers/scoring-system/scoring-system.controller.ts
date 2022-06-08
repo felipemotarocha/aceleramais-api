@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node'
+
 import {
   MissingParamError,
   NotAllowedFieldsError
@@ -44,7 +46,9 @@ implements ScoringSystemControllerAbstract {
       )
 
       return created(scoringSystem)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -64,7 +68,9 @@ implements ScoringSystemControllerAbstract {
       })
 
       return ok(scoringSystem)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -95,7 +101,9 @@ implements ScoringSystemControllerAbstract {
       )
 
       return ok(scoringSystem)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -115,7 +123,9 @@ implements ScoringSystemControllerAbstract {
       )
 
       return ok(scoringSystem)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }

@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node'
+
 import { ServerError } from '../../errors/controllers.errors'
 import { badRequest, ok } from '../../helpers/controllers.helpers'
 import {
@@ -22,7 +24,9 @@ class TrackController implements TrackControllerAbstract {
       const tracks = await this.trackService.getAll()
 
       return ok(tracks)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return badRequest(new ServerError())
     }
   }

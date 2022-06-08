@@ -54,6 +54,8 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.49.0",
+    "@sentry/node": "^7.1.1",
+    "@sentry/tracing": "^7.1.1",
     "aws-sdk": "^2.1066.0",
     "dotenv": "^15.0.0",
     "express": "^4.17.2",

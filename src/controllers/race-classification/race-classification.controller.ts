@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node'
+
 import {
   InvalidFieldError,
   MissingParamError,
@@ -42,7 +44,9 @@ implements RaceClassificationControllerAbstract {
       )
 
       return ok(raceClassification)
-    } catch (_e) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return badRequest(new ServerError())
     }
   }
@@ -106,6 +110,8 @@ implements RaceClassificationControllerAbstract {
 
       return ok(raceClassification)
     } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return badRequest(new ServerError())
     }
   }
