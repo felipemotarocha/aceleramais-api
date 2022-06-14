@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node'
+
 import {
   MissingParamError,
   NotAllowedFieldsError
@@ -41,7 +43,9 @@ export class TeamController implements TeamControllerAbstract {
       const team = await this.teamService.create(httpRequest.body)
 
       return created(team)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -61,7 +65,9 @@ export class TeamController implements TeamControllerAbstract {
       })
 
       return ok(teams)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -92,7 +98,9 @@ export class TeamController implements TeamControllerAbstract {
       )
 
       return ok(team)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -110,7 +118,9 @@ export class TeamController implements TeamControllerAbstract {
       const team = await this.teamService.delete(httpRequest.params.id)
 
       return ok(team)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }

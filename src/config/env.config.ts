@@ -7,5 +7,6 @@ export const env = {
   cloudFrontUrl: process.env.AWS_CLOUDFRONT_URL,
   firebasePrivateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
   firebaseClientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  firebaseProjectId: process.env.FIREBASE_PROJECT_ID
+  firebaseProjectId: process.env.FIREBASE_PROJECT_ID,
+  sentryDns: process.env.SENTRY_DNS
 }

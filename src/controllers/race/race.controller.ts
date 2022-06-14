@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node'
+
 import {
   MissingParamError,
   NotAllowedFieldsError,
@@ -37,7 +39,9 @@ class RaceController implements RaceControllerAbstract {
       }
 
       return created(race)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return badRequest(new ServerError())
     }
   }
@@ -51,7 +55,9 @@ class RaceController implements RaceControllerAbstract {
       const race = await this.raceService.getOne(httpRequest.params.id)
 
       return ok(race)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return badRequest(new ServerError())
     }
   }
@@ -65,7 +71,9 @@ class RaceController implements RaceControllerAbstract {
       const race = await this.raceService.getAll(httpRequest.query!)
 
       return ok(race)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return badRequest(new ServerError())
     }
   }
@@ -92,7 +100,9 @@ class RaceController implements RaceControllerAbstract {
       )
 
       return ok(race)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return badRequest(new ServerError())
     }
   }

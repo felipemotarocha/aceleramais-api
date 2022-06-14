@@ -1,4 +1,6 @@
 /* eslint-disable no-useless-constructor */
+import * as Sentry from '@sentry/node'
+
 import User from '../../entities/user.entity'
 import {
   InvalidFieldError,
@@ -82,6 +84,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       return ok(result)
     } catch (error) {
       console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -104,6 +107,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       return created(championship)
     } catch (error) {
       console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -157,6 +161,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       return ok(championship)
     } catch (error) {
       console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -179,6 +184,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       return ok(championship)
     } catch (error) {
       console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -198,6 +204,7 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       return ok(championships)
     } catch (error) {
       console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }

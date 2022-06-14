@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/node'
+
 import {
   MissingParamError,
   NotAllowedFieldsError
@@ -48,7 +50,7 @@ export class UserController implements UserControllerAbstract {
       return ok(token)
     } catch (error) {
       console.error(error)
-
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -80,7 +82,9 @@ export class UserController implements UserControllerAbstract {
       })
 
       return created(user)
-    } catch (err) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -103,7 +107,9 @@ export class UserController implements UserControllerAbstract {
       if (!user) return notFound()
 
       return ok(user)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -134,7 +140,9 @@ export class UserController implements UserControllerAbstract {
       })
 
       return ok(user)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }
@@ -154,7 +162,9 @@ export class UserController implements UserControllerAbstract {
       })
 
       return ok(user)
-    } catch (_) {
+    } catch (error) {
+      console.error(error)
+      Sentry.captureException(error)
       return serverError()
     }
   }

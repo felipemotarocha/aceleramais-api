@@ -13,8 +13,9 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16
-      - run: npm install
-      - run: npm run test:ci
+          cache: yarn
+      - run: yarn
+      - run: yarn test:ci
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -36,3 +37,4 @@ jobs:
           HD_FIREBASE_PRIVATE_KEY: ${{ secrets.DEV_FIREBASE_PRIVATE_KEY }}
           HD_FIREBASE_CLIENT_EMAIL: ${{ secrets.DEV_FIREBASE_CLIENT_EMAIL }}
           HD_FIREBASE_PROJECT_ID: ${{ secrets.DEV_FIREBASE_PROJECT_ID }}
+          HD_SENTRY_DNS: ${{ secrets.DEV_SENTRY_DNS }}
