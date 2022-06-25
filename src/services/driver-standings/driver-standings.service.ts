@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash'
 import {
   CreateDriverStandingsDto,
   UpdateDriverStandingsDto
@@ -123,6 +124,15 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
       }
     }
 
+    if (isEmpty(newDriverStandings)) {
+      return await this.driverStandingsRepository.update(
+        (championship!.driverStandings as DriverStandings).id,
+        {
+          standings: []
+        }
+      )
+    }
+
     for (const driver of championship!.drivers) {
       if (driver.bonifications.length > 0) {
         const points = driver.bonifications.reduce((acc, currentValue) => {
@@ -134,7 +144,7 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
           : driver.id
 
         newDriverStandings[driverId!].points =
-          newDriverStandings[driverId!].points + points
+          newDriverStandings[driverId!]?.points + points
       }
 
       if (driver.penalties.length > 0) {
