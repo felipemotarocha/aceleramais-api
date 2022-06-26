@@ -224,14 +224,16 @@ championshipSchema.virtual('nextRaces', {
   }
 })
 
-championshipSchema.pre('find', function (next) {
-  this.populate({
-    path: 'nextRaces',
-    select: ['_id', 'track', 'startDate', 'isCompleted', '-championship'],
-    match: { isCompleted: false }
-  })
-
-  next()
+championshipSchema.post('find', async function (docs) {
+  await Promise.all(
+    docs.map(async (doc) => {
+      await doc.populate({
+        path: 'nextRaces',
+        select: ['_id', 'track', 'startDate', 'isCompleted', '-championship'],
+        match: { isCompleted: false }
+      })
+    })
+  )
 })
 
 championshipSchema.plugin(require('mongoose-autopopulate'))
