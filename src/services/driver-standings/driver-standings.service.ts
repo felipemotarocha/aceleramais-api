@@ -143,8 +143,21 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
           ? (driver.user as User).id
           : driver.id
 
-        newDriverStandings[driverId!].points =
-          newDriverStandings[driverId!]?.points + points
+        const driverIsNotInAnyRaces = !newDriverStandings[driverId!]
+
+        if (driverIsNotInAnyRaces) {
+          newDriverStandings[driverId!] = {
+            isRegistered: driver.isRegistered,
+            isRemoved: driver.isRemoved,
+            points: (newDriverStandings[driverId!]?.points || 0) + points,
+            firstName: driver?.firstName,
+            lastName: driver?.lastName,
+            team: (driver?.team as Team).id
+          }
+        } else {
+          newDriverStandings[driverId!].points =
+            newDriverStandings[driverId!]?.points + points
+        }
       }
 
       if (driver.penalties.length > 0) {
@@ -156,8 +169,21 @@ export class DriverStandingsService implements DriverStandingsServiceAbstract {
           ? (driver.user as User).id
           : driver.id
 
-        newDriverStandings[driverId!].points =
-          newDriverStandings[driverId!].points - points
+        const driverIsNotInAnyRaces = !newDriverStandings[driverId!]
+
+        if (driverIsNotInAnyRaces) {
+          newDriverStandings[driverId!] = {
+            isRegistered: driver.isRegistered,
+            isRemoved: driver.isRemoved,
+            points: (newDriverStandings[driverId!]?.points || 0) - points,
+            firstName: driver?.firstName,
+            lastName: driver?.lastName,
+            team: (driver?.team as Team).id
+          }
+        } else {
+          newDriverStandings[driverId!].points =
+            newDriverStandings[driverId!]?.points - points
+        }
       }
     }
 
