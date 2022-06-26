@@ -12,6 +12,7 @@ MongooseHelper.connect(env.mongodbUrl)
 
     Sentry.init({
       dsn: env.sentryDns,
+      normalizeDepth: 11,
       integrations: [
         new Sentry.Integrations.Http({ tracing: true }),
         new Tracing.Integrations.Express({ app })

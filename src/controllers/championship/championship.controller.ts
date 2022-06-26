@@ -108,9 +108,10 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       return created(championship)
     } catch (error) {
       console.error(error)
-      Sentry.setContext('httpRequest', {
-        ...httpRequest,
-        body: httpRequest.body.data
+      Sentry.setExtra('httpRequest', {
+        params: httpRequest.params,
+        user: httpRequest?.user,
+        body: JSON.parse(httpRequest.body.data)
       })
       Sentry.captureException(error)
       return serverError()
@@ -166,9 +167,10 @@ export class ChampionshipController implements ChampionshipControllerAbstract {
       return ok(championship)
     } catch (error) {
       console.error(error)
-      Sentry.setContext('httpRequest', {
-        ...httpRequest,
-        body: httpRequest.body.data
+      Sentry.setExtra('httpRequest', {
+        params: httpRequest.params,
+        user: httpRequest?.user,
+        body: JSON.parse(httpRequest.body.data)
       })
       Sentry.captureException(error)
       return serverError()

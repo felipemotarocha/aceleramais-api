@@ -15,5 +15,6 @@ jest.mock('firebase-admin', () => ({
 
 jest.mock('@sentry/node', () => ({
   captureException: jest.fn(),
-  setContext: jest.fn()
+  setContext: jest.fn(),
+  setExtra: jest.fn()
 }))
